@@ -1,9 +1,16 @@
+#!usr/bin/env python
+
+
 """
 Basic class that represents the chomosomes of our genetic algorithm.
 """
 
 
-from random import randint
+import random
+
+
+# The number of genes that each organism has
+NUM_GENES = 5
 
 
 class Chromosome:
@@ -16,6 +23,13 @@ class Chromosome:
         Initializes the gene and fitness of an organism.
         """
 
+        # Generate a random set of genes if genes are not already defined
+        if genes == None:
+            genes = []
+            for x in range(NUM_GENES):
+                genes.append(round(random.uniform(0, 5), 3))
+
+        # Define the chromosome's genes and fitness
         self.genes = genes
         self.fitness = self.get_fitness()
 
@@ -25,7 +39,34 @@ class Chromosome:
         Calculate the fitness of a specified chromosome.
         """
 
+        # TODO: implement get_fitness function
         pass
+
+
+    def mutate(self, mutation_rate_multiplier=1.0):
+        """
+        Mutates the genes of the specified chromosome.
+
+        mutation_rate_multiplier: alter the chance that each individual unit of
+            a gene becomes mutated. Mutation chance per unit is
+            mutation_rate_multiplier/num_units_per_gene
+        """
+
+        # Define the chance of each individual gene to be mutated
+        mutation_rate = mutation_rate_multiplier/float(NUM_GENES)
+
+        # Initialize what will be the final list of mutated genes
+        mutated_genes = []
+
+        # Iterate through all current genes
+        for gene in self.genes:
+            # Randomly decided whether or not to mutate each individual gene
+            if random.uniform(0, 1) <= mutation_rate:
+                gene *= random.uniform(0.8, 1.2)
+            mutated_genes.append(round(gene, 3))
+
+        # Replace the chromosome's genes with the mutated genes
+        self.genes = mutated_genes
 
 
 def crossover(c1, c2):
@@ -44,17 +85,32 @@ def crossover(c1, c2):
     g2 = c2.genes
 
     # Define a random pivot point around which the crossover will occur
-    crossover_point = randint(0, len(c1.genes)-1)
+    crossover_point = random.randint(0, NUM_GENES-1)
 
     # Create the new crossovered gene and chromosome
-    new_genes = c1.genes[crossover_point:] + c2.genes[:crossover_point]
+    new_genes = g1[:crossover_point] + g2[crossover_point:]
     new_chromosome = Chromosome(new_genes)
 
     return new_chromosome
 
 
 if __name__ == '__main__':
-    c1 = Chromosome([0, 1, 2, 3, 4])
-    c2 = Chromosome([4, 3, 2, 1, 0])
+    # Test basic functionality
+
+    c1 = Chromosome()
+    c2 = Chromosome()
+    print "First generation:"
+    print c1.genes
+    print c2.genes, "\n"
+
     c3 = crossover(c1, c2)
+    c4 = crossover(c1, c2)
+    print "Second generation (after crossover):"
     print c3.genes
+    print c4.genes, "\n"
+
+    c3.mutate()
+    c4.mutate()
+    print "Second generation (after mutation):"
+    print c3.genes
+    print c4.genes
