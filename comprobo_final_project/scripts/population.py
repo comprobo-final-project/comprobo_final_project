@@ -1,6 +1,6 @@
 #!usr/bin/env python
 
-import Chromosome
+from chromosome import Chromosome
 from random import choice, random, randint
 
 """
@@ -23,7 +23,7 @@ class Population:
         self.tournament_size = int(size * 0.005)
 
         pop = []
-        for i in range(size): pop.append(Chromosome.gen_random())
+        for i in range(size): pop.append(Chromosome())
         self.population = list(sorted(buf, key=lambda x: x.fitness))
 
 
