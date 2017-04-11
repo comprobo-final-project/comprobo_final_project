@@ -34,13 +34,28 @@ class Chromosome:
         self.fitness = self.get_fitness()
 
 
-    def get_fitness(self):
+    def crossover(self, other):
         """
-        Calculate the fitness of a specified chromosome.
+        Mixes the two specified chromosomes, returning a new chromosome
+        that is a result of a crossover of the two original chromosomes.
+
+        other: second chromosome to crossover
+
+        return: a chromosome that is a crossover between self and other
         """
 
-        # TODO: implement get_fitness function
-        pass
+        # Define the genes that will be crossovered
+        g1 = self.genes
+        g2 = other.genes
+
+        # Define a random pivot point around which the crossover will occur
+        crossover_point = random.randint(0, NUM_GENES-1)
+
+        # Create the new crossovered gene and chromosome
+        new_genes = g1[:crossover_point] + g2[crossover_point:]
+        new_chromosome = Chromosome(new_genes)
+
+        return new_chromosome
 
 
     def mutate(self, mutation_rate_multiplier=1.0):
@@ -69,29 +84,13 @@ class Chromosome:
         self.genes = mutated_genes
 
 
-def crossover(c1, c2):
-    """
-    Mixes the two specified chromosomes, returning a new chromosome
-    that is a result of a crossover of the two original chromosomes.
+    def get_fitness(self):
+        """
+        Calculate the fitness of a specified chromosome.
+        """
 
-    c1: first chromosome to crossover
-    c2: second chromosome to crossover
-
-    return: a chromosome that is a crossover between c1 and c2
-    """
-
-    # Define the genes that will be crossovered
-    g1 = c1.genes
-    g2 = c2.genes
-
-    # Define a random pivot point around which the crossover will occur
-    crossover_point = random.randint(0, NUM_GENES-1)
-
-    # Create the new crossovered gene and chromosome
-    new_genes = g1[:crossover_point] + g2[crossover_point:]
-    new_chromosome = Chromosome(new_genes)
-
-    return new_chromosome
+        # TODO: implement get_fitness function
+        pass
 
 
 if __name__ == '__main__':
@@ -103,8 +102,8 @@ if __name__ == '__main__':
     print c1.genes
     print c2.genes, "\n"
 
-    c3 = crossover(c1, c2)
-    c4 = crossover(c1, c2)
+    c3 = c1.crossover(c2)
+    c4 = c1.crossover(c2)
     print "Second generation (after crossover):"
     print c3.genes
     print c4.genes, "\n"
