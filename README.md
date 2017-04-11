@@ -1,2 +1,2 @@
-# genetic_racer
-CompRobo Spring Final Project 2017
+# CompRobo Final Project
+Spring 2017
