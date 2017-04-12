@@ -1,14 +1,14 @@
 #!usr/bin/env python
 
-from chromosome import Chromosome
-from random import choice, random, randint
-
 """
 CompRobo Spring 2017
 
 population script for our simplified task, one Neato moving to a goal
 
 """
+
+from chromosome import Chromosome
+from random import choice, random, randint
 
 
 class Population:
