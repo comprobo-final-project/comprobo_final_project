@@ -44,10 +44,7 @@ class AprilPoseProvider(object):
         main loop
         """
 
-        r = rospy.Rate(10)
-
-        while not rospy.is_shutdown():
-            r.sleep()
+        rospy.spin()
 
 
 if __name__=="__main__":
