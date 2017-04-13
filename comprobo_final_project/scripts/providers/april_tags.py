@@ -23,8 +23,8 @@ class AprilPoseProvider(object):
         """
         Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
         """
-
-        self.pose_callback(april_data)
+        if self.pose_callback is not None:
+            self.pose_callback(april_data)
 
         #if we ever want it, orientation is here too
         self.orient = april_data.pose.orientation.x, april_data.pose.orientation.y, april_data.pose.orientation.z, april_data.pose.orientation.w
