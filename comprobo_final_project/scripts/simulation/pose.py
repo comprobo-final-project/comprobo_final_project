@@ -1,6 +1,6 @@
-from position import Position
+from vector_2 import Vector2
 
 class Pose:
 
     def __init__(self):
-        self.position = Position()
+        self.position = Vector2()
