@@ -12,11 +12,11 @@ class AprilPoseProvider(object):
     Takes data from the Apriltags and can sends it to RobotController
     """
 
-    def __init__(self):
+    def __init__(self, rospy):
 
-        rospy.Subscriber("/STAR_pose_continuous", PoseStamped, self.getPos, queue_size=10)
         self.pose_callback = None
         self.orient = None
+        rospy.Subscriber("/STAR_pose_continuous", PoseStamped, self.getPos, queue_size=10)
 
 
     def getPos(self, april_data):
@@ -24,7 +24,7 @@ class AprilPoseProvider(object):
         Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
         """
 
-        self.pose_callback(april_data.pose)
+        self.pose_callback(april_data)
 
         #if we ever want it, orientation is here too
         self.orient = april_data.pose.orientation.x, april_data.pose.orientation.y, april_data.pose.orientation.z, april_data.pose.orientation.w
@@ -35,7 +35,7 @@ class AprilPoseProvider(object):
         """
         updates new callback function for packaging purposes
         """
-        
+
         self.pose_callback = pose_callback
 
 
