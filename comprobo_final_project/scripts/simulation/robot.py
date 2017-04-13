@@ -1,4 +1,5 @@
 from pose import Pose
+from twist import Twist
 
 class Robot:
 
@@ -8,4 +9,4 @@ class Robot:
         self.pose = Pose()
 
         # http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
-        self.twist = None
+        self.twist = Twist()
