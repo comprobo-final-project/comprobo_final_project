@@ -48,5 +48,5 @@ class AprilPoseProvider(object):
 
 
 if __name__=="__main__":
-    node = April()
+    node = AprilPoseProvider()
     node.run()
