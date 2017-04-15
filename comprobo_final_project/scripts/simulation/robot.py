@@ -10,3 +10,7 @@ class Robot:
 
         # http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
         self.twist = Twist()
+
+
+    def step(self, step_size):
+        self.pose.position += step_size * self.twist.linear
