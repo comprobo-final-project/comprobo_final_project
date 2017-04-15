@@ -6,18 +6,13 @@ import numpy as np
 from robot import Robot
 
 
-class Simulation:
+class Simulator:
 
     STEP_SIZE = 0.1
     SLEEP_DURATION_S = 0.1
 
-    def __init__(self, enable_render = False):
-        self.robot = Robot()
-        self.robot.pose.position.x = 1
-        self.robot.pose.position.y = 1
-        self.robot.twist.linear.x = 1
-        self.robot.twist.linear.y = 1
-
+    def __init__(self, robot, enable_render = False):
+        self.robot = robot
         self.enable_render = enable_render
         self.paths = None # Used for visualizations
 
@@ -55,5 +50,11 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    simulation = Simulation(enable_render = True)
-    simulation.run()
+    robot = Robot()
+    robot.pose.position.x = 1
+    robot.pose.position.y = 1
+    robot.twist.linear.x = 1
+    robot.twist.linear.y = 1
+
+    simulator = Simulator(robot = robot, enable_render = True)
+    simulator.run()
