@@ -7,17 +7,26 @@ from robot import Robot
 
 
 class Simulator:
+    """
+    Simulates a robot without ROS.
+    """
 
     STEP_SIZE = 0.1
     SLEEP_DURATION_S = 0.1
 
     def __init__(self, robot, enable_render = False):
+        """
+        enable_render : bool - Determines whether visualizations show up
+        """
         self.robot = robot
         self.enable_render = enable_render
         self.paths = None # Used for visualizations
 
 
     def render(self):
+        """
+        Renders the simulated world
+        """
         plt.ion()
 
         axes = plt.gca()
