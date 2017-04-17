@@ -1,8 +1,8 @@
-from vector_2 import Vector2
+from vector_3 import Vector3
 from quaternion import Quaternion
 
 class Twist:
 
     def __init__(self):
-        self.linear = Vector2()
-        self.angular = Quaternion()
+        self.linear = Vector3()
+        self.angular = Vector3()
