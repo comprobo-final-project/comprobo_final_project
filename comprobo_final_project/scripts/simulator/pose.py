@@ -5,4 +5,4 @@ class Pose:
 
     def __init__(self):
         self.position = Vector3()
-        self.orientation = Quaternion()
+        self.velocity = Vector3()

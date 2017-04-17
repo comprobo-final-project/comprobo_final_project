@@ -60,10 +60,10 @@ class Simulator:
 
 if __name__ == "__main__":
     robot = Robot()
-    robot.pose.position.x = 1
-    robot.pose.position.y = 1
+    robot.pose.position.x = 0
+    robot.pose.position.y = 0
     robot.twist.linear.x = 1
-    robot.twist.linear.y = 1
+    robot.twist.angular.z = 1
 
     simulator = Simulator(robot = robot, enable_render = True)
     simulator.run()
