@@ -12,7 +12,7 @@ class Simulator:
     """
 
     STEP_SIZE = 0.1
-    SLEEP_DURATION_S = 0.1
+    SLEEP_DURATION_S = 0.01
 
     def __init__(self, robot, enable_render = False):
         """
@@ -20,7 +20,7 @@ class Simulator:
         """
         self.robot = robot
         self.enable_render = enable_render
-        self.paths = None # Used for visualizations
+        self.quiver_manager = None # Used for visualizations
 
 
     def render(self):
@@ -32,7 +32,17 @@ class Simulator:
         axes = plt.gca()
         axes.set_xlim([-10, 10])
         axes.set_ylim([-10, 10])
-        self.paths, = axes.plot(self.robot.pose.position.x, self.robot.pose.position.y, "o")
+
+        # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.quiver
+        self.quiver_manager = axes.quiver(
+            self.robot.pose.position.x,
+            self.robot.pose.position.y,
+            self.robot.pose.velocity.x,
+            self.robot.pose.velocity.y,
+            units = 'xy',
+            angles = 'xy',
+            scale_units = 'xy',
+            scale = 1)
 
         plt.xlabel('X')
         plt.ylabel('Y')
@@ -42,27 +52,28 @@ class Simulator:
 
 
     def update_graph(self):
-        self.paths.set_xdata(self.robot.pose.position.x)
-        self.paths.set_ydata(self.robot.pose.position.y)
+        self.quiver_manager.set_UVC(self.robot.pose.velocity.x, self.robot.pose.velocity.y)
+        self.quiver_manager.set_offsets((self.robot.pose.position.x, self.robot.pose.position.y))
         plt.draw()
-        plt.pause(0.0001)
 
 
     def run(self):
         if (self.enable_render):
             self.render()
         while True:
+            self.robot.step(self.STEP_SIZE)
             if (self.enable_render):
                 self.update_graph()
-            self.robot.step(self.STEP_SIZE)
-            time.sleep(self.SLEEP_DURATION_S)
+                plt.pause(self.SLEEP_DURATION_S)
+            else:
+                time.sleep(self.SLEEP_DURATION_S)
 
 
 if __name__ == "__main__":
     robot = Robot()
     robot.pose.position.x = 0
     robot.pose.position.y = 0
-    robot.twist.linear.x = 1
+    robot.twist.linear.x = 2
     robot.twist.angular.z = 1
 
     simulator = Simulator(robot = robot, enable_render = True)
