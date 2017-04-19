@@ -88,32 +88,18 @@ class RobotController:
         self.pub.publish(cmd_vel)
 
 
-    def get_current_position(self):
-        """
-        Return the current position of the robot.
-        """
-
-        return self.curr_pose
-
-
-    def shutdown_self(self):
-        """
-        Method to begin the shutdown process for robot_controller.
-        """
-
-        rospy.signal_shutdown("Told to shutdown.")
-
-        
     def run(self):
         """
         Main run function.
         """
 
+        # Run for the specified duration
         r = rospy.Rate(10)
         while not rospy.is_shutdown() and self.run_time < self.shutdown_time:
             self.run_time = rospy.get_time()
             r.sleep()
 
+        # Return last known position for fitness evaluation
         return self.curr_pose
 
 
