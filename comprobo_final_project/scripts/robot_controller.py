@@ -18,7 +18,7 @@ class RobotController:
     evaluation and then shutsdown.
     """
 
-    def __init__(self, genes):
+    def __init__(self, robot, genes):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -27,8 +27,11 @@ class RobotController:
             robot's linear and angular velocities
         """
         # TODO: This is where you may want to pass in a Robot as a param.
-        self.robot = Robot(self._position_listener)
+        self.robot = robot
         self.genes = genes
+
+        # Subscribe to the robot's position events
+        robot.set_position_listener(self._position_listener)
 
     def run(self, duration):
         """
@@ -74,7 +77,11 @@ class RobotController:
 
 
 if __name__ == '__main__':
+
     genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
-    time_to_run = 10
-    robot_controller = RobotController(genes)
-    last_position = robot_controller.run(time_to_run)
+    duration = 10
+    robot = Robot()
+    robot_controller = RobotController(robot, genes)
+
+    # Run
+    robot_controller.run(duration)

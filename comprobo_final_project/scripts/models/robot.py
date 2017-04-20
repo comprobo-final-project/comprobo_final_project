@@ -10,25 +10,26 @@ class Robot:
     set_twist(twist : Twist) : Void - Sets the Twist of the robot
     """
 
-    def __init__(self, position_listener):
+    def __init__(self):
         # TODO: This needs some work, b/c we can't start multiple robot nodes here.
         rospy.init_node('robot_controller')
 
         self.pose = PoseStamped()
         self.twist = Twist()
 
-        self.position_listener = position_listener
-
         # Suscribe to position of Neato robot
-
-        # For Gazebo
-        GazeboPoseProvider(rospy).subscribe(self._pose_listener)
-
-        # For real world
-        # rospy.Subscriber('pose_stamped', PoseStamped, self._pose_listener)
+        GazeboPoseProvider(rospy).subscribe(self._pose_listener) # For Gazebo
+        # rospy.Subscriber('pose_stamped', PoseStamped, self._pose_listener) # For real world
 
         # Create publisher for current detected ball characteristics
         self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
+
+    def set_position_listener(self, position_listener):
+        """
+        Sets a listener that will be called when a pose is received.
+        """
+        self.position_listener = position_listener
 
 
     def set_twist(self, forward_rate, turn_rate):
