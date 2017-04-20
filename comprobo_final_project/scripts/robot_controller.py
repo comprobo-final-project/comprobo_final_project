@@ -7,7 +7,7 @@ and calculates a Twist message via an equation whose coefficients are
 determined by the organism's genes. This calculated Twist is then published.
 """
 
-
+import rospy
 import math
 from geometry_msgs.msg import PoseStamped, Twist
 from providers.gazebo_pose_provider import GazeboPoseProvider
@@ -15,13 +15,19 @@ from providers.gazebo_pose_provider import GazeboPoseProvider
 
 class RobotController:
     """
-    Dictates robot's motion based on genes.
+    Dictates robot's motion based on genes. It is given a time to control
+    the robot, after which it returns the robot's last position for fitness
+    evaluation and then shutsdown.
     """
 
-    def __init__(self, genes):
+    def __init__(self, genes, time_to_run):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
+
+        genes: list of coefficients used in the function to calculate the
+            robot's linear and angular velocities
+        time_to_run: time (seconds) until the Node shuts down
         """
 
         # Initialize ROS node
@@ -37,11 +43,21 @@ class RobotController:
         # Save the coefficients in the genes
         self.genes = genes
 
+        # Store the time the robot controller should run for
+        self.shutdown_time = rospy.get_time() + time_to_run
+        self.run_time = 0.0
+
+        # Store the robot's current position
+        self.curr_pose = None
+
 
     def position_callback(self, msg):
         """
-        Callback function for organism position.
+        Callback function for when the subscriber receives a new robot position.
         """
+
+        # Update current position of robot
+        self.curr_pose = msg
 
         # Initialize linear and angular velocities to zero
         cmd_vel = Twist()
@@ -52,8 +68,8 @@ class RobotController:
         goal_y = 0.0
 
         # Get current robot position
-        curr_x = msg.pose.position.x
-        curr_y = msg.pose.position.y
+        curr_x = self.curr_pose.pose.position.x
+        curr_y = self.curr_pose.pose.position.y
 
         # Calculate difference between robot position and goal position
         diff_x = goal_x - curr_x
@@ -71,22 +87,25 @@ class RobotController:
         # Publish linear and angular velocities
         self.pub.publish(cmd_vel)
 
-        
+
     def run(self):
         """
         Main run function.
         """
 
+        # Run for the specified duration
         r = rospy.Rate(10)
+        while not rospy.is_shutdown() and self.run_time < self.shutdown_time:
+            self.run_time = rospy.get_time()
+            r.sleep()
 
-        while not rospy.is_shutdown():
-            # Check for time-jumps, like when looping a bag file
-            try:
-                r.sleep()
-            except rospy.exceptions.ROSTimeMovedBackwardsException:
-                print "Time went backwards. Carry on."
+        # Return last known position for fitness evaluation
+        return self.curr_pose
 
 
 if __name__ == '__main__':
-    robot_controller = RobotController([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
-    robot_controller.run()
+
+    genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+    time_to_run = 10
+    robot_controller = RobotController(genes, time_to_run)
+    last_position = robot_controller.run()
