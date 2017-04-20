@@ -1,0 +1,8 @@
+name: cfp_simulation
+channels:
+  - https://conda.anaconda.org/kne
+dependencies:
+  - python=2.7
+  - matplotlib
+  - pybox2d
+  - pygame
