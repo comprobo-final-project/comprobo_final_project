@@ -1,17 +1,15 @@
 #!usr/bin/env python
 
-
 """
 Node that subscribes to the current position of the Neato, the goal position,
 and calculates a Twist message via an equation whose coefficients are
 determined by the organism's genes. This calculated Twist is then published.
 """
 
-import rospy
 import math
-from geometry_msgs.msg import PoseStamped, Twist
-from providers.gazebo_pose_provider import GazeboPoseProvider
+import time
 
+from .models.robot import Robot
 
 class RobotController:
     """
@@ -20,56 +18,43 @@ class RobotController:
     evaluation and then shutsdown.
     """
 
-    def __init__(self, genes, time_to_run):
+    def __init__(self, genes):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
 
         genes: list of coefficients used in the function to calculate the
             robot's linear and angular velocities
-        time_to_run: time (seconds) until the Node shuts down
         """
-
-        # Initialize ROS node
-        rospy.init_node('robot_controller')
-
-        # Suscribe to position of Neato robot
-        position_provider = GazeboPoseProvider(rospy)
-        position_provider.subscribe(position_callback)
-
-        # Create publisher for current detected ball characteristics
-        self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-
-        # Save the coefficients in the genes
+        # TODO: This is where you may want to pass in a Robot as a param.
+        self.robot = Robot(self._position_listener)
         self.genes = genes
 
-        # Store the time the robot controller should run for
-        self.shutdown_time = rospy.get_time() + time_to_run
-        self.run_time = 0.0
+    def run(self, duration):
+        """
+        Main run function.
+        duration : float - In seconds
+        """
+        end_time = time.time() + duration
 
-        # Store the robot's current position
-        self.curr_pose = None
+        try:
+            while time.time() < end_time:
+                # TODO: PSEUDO-CODE:
+                # Run the code for a set duration.
+                # When return the value of the fitness
+                pass
+        except KeyboardInterrupt:
+            pass
 
-
-    def position_callback(self, msg):
+    # TODO: The logic in this method would probably be better suited for the run method
+    def _position_listener(self, curr_x, curr_y):
         """
         Callback function for when the subscriber receives a new robot position.
         """
-
-        # Update current position of robot
-        self.curr_pose = msg
-
-        # Initialize linear and angular velocities to zero
-        cmd_vel = Twist()
-
         # TODO: maybe do something besides hardcoding the goal
         # Define robot's goal end position
         goal_x = 0.0
         goal_y = 0.0
-
-        # Get current robot position
-        curr_x = self.curr_pose.pose.position.x
-        curr_y = self.curr_pose.pose.position.y
 
         # Calculate difference between robot position and goal position
         diff_x = goal_x - curr_x
@@ -81,31 +66,15 @@ class RobotController:
 
         # Define linear and angular velocities based on genes
         a1, b1, c1, a2, b2, c2 = self.genes
-        cmd_vel.linear.x = a1*diff_w + b1*diff_r + c1*diff_r**2
-        cmd_vel.angular.z = a2*diff_w + b2*diff_r + c2*diff_r**2
+        forward_rate = a1*diff_w + b1*diff_r + c1*diff_r**2
+        turn_rate = a2*diff_w + b2*diff_r + c2*diff_r**2
 
-        # Publish linear and angular velocities
-        self.pub.publish(cmd_vel)
-
-
-    def run(self):
-        """
-        Main run function.
-        """
-
-        # Run for the specified duration
-        r = rospy.Rate(10)
-        while not rospy.is_shutdown() and self.run_time < self.shutdown_time:
-            self.run_time = rospy.get_time()
-            r.sleep()
-
-        # Return last known position for fitness evaluation
-        return self.curr_pose
+        # Set linear and angular velocities
+        self.robot.set_twist(forward_rate, turn_rate)
 
 
 if __name__ == '__main__':
-
     genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
     time_to_run = 10
-    robot_controller = RobotController(genes, time_to_run)
-    last_position = robot_controller.run()
+    robot_controller = RobotController(genes)
+    last_position = robot_controller.run(time_to_run)
