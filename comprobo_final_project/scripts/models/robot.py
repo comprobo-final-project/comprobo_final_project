@@ -22,7 +22,7 @@ class Robot:
         # rospy.Subscriber('pose_stamped', PoseStamped, self._pose_listener) # For real world
 
         # Create publisher for current detected ball characteristics
-        self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+        self.twist_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 
 
     def set_position_listener(self, position_listener):
@@ -35,6 +35,7 @@ class Robot:
     def set_twist(self, forward_rate, turn_rate):
         self.twist.linear.x = forward_rate
         self.twist.angular.z = turn_rate
+        self.twist_publisher.publish(self.twist)
 
 
     def _pose_listener(self, pose):
