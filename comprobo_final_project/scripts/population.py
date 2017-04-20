@@ -16,14 +16,14 @@ class Population:
     A class representing a population for a genetic algorithm simulation.
     """
 
-    def __init__(self, size=1024, crossover=0.8, elitism=0.1, mutation=0.05):
+    def __init__(self, size=1024, crossover=0.8, elitism=0.1, mutation=0.05, supervisor):
         self.elitism = elitism
         self.mutation = mutation
         self.crossover = crossover
         self.tournament_size = int(size * 0.005)
 
         pop = []
-        for i in range(size): pop.append(Chromosome())
+        for i in range(size): pop.append(Chromosome(genes=None, supervisor))
         self.population = list(sorted(buf, key=lambda x: x.fitness))
 
 

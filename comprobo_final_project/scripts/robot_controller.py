@@ -18,7 +18,7 @@ class RobotController:
     Dictates robot's motion based on genes.
     """
 
-    def __init__(self, genes):
+    def __init__(self, genes=None):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -42,36 +42,43 @@ class RobotController:
         """
         Callback function for organism position.
         """
+        if self.genes is not None:
+            # Initialize linear and angular velocities to zero
+            cmd_vel = Twist()
 
-        # Initialize linear and angular velocities to zero
-        cmd_vel = Twist()
+            # TODO: maybe do something besides hardcoding the goal
+            # Define robot's goal end position
+            goal_x = 0.0
+            goal_y = 0.0
 
-        # TODO: maybe do something besides hardcoding the goal
-        # Define robot's goal end position
-        goal_x = 0.0
-        goal_y = 0.0
+            # Get current robot position
+            curr_x = msg.pose.position.x
+            curr_y = msg.pose.position.y
 
-        # Get current robot position
-        curr_x = msg.pose.position.x
-        curr_y = msg.pose.position.y
+            # Calculate difference between robot position and goal position
+            diff_x = goal_x - curr_x
+            diff_y = goal_y - curr_y
 
-        # Calculate difference between robot position and goal position
-        diff_x = goal_x - curr_x
-        diff_y = goal_y - curr_y
+            # Calculate angle to goal and distance to goal
+            diff_w = math.atan2(diff_y, diff_x)
+            diff_r = math.sqrt(diff_x**2 + diff_y**2)
 
-        # Calculate angle to goal and distance to goal
-        diff_w = math.atan2(diff_y, diff_x)
-        diff_r = math.sqrt(diff_x**2 + diff_y**2)
+            # Define linear and angular velocities based on genes
+            a1, b1, c1, a2, b2, c2 = self.genes
+            cmd_vel.linear.x = a1*diff_w + b1*diff_r + c1*diff_r**2
+            cmd_vel.angular.z = a2*diff_w + b2*diff_r + c2*diff_r**2
 
-        # Define linear and angular velocities based on genes
-        a1, b1, c1, a2, b2, c2 = self.genes
-        cmd_vel.linear.x = a1*diff_w + b1*diff_r + c1*diff_r**2
-        cmd_vel.angular.z = a2*diff_w + b2*diff_r + c2*diff_r**2
+            # Publish linear and angular velocities
+            self.pub.publish(cmd_vel)
 
-        # Publish linear and angular velocities
-        self.pub.publish(cmd_vel)
 
-        
+    def set_genes(self, genes):
+        """
+        sets the genes for this iteration of the robot
+        """
+        self.genes = genes
+
+
     def run(self):
         """
         Main run function.

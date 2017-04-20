@@ -9,6 +9,7 @@ import rospy
 from models import robot
 from robot_controller import RobotController
 from population import Population
+from supervisor import Supervisor
 
 
 class Genetics(object):
@@ -19,14 +20,14 @@ class Genetics(object):
 
     def __init__(self):
         rospy.init_node('main')
-        self.population = Population(size=2048, crossover=0.8, elitism=0.1, mutation=0.3)
+        self.supervisor = Supervisor()
+        self.population = Population(size=2048, crossover=0.8, elitism=0.1, mutation=0.3, self.supervisor)
         self.maxGenerations = 16384
 
         #ROS Subscribers?
 
 
-    def run():
-         def run(self):
+    def run(self):
         """
         main run function
         """
@@ -36,12 +37,14 @@ class Genetics(object):
         generation = 0
 
         while not rospy.is_shutdown() and generation < self.maxGenerations:
-    		print("Generation %d: %s" % (i, pop.population[0].gene))
+    		print("Generation %d: %s" % (generation, pop.population[0].gene))
     		if pop.population[0].fitness < 0.1:
+                print "Most fit gene:", pop.population[0].gene
                 break
     		else:
                 self.population.evolve()
 
+            generation += 1
         	r.sleep()
 
         print("Maximum generations reached without success.")
