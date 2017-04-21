@@ -3,6 +3,7 @@
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from ..providers.gazebo_position_provider import GazeboPoseProvider
+from ..providers.april_pose_provider import AprilPoseProvider
 
 class Robot:
     """
@@ -18,18 +19,11 @@ class Robot:
         self.twist = Twist()
 
         # Suscribe to position of Neato robot
-        GazeboPoseProvider(rospy).subscribe(self._pose_listener) # For Gazebo
-        # rospy.Subscriber('pose_stamped', PoseStamped, self._pose_listener) # For real world
+        # GazeboPoseProvider(rospy).subscribe(self._pose_listener) # For Gazebo
+        AprilPoseProvider(rospy).subscribe(self._pose_listener) # For real world
 
         # Create publisher for current detected ball characteristics
         self.twist_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-
-
-    def set_position_listener(self, position_listener):
-        """
-        Sets a listener that will be called when a pose is received.
-        """
-        self.position_listener = position_listener
 
 
     def set_twist(self, forward_rate, turn_rate):
@@ -38,9 +32,12 @@ class Robot:
         self.twist_publisher.publish(self.twist)
 
 
+    def get_position(self):
+        return self.pose.position
+
+
     def _pose_listener(self, pose):
         """
         Callback function for organism position.
         """
         self.pose = pose
-        self.position_listener(pose.position.x, pose.position.y)

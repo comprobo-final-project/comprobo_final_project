@@ -7,10 +7,10 @@ Basic class that represents the chomosomes of our genetic algorithm.
 
 
 import random
-
+import numpy as np
 
 # The number of genes that each organism has
-NUM_GENES = 5
+NUM_GENES = 6
 
 
 class Chromosome:
@@ -18,7 +18,7 @@ class Chromosome:
     Holds the genes and fitness of an organism.
     """
 
-    def __init__(self, genes=None):
+    def __init__(self, genes=None, supervisor=None):
         """
         Initializes the gene and fitness of an organism.
         """
@@ -31,6 +31,7 @@ class Chromosome:
 
         # Define the chromosome's genes and fitness
         self.genes = genes
+        self.natural_selection = supervisor
         self.fitness = self.get_fitness()
 
 
@@ -54,8 +55,8 @@ class Chromosome:
         # Create the new crossovered genes and chromosome
         new_genes_1 = g1[:crossover_point] + g2[crossover_point:]
         new_genes_2 = g2[:crossover_point] + g1[crossover_point:]
-        new_chromosome_1 = Chromosome(new_genes_1)
-        new_chromosome_2 = Chromosome(new_genes_2)
+        new_chromosome_1 = Chromosome(new_genes_1, self.natural_selection)
+        new_chromosome_2 = Chromosome(new_genes_2, self.natural_selection)
 
         return new_chromosome_1, new_chromosome_2
 
@@ -82,8 +83,8 @@ class Chromosome:
                 gene *= random.uniform(0.8, 1.2)
             mutated_genes.append(round(gene, 3))
 
-        # Replace the chromosome's genes with the mutated genes
-        self.genes = mutated_genes
+        # Create new chromosome with genes from the mutated genes
+        return Chromosome(mutated_genes, self.natural_selection)
 
 
     def get_fitness(self):
@@ -91,8 +92,11 @@ class Chromosome:
         Calculate the fitness of a specified chromosome.
         """
 
-        # TODO: implement get_fitness function
-        pass
+        self.natural_selection.use_genes(self.genes)
+        xpos, ypos = self.natural_selection.run()
+        fitness = np.sqrt(xpos**2 + ypos**2)
+        self.natural_selection.reset()
+        return fitness
 
 
 if __name__ == '__main__':

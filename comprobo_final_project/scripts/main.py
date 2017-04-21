@@ -5,10 +5,13 @@ The main script of this project, runs a genetic algorithm to find the optimal pa
 to achieve a solution.
 """
 
-import rospy
-from models import robot
-from robot_controller import RobotController
+from models.robot import Robot
 from population import Population
+from supervisor import Supervisor
+
+from simulator.simulator import Simulator
+from simulator.robot import Robot
+from robot_controller import RobotController
 
 
 class Genetics(object):
@@ -18,33 +21,32 @@ class Genetics(object):
     """
 
     def __init__(self):
-        rospy.init_node('main')
-        self.population = Population(size=2048, crossover=0.8, elitism=0.1, mutation=0.3)
+        self.supervisor = Supervisor()
+        self.population = Population(size=200, crossover=0.8, elitism=0.1, mutation=0.3, supervisor=self.supervisor)
         self.maxGenerations = 16384
 
-        #ROS Subscribers?
 
-
-    def run():
-         def run(self):
+    def run(self):
         """
         main run function
         """
 
         print "running genetics"
-        r = rospy.Rate(10)
         generation = 0
-
-        while not rospy.is_shutdown() and generation < self.maxGenerations:
-    		print("Generation %d: %s" % (i, pop.population[0].gene))
-    		if pop.population[0].fitness < 0.1:
+        found = False
+        while generation < self.maxGenerations:
+            print"Generation %d: %s" % (generation, self.population.population[0].genes)
+            if self.population.population[0].fitness < 0.05:
+                print "Most fit gene:", self.population.population[0].genes
+                found = True
                 break
-    		else:
+            else:
                 self.population.evolve()
 
-        	r.sleep()
+            generation += 1
 
-        print("Maximum generations reached without success.")
+        if not found:
+            print "Maximum generations reached without success."
 
 
 if __name__ == '__main__':
