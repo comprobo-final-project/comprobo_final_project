@@ -14,6 +14,14 @@ class Robot:
         self.twist = Twist()
 
 
+    def set_twist(self, forward_rate, turn_rate):
+        self.twist.linear.x = forward_rate
+        self.twist.angular.z = turn_rate
+        self.step(0.1)
+
+    def get_position(self):
+        return self.pose.position.x, self.pose.position.y
+
     def step(self, step_size):
         twist_r = self.twist.linear.x
         twist_theta = self.twist.angular.z

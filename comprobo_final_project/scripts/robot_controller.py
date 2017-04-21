@@ -1,75 +1,33 @@
 #!usr/bin/env python
 
-
 """
 Node that subscribes to the current position of the Neato, the goal position,
 and calculates a Twist message via an equation whose coefficients are
 determined by the organism's genes. This calculated Twist is then published.
 """
 
-
 import math
-from geometry_msgs.msg import PoseStamped, Twist
-from providers.gazebo_pose_provider import GazeboPoseProvider
+import time
 
+from .models.robot import Robot
 
 class RobotController:
     """
-    Dictates robot's motion based on genes.
+    Dictates robot's motion based on genes. It is given a time to control
+    the robot, after which it returns the robot's last position for fitness
+    evaluation and then shutsdown.
     """
 
-    def __init__(self, genes=None):
+    def __init__(self, robot, genes=None):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
+
+        genes: list of coefficients used in the function to calculate the
+            robot's linear and angular velocities
         """
-
-        # Initialize ROS node
-        rospy.init_node('robot_controller')
-
-        # Suscribe to position of Neato robot
-        position_provider = GazeboPoseProvider(rospy)
-        position_provider.subscribe(position_callback)
-
-        # Create publisher for current detected ball characteristics
-        self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-
-        # Save the coefficients in the genes
+        self.robot = robot
         self.genes = genes
-
-
-    def position_callback(self, msg):
-        """
-        Callback function for organism position.
-        """
-        if self.genes is not None:
-            # Initialize linear and angular velocities to zero
-            cmd_vel = Twist()
-
-            # TODO: maybe do something besides hardcoding the goal
-            # Define robot's goal end position
-            goal_x = 0.0
-            goal_y = 0.0
-
-            # Get current robot position
-            curr_x = msg.pose.position.x
-            curr_y = msg.pose.position.y
-
-            # Calculate difference between robot position and goal position
-            diff_x = goal_x - curr_x
-            diff_y = goal_y - curr_y
-
-            # Calculate angle to goal and distance to goal
-            diff_w = math.atan2(diff_y, diff_x)
-            diff_r = math.sqrt(diff_x**2 + diff_y**2)
-
-            # Define linear and angular velocities based on genes
-            a1, b1, c1, a2, b2, c2 = self.genes
-            cmd_vel.linear.x = a1*diff_w + b1*diff_r + c1*diff_r**2
-            cmd_vel.angular.z = a2*diff_w + b2*diff_r + c2*diff_r**2
-
-            # Publish linear and angular velocities
-            self.pub.publish(cmd_vel)
 
 
     def set_genes(self, genes):
@@ -78,22 +36,46 @@ class RobotController:
         """
         self.genes = genes
 
-
-    def run(self):
+    def run(self, duration):
         """
         Main run function.
+        duration : float - In seconds
         """
+        end_time = time.time() + duration
 
-        r = rospy.Rate(10)
+        try:
+            while time.time() < end_time:
+                curr_x, curr_y = self.robot.get_position()
+                goal_x = 0.0
+                goal_y = 0.0
 
-        while not rospy.is_shutdown():
-            # Check for time-jumps, like when looping a bag file
-            try:
-                r.sleep()
-            except rospy.exceptions.ROSTimeMovedBackwardsException:
-                print "Time went backwards. Carry on."
+                # Calculate difference between robot position and goal position
+                diff_x = goal_x - curr_x
+                diff_y = goal_y - curr_y
 
+                # Calculate angle to goal and distance to goal
+                diff_w = math.atan2(diff_y, diff_x)
+                diff_r = math.sqrt(diff_x**2 + diff_y**2)
+
+                # Define linear and angular velocities based on genes
+                a1, b1, c1, a2, b2, c2 = self.genes
+                forward_rate = a1*diff_w + b1*diff_r + c1*diff_r**2
+                turn_rate = a2*diff_w + b2*diff_r + c2*diff_r**2
+
+                # Set linear and angular velocities
+                self.robot.set_twist(forward_rate, turn_rate)
+        except KeyboardInterrupt:
+            pass
+
+        
+        return self.robot.get_position()
 
 if __name__ == '__main__':
-    robot_controller = RobotController([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
-    robot_controller.run()
+
+    genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+    duration = 10
+    robot = Robot()
+    robot_controller = RobotController(robot, genes)
+
+    # Run
+    robot_controller.run(duration)

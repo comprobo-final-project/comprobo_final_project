@@ -7,7 +7,7 @@ Basic class that represents the chomosomes of our genetic algorithm.
 
 
 import random
-
+import numpy as np
 
 # The number of genes that each organism has
 NUM_GENES = 6
@@ -93,7 +93,9 @@ class Chromosome:
         """
 
         self.natural_selection.use_genes(self.genes)
-        fitness = self.natural_selection.run()
+        xpos, ypos = self.natural_selection.run()
+        fitness = np.sqrt(xpos**2 + ypos**2)
+        self.natural_selection.reset()
         return fitness
 
 
