@@ -18,7 +18,7 @@ class Chromosome:
     Holds the genes and fitness of an organism.
     """
 
-    def __init__(self, genes=None, supervisor):
+    def __init__(self, genes=None, supervisor=None):
         """
         Initializes the gene and fitness of an organism.
         """

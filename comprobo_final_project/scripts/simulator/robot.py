@@ -15,8 +15,16 @@ class Robot:
 
 
     def set_twist(self, forward_rate, turn_rate):
-        self.twist.linear.x = forward_rate
-        self.twist.angular.z = turn_rate
+        if forward_rate > .3:
+            self.twist.linear.x = .3
+        else:
+            self.twist.linear.x = forward_rate
+
+        if turn_rate > 3:
+            self.twist.angular.z = 3
+        else:
+            self.twist.angular.z = turn_rate
+
         self.step(0.1)
 
     def get_position(self):

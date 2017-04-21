@@ -5,7 +5,7 @@ The main script of this project, runs a genetic algorithm to find the optimal pa
 to achieve a solution.
 """
 
-from models import robot
+from models.robot import Robot
 from population import Population
 from supervisor import Supervisor
 
@@ -21,8 +21,8 @@ class Genetics(object):
     """
 
     def __init__(self):
-        self.supervisor = Supervisor
-        self.population = Population(size=2048, crossover=0.8, elitism=0.1, mutation=0.3, self.supervisor)
+        self.supervisor = Supervisor()
+        self.population = Population(size=200, crossover=0.8, elitism=0.1, mutation=0.3, supervisor=self.supervisor)
         self.maxGenerations = 16384
 
 
@@ -33,18 +33,20 @@ class Genetics(object):
 
         print "running genetics"
         generation = 0
-
+        found = False
         while generation < self.maxGenerations:
-    		print("Generation %d: %s" % (generation, pop.population[0].gene))
-    		if pop.population[0].fitness < 0.1:
-                print "Most fit gene:", pop.population[0].gene
+            print"Generation %d: %s" % (generation, self.population.population[0].genes)
+            if self.population.population[0].fitness < 0.05:
+                print "Most fit gene:", self.population.population[0].genes
+                found = True
                 break
-    		else:
+            else:
                 self.population.evolve()
 
             generation += 1
 
-        print("Maximum generations reached without success.")
+        if not found:
+            print "Maximum generations reached without success."
 
 
 if __name__ == '__main__':

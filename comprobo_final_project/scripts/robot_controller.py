@@ -53,9 +53,12 @@ class RobotController:
                 diff_x = goal_x - curr_x
                 diff_y = goal_y - curr_y
 
-                # Calculate angle to goal and distance to goal
-                diff_w = math.atan2(diff_y, diff_x)
-                diff_r = math.sqrt(diff_x**2 + diff_y**2)
+                try:
+                    # Calculate angle to goal and distance to goal
+                    diff_w = math.atan2(diff_y, diff_x)
+                    diff_r = math.sqrt(diff_x**2 + diff_y**2)
+                except OverflowError:
+                    print diff_x, diff_y
 
                 # Define linear and angular velocities based on genes
                 a1, b1, c1, a2, b2, c2 = self.genes
@@ -67,7 +70,7 @@ class RobotController:
         except KeyboardInterrupt:
             pass
 
-        
+
         return self.robot.get_position()
 
 if __name__ == '__main__':
