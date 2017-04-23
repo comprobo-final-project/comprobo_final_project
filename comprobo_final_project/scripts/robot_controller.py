@@ -1,4 +1,4 @@
-#!usr/bin/env python
+#!/usr/bin/env python
 
 """
 Node that subscribes to the current position of the Neato, the goal position,
@@ -41,10 +41,9 @@ class RobotController:
         Main run function.
         duration : float - In seconds
         """
-        end_time = time.time() + duration
 
         try:
-            while time.time() < end_time:
+            for i in range(duration*self.robot.resolution):
                 curr_x, curr_y = self.robot.get_position()
                 goal_x = 0.0
                 goal_y = 0.0
@@ -67,6 +66,8 @@ class RobotController:
 
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
+
+                # time.sleep(1.0/self.robot.resolution)
         except KeyboardInterrupt:
             pass
 
@@ -74,9 +75,10 @@ class RobotController:
         return self.robot.get_position()
 
 if __name__ == '__main__':
+    # For testing purposes on the real robot
 
-    genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
-    duration = 10
+    genes = [88.86825776222456, 1.3937945635828541, 0.12671255990886446, 2.4097176091286356, 0.08265699241254507, 8.814676364324129]
+    duration = 30
     robot = Robot()
     robot_controller = RobotController(robot, genes)
 

@@ -55,7 +55,7 @@ class Simulator:
         self.quiver_manager.set_UVC(self.robot.pose.velocity.x, self.robot.pose.velocity.y)
         self.quiver_manager.set_offsets((self.robot.pose.position.x, self.robot.pose.position.y))
         plt.draw()
-
+        plt.pause(.001)
 
     def run(self):
         if (self.enable_render):

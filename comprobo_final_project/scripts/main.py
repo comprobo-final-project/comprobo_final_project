@@ -22,7 +22,7 @@ class Genetics(object):
 
     def __init__(self):
         self.supervisor = Supervisor()
-        self.population = Population(size=200, crossover=0.8, elitism=0.1, mutation=0.3, supervisor=self.supervisor)
+        self.population = Population(size=100, crossover=0.8, elitism=0.1, mutation=0.5, supervisor=self.supervisor)
         self.maxGenerations = 16384
 
 
@@ -35,9 +35,9 @@ class Genetics(object):
         generation = 0
         found = False
         while generation < self.maxGenerations:
-            print"Generation %d: %s" % (generation, self.population.population[0].genes)
+            print"Generation %d: %s" % (generation, self.population.population[0].genes), self.population.population[0].fitness
             if self.population.population[0].fitness < 0.05:
-                print "Most fit gene:", self.population.population[0].genes
+                print "Most fit gene:", self.population.population[0].genes, self.population.population[0].fitness
                 found = True
                 break
             else:
