@@ -1,15 +1,18 @@
 #!usr/bin/env python
 
+
 """
 Node that subscribes to the current position of the Neato, the goal position,
 and calculates a Twist message via an equation whose coefficients are
 determined by the organism's genes. This calculated Twist is then published.
 """
 
+
 import math
 import time
 
 from .models.robot import Robot
+
 
 class RobotController:
     """
@@ -26,6 +29,7 @@ class RobotController:
         genes: list of coefficients used in the function to calculate the
             robot's linear and angular velocities
         """
+
         self.robot = robot
         self.genes = genes
 
@@ -34,13 +38,16 @@ class RobotController:
         """
         sets the genes for this iteration of the robot
         """
+
         self.genes = genes
+
 
     def run(self, duration):
         """
         Main run function.
         duration : float - In seconds
         """
+
         end_time = time.time() + duration
 
         try:
@@ -72,6 +79,7 @@ class RobotController:
 
 
         return self.robot.get_position()
+
 
 if __name__ == '__main__':
 
