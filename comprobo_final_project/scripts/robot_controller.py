@@ -45,7 +45,7 @@ class RobotController:
 
         try:
             while time.time() < end_time:
-                curr_x, curr_y = self.robot.get_position()
+                curr_x, curr_y, curr_w = self.robot.get_position()
                 goal_x = 0.0
                 goal_y = 0.0
 
@@ -55,7 +55,7 @@ class RobotController:
 
                 try:
                     # Calculate angle to goal and distance to goal
-                    diff_w = math.atan2(diff_y, diff_x)
+                    diff_w = math.atan2(diff_y, diff_x) - curr_w
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
                 except OverflowError:
                     print diff_x, diff_y
