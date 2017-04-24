@@ -1,11 +1,13 @@
 #!usr/bin/env python
 
+
 """
 CompRobo Spring 2017
 
 generation script for our simplified task, one Neato moving to a goal
 
 """
+
 
 from chromosome import Chromosome
 from random import choice, random, randint
@@ -16,7 +18,9 @@ class Population:
     A class representing a generation for a genetic algorithm simulation.
     """
 
-    def __init__(self, size=1024, crossover=0.8, elitism=0.1, mutation=0.05, supervisor=None):
+    def __init__(self, size=1024, crossover=0.8, elitism=0.1, mutation=0.05,
+            supervisor=None):
+
         self.elitism = elitism
         self.mutation = mutation
         self.crossover = crossover
@@ -27,6 +31,7 @@ class Population:
 
         # population class holds a generation of the population, which evolves over time
         self.generation = list(sorted(pop, key=lambda x: x.fitness))
+
 
 
     def tournament_selection(self):

@@ -1,9 +1,11 @@
 #!usr/bin/env python
 
+
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from ..providers.gazebo_position_provider import GazeboPoseProvider
 from ..providers.april_pose_provider import AprilPoseProvider
+
 
 class Robot:
     """
@@ -12,6 +14,7 @@ class Robot:
     """
 
     def __init__(self, real=False):
+=
         # TODO: This needs some work, b/c we can't start multiple robot nodes here.
         rospy.init_node('robot_controller')
 
@@ -39,6 +42,7 @@ class Robot:
             self.twist.angular.z = 3
         else:
             self.twist.angular.z = turn_rate
+
         self.twist_publisher.publish(self.twist)
 
 
@@ -46,8 +50,10 @@ class Robot:
         return self.pose_stamped.pose.position.x, self.pose_stamped.pose.position.y
 
 
+
     def _pose_listener(self, pose):
         """
         Callback function for organism position.
         """
         self.pose_stamped.pose = pose
+
