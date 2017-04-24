@@ -28,7 +28,7 @@ class Robot:
         self.step(0.1)
 
     def get_position(self):
-        return self.pose.position.x, self.pose.position.y
+        return self.pose.position.x, self.pose.position.y, self.pose.orientation.z
 
     def step(self, step_size):
         twist_r = self.twist.linear.x
