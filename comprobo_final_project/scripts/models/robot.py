@@ -19,11 +19,9 @@ class Robot:
         self.twist = Twist()
         self.resolution = 100
 
-        # Suscribe to position of Neato robot
-        if real is False:
-            GazeboPoseProvider(rospy).subscribe(self._pose_listener) # For Gazebo
-        else:
-            AprilPoseProvider(rospy).subscribe(self._pose_listener) # For real world
+        # Suscribe to position of Neato robot, can switch between real world vs gazebo
+        self.pose_provider = AprilPoseProvider(rospy) if real else GazeboPoseProvider(rospy)
+        self.pose_provider.subscribe(self._pose_listener)
 
         # Create publisher for current detected ball characteristics
         self.twist_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
