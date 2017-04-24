@@ -35,9 +35,9 @@ class Genetics(object):
         generation = 0
         found = False
         while generation < self.maxGenerations:
-            print"Generation %d: %s" % (generation, self.population.population[0].genes), self.population.population[0].fitness
+            print"Generation %d: %s" % (generation, self.population.generation[0].genes), self.population.generation[0].fitness
             if self.population.population[0].fitness < 0.05:
-                print "Most fit gene:", self.population.population[0].genes, self.population.population[0].fitness
+                print "Most fit gene:", self.population.generation[0].genes, self.population.generation[0].fitness
                 found = True
                 break
             else:

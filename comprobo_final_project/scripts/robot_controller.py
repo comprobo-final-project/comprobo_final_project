@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!usr/bin/env python
+
 
 """
 Node that subscribes to the current position of the Neato, the goal position,
@@ -6,10 +7,12 @@ and calculates a Twist message via an equation whose coefficients are
 determined by the organism's genes. This calculated Twist is then published.
 """
 
+
 import math
 import time
 
 from .models.robot import Robot
+
 
 class RobotController:
     """
@@ -26,6 +29,7 @@ class RobotController:
         genes: list of coefficients used in the function to calculate the
             robot's linear and angular velocities
         """
+
         self.robot = robot
         self.genes = genes
 
@@ -34,7 +38,9 @@ class RobotController:
         """
         sets the genes for this iteration of the robot
         """
+
         self.genes = genes
+
 
     def run(self, duration):
         """
@@ -42,9 +48,11 @@ class RobotController:
         duration : float - In seconds
         """
 
+        end_time = time.time() + duration
+
         try:
-            for i in range(duration*self.robot.resolution):
-                curr_x, curr_y = self.robot.get_position()
+            while time.time() < end_time:
+                curr_x, curr_y, curr_w = self.robot.get_position()
                 goal_x = 0.0
                 goal_y = 0.0
 
@@ -54,7 +62,7 @@ class RobotController:
 
                 try:
                     # Calculate angle to goal and distance to goal
-                    diff_w = math.atan2(diff_y, diff_x)
+                    diff_w = math.atan2(diff_y, diff_x) - curr_w
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
                 except OverflowError:
                     print diff_x, diff_y
@@ -66,20 +74,18 @@ class RobotController:
 
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
-
-                # time.sleep(1.0/self.robot.resolution)
         except KeyboardInterrupt:
             pass
 
 
         return self.robot.get_position()
 
-if __name__ == '__main__':
-    # For testing purposes on the real robot
 
-    genes = [88.86825776222456, 1.3937945635828541, 0.12671255990886446, 2.4097176091286356, 0.08265699241254507, 8.814676364324129]
-    duration = 30
-    robot = Robot()
+if __name__ == '__main__':
+
+    genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+    duration = 10
+    robot = Robot(real=False)
     robot_controller = RobotController(robot, genes)
 
     # Run

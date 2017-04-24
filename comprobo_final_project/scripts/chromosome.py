@@ -83,6 +83,7 @@ class Chromosome:
         # Create new chromosome with genes from the mutated genes
         return Chromosome(mutated_genes, self.natural_selection)
 
+
     def get_fitness(self):
         """
         Calculate the fitness of a specified chromosome.
