@@ -3,6 +3,7 @@ import math
 from pose import Pose
 from twist import Twist
 
+
 class Robot:
 
     def __init__(self):
@@ -17,6 +18,7 @@ class Robot:
 
 
     def set_twist(self, forward_rate, turn_rate):
+
         if forward_rate > .3:
             self.twist.linear.x = .3
         else:
@@ -29,10 +31,14 @@ class Robot:
 
         self.step(1.0/self.resolution)
 
+
     def get_position(self):
-        return self.pose.position.x, self.pose.position.y
+
+        return self.pose.position.x, self.pose.position.y, self.pose.orientation.z
+
 
     def step(self, step_size):
+
         twist_r = self.twist.linear.x
         twist_theta = self.twist.angular.z
         original_velocity_theta = math.atan2(self.pose.velocity.y, self.pose.velocity.x)
