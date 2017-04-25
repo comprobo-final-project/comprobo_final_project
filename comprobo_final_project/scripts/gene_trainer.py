@@ -14,7 +14,7 @@ from simulator.robot import Robot
 from robot_controller import RobotController
 
 
-class Genetics(object):
+class GeneTrainer(object):
     """
     main class that holds the entirety of the genetic algorithm, which will
     optimize parameters towards a goal
@@ -52,5 +52,5 @@ class Genetics(object):
 
 
 if __name__ == '__main__':
-    node = Genetics()
-    node.run()
+    trainer = GeneTrainer()
+    trainer.run()
