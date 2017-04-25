@@ -5,6 +5,9 @@ The main script of this project, runs a genetic algorithm to find the optimal
 parameters to achieve a solution.
 """
 
+import time
+import csv
+
 from population import Population
 from supervisor import Supervisor
 from robot_controller import RobotController
@@ -19,30 +22,38 @@ class GeneTrainer(object):
 
     def __init__(self):
         self.supervisor = Supervisor()
-        self.population = Population(size=100, crossover=0.8, elitism=0.1, mutation=0.5, supervisor=self.supervisor)
+        self.population = Population(size=10, crossover=0.8, elitism=0.1, mutation=0.5, supervisor=self.supervisor)
 
         self.maxGenerations = 16384
 
 
-    def run(self):
-        """
-        main run function
-        """
+    def train(self):
 
-        print "running genetics"
-        generation = 0
-        found = False
-        while generation < self.maxGenerations:
-            print "Generation %d: %s" % (generation, self.population.generations[0].genes), self.population.generations[0].fitness
+        print "Starting the training session."
 
-            if self.population.generations[0].fitness < 0.05:
-                print "Most fit gene:", self.population.generations[0].genes, self.population.generations[0].fitness
-                found = True
-                break
-            else:
-                self.population.evolve()
+        with open('logs/log_' + str(int(time.time())) + '.csv','wb') as file_obj:
+            writer = csv.writer(file_obj, delimiter = ',')
+            generation = 0
+            found = False
+            while generation < self.maxGenerations:
+                print "Generation %d: %s" % (generation, self.population.generations[0].genes), self.population.generations[0].fitness
 
-            generation += 1
+                # Save to the log
+                writer.writerow([
+                    generation,
+                    self.population.generations[0].genes,
+                    self.population.generations[0].fitness
+                ])
+                file_obj.flush()
+
+                if self.population.generations[0].fitness < 0.05:
+                    print "Most fit gene:", self.population.generations[0].genes, self.population.generations[0].fitness
+                    found = True
+                    break
+                else:
+                    self.population.evolve()
+
+                generation += 1
 
         if not found:
             print "Maximum generations reached without success."
@@ -50,4 +61,4 @@ class GeneTrainer(object):
 
 if __name__ == '__main__':
     trainer = GeneTrainer()
-    trainer.run()
+    trainer.train()

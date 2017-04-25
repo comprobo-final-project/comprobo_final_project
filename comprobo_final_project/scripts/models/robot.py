@@ -14,7 +14,7 @@ class Robot:
     """
 
     def __init__(self, real=False):
-=
+
         # TODO: This needs some work, b/c we can't start multiple robot nodes here.
         rospy.init_node('robot_controller')
 
@@ -54,4 +54,3 @@ class Robot:
         Callback function for organism position.
         """
         self.pose_stamped.pose = pose
-

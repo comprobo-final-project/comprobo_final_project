@@ -34,7 +34,7 @@ class Robot:
 
     def get_position(self):
 
-        return self.pose.position.x, self.pose.position.y, self.pose.orientation.z
+        return self.pose.position.x, self.pose.position.y, self.pose.position.x
 
 
     def step(self, step_size):
