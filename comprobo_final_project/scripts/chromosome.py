@@ -27,7 +27,7 @@ class Chromosome:
         if genes == None:
             genes = []
             for x in range(NUM_GENES):
-                genes.append(round(random.uniform(0, 5), 3))
+                genes.append(round(random.uniform(-5, 5), 3))
 
         # Define the chromosome's genes and fitness
         self.genes = genes
@@ -97,6 +97,7 @@ class Chromosome:
 
 
 if __name__ == '__main__':
+
     # Test basic functionality
 
     c1 = Chromosome()

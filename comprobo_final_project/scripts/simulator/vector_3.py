@@ -8,6 +8,7 @@ class Vector3:
 
 
     def __rmul__(self, other):
+        """ Overwrite right multiplication. """
 
         result = Vector3()
         result.x = other * self.x
@@ -17,6 +18,7 @@ class Vector3:
 
 
     def __radd__(self, other):
+        """ Overwrite right addition. """
 
         result = Vector3()
         result.x = other.x + self.x
