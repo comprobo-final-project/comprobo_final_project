@@ -65,10 +65,14 @@ class RobotController:
 
                 try:
                     # Calculate angle to goal and distance to goal
-                    diff_w = math.atan2(diff_y, diff_x) - curr_w
+                    goal_w = math.atan2(diff_y, diff_x)
+                    diff_w = goal_w - curr_w
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
-                    print diff_w
+                    print 'Goal w: ', goal_w
+                    print 'Curr w: ', curr_w
+                    print 'Diff w: ', diff_w, '\n'
                 except OverflowError:
+                    print 'Overflow Error'
                     print diff_x, diff_y
 
                 # Define linear and angular velocities based on genes
@@ -80,7 +84,7 @@ class RobotController:
                 self.robot.set_twist(forward_rate, turn_rate)
 
                 self.simulator.update_graph()
-                time.sleep(.001)
+                time.sleep(.1)
         except KeyboardInterrupt:
             pass
 

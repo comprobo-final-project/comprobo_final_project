@@ -45,7 +45,7 @@ class Robot:
         y_pos *= random.choice([1.0, -1.0]) # randomly make y_pos negative
 
         # Randomly generate a heading
-        w = random.uniform(0, 2*math.pi)
+        w = random.uniform(-math.pi, math.pi) 
 
         self.pose.position.x = x_pos
         self.pose.position.y = y_pos
@@ -66,10 +66,13 @@ class Robot:
                 self.pose.velocity.x)
 
         # Update velocity
-        self.pose.velocity.x = twist_r * math.cos(original_velocity_theta +
-                step_size * twist_theta)
-        self.pose.velocity.y = twist_r * math.sin(original_velocity_theta +
-                step_size * twist_theta)
+        # self.pose.velocity.x = twist_r * math.cos(original_velocity_theta +
+                # step_size * twist_theta)
+        # self.pose.velocity.y = twist_r * math.sin(original_velocity_theta +
+                # step_size * twist_theta)
+        self.pose.velocity.x = twist_r * math.cos(self.pose.orientation.z)
+        self.pose.velocity.y = twist_r * math.sin(self.pose.orientation.z)
+                
 
         # Update pose
         self.pose.position += step_size * self.pose.velocity
