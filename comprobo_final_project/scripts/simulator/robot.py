@@ -1,4 +1,5 @@
 import math
+import random
 from pose import Pose
 from twist import Twist
 
@@ -29,6 +30,26 @@ class Robot:
             self.twist.angular.z = turn_rate
 
         self.step(1.0/self.resolution)
+
+
+    def set_random_pose(self):
+        """ Set the robot randomly on the circumference of a circle that
+        is centered on the origin and of radius r. """
+
+        # Distance robot should be away from origin
+        r = 5.0
+
+        # Randomly generate x and y positions
+        x_pos = random.uniform(-r, r) # choose random x_pos
+        y_pos = math.sqrt(r**2 - x_pos**2) # define y_pos to meet r restriction
+        y_pos *= random.choice([1.0, -1.0]) # randomly make y_pos negative
+
+        # Randomly generate a heading
+        w = random.uniform(0, 2*math.pi)
+
+        self.pose.position.x = x_pos
+        self.pose.position.y = y_pos
+        self.pose.orientation.z = w
 
 
     def get_position(self):

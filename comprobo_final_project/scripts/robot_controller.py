@@ -67,6 +67,7 @@ class RobotController:
                     # Calculate angle to goal and distance to goal
                     diff_w = math.atan2(diff_y, diff_x) - curr_w
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
+                    print diff_w
                 except OverflowError:
                     print diff_x, diff_y
 
@@ -92,8 +93,7 @@ if __name__ == '__main__':
     genes = [0.0, 1.0, 1.0, 0.0]
     duration = 15
     robot = Robot()
-    robot.pose.position.x = 3.0
-    robot.pose.position.y = 5.0
+    robot.set_random_pose() # give the robot a random position and orientation
     simulator = Simulator(robot, True)
     simulator.render()
     robot_controller = RobotController(robot, genes, simulator)
