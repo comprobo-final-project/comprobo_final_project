@@ -14,16 +14,19 @@ class Robot:
     """
 
     def __init__(self, real=False):
-=
-        # TODO: This needs some work, b/c we can't start multiple robot nodes here.
+
+        # TODO: This needs some work, b/c we can't start multiple robot nodes
+        #       here.
         rospy.init_node('robot_controller')
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
         self.resolution = 100
 
-        # Suscribe to position of Neato robot, can switch between real world vs gazebo
-        self.pose_provider = AprilPoseProvider(rospy) if real else GazeboPoseProvider(rospy)
+        # Suscribe to position of Neato robot, can switch between real world
+        # vs gazebo
+        self.pose_provider = AprilPoseProvider(rospy) if real \
+                else GazeboPoseProvider(rospy)
         self.pose_provider.subscribe(self._pose_listener)
 
         # Create publisher for current detected ball characteristics
@@ -31,6 +34,7 @@ class Robot:
 
 
     def set_twist(self, forward_rate, turn_rate):
+
         if forward_rate > .3:
             self.twist.linear.x = .3
         else:
@@ -45,7 +49,9 @@ class Robot:
 
 
     def get_position(self):
-        return self.pose_stamped.pose.position.x, self.pose_stamped.pose.position.y
+
+        return self.pose_stamped.pose.position.x, \
+                self.pose_stamped.pose.position.y
 
 
 
@@ -53,5 +59,6 @@ class Robot:
         """
         Callback function for organism position.
         """
+
         self.pose_stamped.pose = pose
 

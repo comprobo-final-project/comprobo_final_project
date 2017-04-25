@@ -11,7 +11,9 @@ determined by the organism's genes. This calculated Twist is then published.
 import math
 import time
 
-from .models.robot import Robot
+# from .models.robot import Robot
+from .simulator.robot import Robot
+from .simulator.simulator import Simulator
 
 
 class RobotController:
@@ -21,7 +23,7 @@ class RobotController:
     evaluation and then shutsdown.
     """
 
-    def __init__(self, robot, genes=None):
+    def __init__(self, robot, genes=None, simulator=None):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -32,6 +34,7 @@ class RobotController:
 
         self.robot = robot
         self.genes = genes
+        self.simulator = simulator
 
 
     def set_genes(self, genes):
@@ -68,12 +71,15 @@ class RobotController:
                     print diff_x, diff_y
 
                 # Define linear and angular velocities based on genes
-                a1, b1, c1, a2, b2, c2 = self.genes
-                forward_rate = a1*diff_w + b1*diff_r + c1*diff_r**2
-                turn_rate = a2*diff_w + b2*diff_r + c2*diff_r**2
+                a1, b1, a2, b2 = self.genes
+                forward_rate = a1*diff_w + b1*diff_r
+                turn_rate = a2*diff_w + b2*diff_r
 
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
+
+                self.simulator.update_graph()
+                time.sleep(.001)
         except KeyboardInterrupt:
             pass
 
@@ -83,10 +89,14 @@ class RobotController:
 
 if __name__ == '__main__':
 
-    genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
-    duration = 10
-    robot = Robot(real=False)
-    robot_controller = RobotController(robot, genes)
+    genes = [0.0, 1.0, 1.0, 0.0]
+    duration = 15
+    robot = Robot()
+    robot.pose.position.x = 3.0
+    robot.pose.position.y = 5.0
+    simulator = Simulator(robot, True)
+    simulator.render()
+    robot_controller = RobotController(robot, genes, simulator)
 
     # Run
     robot_controller.run(duration)
