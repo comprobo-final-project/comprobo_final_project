@@ -38,20 +38,20 @@ class GeneTrainer(object):
             found = False
             while generation < self.max_generations:
                 print"Generation %d: %s" % (generation, \
-                        self.population.generation[0].genes), \
-                        self.population.generation[0].fitness
+                        self.population.generations[0].genes), \
+                        self.population.generations[0].fitness
 
                 # Save to the log
                 writer.writerow([
                     generation,
-                    self.population.generations[0].genes,
+                    self.population.generations[0].genes, \
                     self.population.generations[0].fitness
                 ])
                 file_obj.flush()
 
-                if self.population.population[0].fitness < 0.05:
-                    print "Most fit gene:", self.population.generation[0].genes, \
-                            self.population.generation[0].fitness
+                if self.population.generations[0].fitness > .95:
+                    print "Most fit gene:", self.population.generations[0].genes, \
+                            self.population.generations[0].fitness
                     found = True
                     break
                 else:

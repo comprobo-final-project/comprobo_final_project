@@ -23,7 +23,7 @@ class RobotController:
     evaluation and then shutsdown.
     """
 
-    def __init__(self, robot, genes=None, simulator=None):
+    def __init__(self, robot1, robot2, robot3, genes=None, simulator=None):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -32,7 +32,9 @@ class RobotController:
             robot's linear and angular velocities
         """
 
-        self.robot = robot
+        self.robot1 = robot1
+        self.robot2 = robot2
+        self.robot3 = robot3
         self.genes = genes
         self.simulator = simulator
 
@@ -55,9 +57,11 @@ class RobotController:
 
         try:
             while time.time() < end_time:
-                curr_x, curr_y, curr_w = self.robot.get_position()
-                goal_x = 0.0
-                goal_y = 0.0
+                curr_x1, curr_y1, curr_w1 = self.robot1.get_position()
+                curr_x2, curr_y2, curr_w2 = self.robot2.get_position()
+                curr_x3, curr_y3, curr_w3 = self.robot3.get_position()
+
+                #TODO vvv figure this math out  vvv
 
                 # Calculate difference between robot position and goal position
                 diff_x = goal_x - curr_x
@@ -94,9 +98,10 @@ if __name__ == '__main__':
     robot = Robot()
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
-    simulator = Simulator(robot, True)
-    simulator.render()
-    robot_controller = RobotController(robot, genes, simulator)
+    # simulator = Simulator(robot, True)
+    # simulator.render()
+    # robot_controller = RobotController(robot, genes, simulator)
+    robot_controller = RobotController(robot, genes)
 
     # Run
     robot_controller.run(duration)

@@ -20,11 +20,20 @@ class Supervisor(object):
 
     def __init__(self):
 
-        self.robot = Robot()
-        self.robot.pose.position.x = np.random.randint(1,10)
-        self.robot.pose.position.y = np.random.randint(1,10)
-        self.sim = Simulator(self.robot)
-        self.robot_controller = RobotController(self.robot)
+        self.robot1 = Robot()
+        self.robot1.pose.position.x = np.random.randint(1,10)
+        self.robot1.pose.position.y = np.random.randint(1,10)
+
+        self.robot2 = Robot()
+        self.robot2.pose.position.x = np.random.randint(1,10)
+        self.robot2.pose.position.y = np.random.randint(1,10)
+
+        self.robot3 = Robot()
+        self.robot3.pose.position.x = np.random.randint(1,10)
+        self.robot3.pose.position.y = np.random.randint(1,10)
+
+        self.sim = Simulator(self.robot1, self.robot2, self.robot3)
+        self.robot_controller = RobotController(self.robot1, self.robot2, self.robot3)
 
 
     def use_genes(self, genes):
@@ -40,20 +49,30 @@ class Supervisor(object):
         resets the simulation for the next usage
         """
 
-        self.robot.pose.position.x = np.random.randint(1,10)
-        self.robot.pose.position.y = np.random.randint(1,10)
-        self.robot.pose.velocity.x = 0.0
-        self.robot.pose.velocity.y = 0.0
-        self.robot.pose.orientation.z = np.random.randint(1,10)
+        self.reset_robot(self.robot1)
+        self.reset_robot(self.robot2)
+        self.reset_robot(self.robot3)
+
+
+    def reset_robot(self, robot):
+        """
+        resets each robot's coordinates for next iteration
+        """
+
+        robot.pose.position.x = np.random.randint(1,10)
+        robot.pose.position.y = np.random.randint(1,10)
+        robot.pose.velocity.x = 0.0
+        robot.pose.velocity.y = 0.0
+        robot.pose.orientation.z = np.random.randint(1,10)
 
 
     def run(self):
         """
         main run function
         """
-        xpos, ypos, _ = self.robot_controller.run(1)
+        xpos1, ypos1, xpos2, ypos2, xpos3, ypos3 = self.robot_controller.run(1)
 
-        return xpos, ypos
+        return xpos1, ypos1, xpos2, ypos2, xpos3, ypos3
 
 
 if __name__ == '__main__':

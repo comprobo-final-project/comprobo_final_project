@@ -10,7 +10,7 @@ import random
 import numpy as np
 
 # The number of genes that each organism has
-NUM_GENES = 6
+NUM_GENES = 12
 
 
 class Chromosome:
@@ -22,6 +22,8 @@ class Chromosome:
         """
         Initializes the gene and fitness of an organism.
         """
+
+        #TODO vvv finish all of this down vvv
 
         # Generate a random set of genes if genes are not already defined
         if genes == None:

@@ -14,11 +14,13 @@ class Simulator:
     STEP_SIZE = 0.1
     SLEEP_DURATION_S = 0.01
 
-    def __init__(self, robot, enable_render = False):
+    def __init__(self, robot1, robot2, robot3, enable_render = False):
         """
         enable_render : bool - Determines whether visualizations show up
         """
-        self.robot = robot
+        self.robot1 = robot1
+        self.robot2 = robot2
+        self.robot3 = robot3
         self.enable_render = enable_render
         self.quiver_manager = None # Used for visualizations
 
@@ -34,11 +36,31 @@ class Simulator:
         axes.set_ylim([-10, 10])
 
         # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.quiver
-        self.quiver_manager = axes.quiver(
-            self.robot.pose.position.x,
-            self.robot.pose.position.y,
-            self.robot.pose.velocity.x,
-            self.robot.pose.velocity.y,
+        self.quiver_manager1 = axes.quiver(
+            self.robot1.pose.position.x,
+            self.robot1.pose.position.y,
+            self.robot1.pose.velocity.x,
+            self.robot1.pose.velocity.y,
+            units = 'xy',
+            angles = 'xy',
+            scale_units = 'xy',
+            scale = 1)
+
+        self.quiver_manager2 = axes.quiver(
+            self.robot2.pose.position.x,
+            self.robot2.pose.position.y,
+            self.robot2.pose.velocity.x,
+            self.robot2.pose.velocity.y,
+            units = 'xy',
+            angles = 'xy',
+            scale_units = 'xy',
+            scale = 1)
+
+        self.quiver_manager3 = axes.quiver(
+            self.robot3.pose.position.x,
+            self.robot3.pose.position.y,
+            self.robot3.pose.velocity.x,
+            self.robot3.pose.velocity.y,
             units = 'xy',
             angles = 'xy',
             scale_units = 'xy',
@@ -52,10 +74,20 @@ class Simulator:
 
 
     def update_graph(self):
-        self.quiver_manager.set_UVC(self.robot.pose.velocity.x,
-                self.robot.pose.velocity.y)
-        self.quiver_manager.set_offsets((self.robot.pose.position.x,
-                self.robot.pose.position.y))
+        self.quiver_manager1.set_UVC(self.robot1.pose.velocity.x,
+                self.robot1.pose.velocity.y)
+        self.quiver_manager1.set_offsets((self.robot1.pose.position.x,
+                self.robot1.pose.position.y))
+
+        self.quiver_manager2.set_UVC(self.robot2.pose.velocity.x,
+                self.robot2.pose.velocity.y)
+        self.quiver_manager.set_offsets((self.robot2.pose.position.x,
+                self.robot2.pose.position.y))
+
+        self.quiver_manager3.set_UVC(self.robot3.pose.velocity.x,
+                self.robot3.pose.velocity.y)
+        self.quiver_manager.set_offsets((self.robot3.pose.position.x,
+                self.robot3.pose.position.y))
         plt.draw()
         plt.pause(.001)
 
@@ -72,11 +104,11 @@ class Simulator:
 
 
 if __name__ == "__main__":
-    robot = Robot()
-    robot.pose.position.x = 0
-    robot.pose.position.y = 0
-    robot.twist.linear.x = 2
-    robot.twist.angular.z = 1
-
-    simulator = Simulator(robot = robot, enable_render = True)
-    simulator.run()
+    # robot = Robot()
+    # robot.pose.position.x = 0
+    # robot.pose.position.y = 0
+    # robot.twist.linear.x = 2
+    # robot.twist.angular.z = 1
+    #
+    # simulator = Simulator(robot = robot, enable_render = True)
+    # simulator.run()

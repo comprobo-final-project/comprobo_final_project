@@ -24,7 +24,7 @@ class Population:
         self.elitism = elitism
         self.mutation = mutation
         self.crossover = crossover
-        self.tournament_size = int(size * 0.005)
+        self.tournament_size = 3
 
         pop = []
         for i in range(size): pop.append(Chromosome(genes=None, supervisor=supervisor))
