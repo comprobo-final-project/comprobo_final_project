@@ -24,7 +24,7 @@ class GeneTrainer(object):
         self.supervisor = Supervisor()
         self.population = Population(size=10, crossover=0.8, elitism=0.1, mutation=0.5, supervisor=self.supervisor)
 
-        self.maxGenerations = 16384
+        self.max_generations = 16384
 
 
     def train(self):
@@ -35,7 +35,7 @@ class GeneTrainer(object):
             writer = csv.writer(file_obj, delimiter = ',')
             generation = 0
             found = False
-            while generation < self.maxGenerations:
+            while generation < self.max_generations:
                 print "Generation %d: %s" % (generation, self.population.generations[0].genes), self.population.generations[0].fitness
 
                 # Save to the log
