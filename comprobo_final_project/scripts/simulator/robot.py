@@ -18,15 +18,8 @@ class Robot:
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if forward_rate > .3:
-            self.twist.linear.x = .3
-        else:
-            self.twist.linear.x = forward_rate
-
-        if turn_rate > 3:
-            self.twist.angular.z = 3
-        else:
-            self.twist.angular.z = turn_rate
+        self.twist.linear.x = .3 if forward_rate > .3 else forward_rate
+        self.twist.angular.z = 3 if turn_rate > 3 else turn_rate
 
         self.step(1.0/self.resolution)
 

@@ -10,7 +10,7 @@ to each calculate their own fitness using the simulation components in this clas
 from simulator.simulator import Simulator
 from simulator.robot import Robot
 from robot_controller import RobotController
-
+import numpy as np
 
 class Supervisor(object):
     """
@@ -21,8 +21,8 @@ class Supervisor(object):
     def __init__(self):
 
         self.robot = Robot()
-        self.robot.pose.position.x = 3.0
-        self.robot.pose.position.y = 5.0
+        self.robot.pose.position.x = np.random.randint(1,10)
+        self.robot.pose.position.y = np.random.randint(1,10)
         self.sim = Simulator(self.robot)
         self.robo_control = RobotController(self.robot)
 
@@ -40,10 +40,11 @@ class Supervisor(object):
         resets the simulation for the next usage
         """
 
-        self.robot.pose.position.x = 3.0
-        self.robot.pose.position.y = 5.0
+        self.robot.pose.position.x = np.random.randint(1,10)
+        self.robot.pose.position.y = np.random.randint(1,10)
         self.robot.pose.velocity.x = 0.0
         self.robot.pose.velocity.y = 0.0
+        self.robot.pose.orientation.z = np.random.randint(1,10)
 
 
     def run(self):

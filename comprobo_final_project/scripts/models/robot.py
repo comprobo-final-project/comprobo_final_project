@@ -1,7 +1,6 @@
 #!usr/bin/env python
 
 
-import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from ..providers.gazebo_position_provider import GazeboPoseProvider
 from ..providers.april_pose_provider import AprilPoseProvider
@@ -13,11 +12,7 @@ class Robot:
     set_twist(twist : Twist) : Void - Sets the Twist of the robot
     """
 
-    def __init__(self, real=False):
-
-        # TODO: This needs some work, b/c we can't start multiple robot nodes
-        #       here.
-        rospy.init_node('robot_controller')
+    def __init__(self, rospy, real=False):
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
@@ -35,15 +30,8 @@ class Robot:
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if forward_rate > .3:
-            self.twist.linear.x = .3
-        else:
-            self.twist.linear.x = forward_rate
-
-        if turn_rate > 3:
-            self.twist.angular.z = 3
-        else:
-            self.twist.angular.z = turn_rate
+        self.twist.linear.x = .3 if forward_rate > .3 else forward_rate
+        self.twist.angular.z = 3 if turn_rate > 3 else turn_rate
 
         self.twist_publisher.publish(self.twist)
 
@@ -51,7 +39,8 @@ class Robot:
     def get_position(self):
 
         return self.pose_stamped.pose.position.x, \
-                self.pose_stamped.pose.position.y
+                self.pose_stamped.pose.position.y, \
+                self.pose_stamped.orientation.z
 
 
 
@@ -61,4 +50,3 @@ class Robot:
         """
 
         self.pose_stamped.pose = pose
-

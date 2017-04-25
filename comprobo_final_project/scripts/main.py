@@ -43,7 +43,7 @@ class Genetics(object):
                     self.population.generation[0].genes), \
                     self.population.generation[0].fitness
 
-            if self.population.population[0].fitness < 0.05:
+            if self.population.generation[0].fitness > .95:
                 print "Most fit gene:", self.population.generation[0].genes, \
                         self.population.generation[0].fitness
                 found = True
