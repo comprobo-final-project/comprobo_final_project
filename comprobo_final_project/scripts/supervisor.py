@@ -24,7 +24,7 @@ class Supervisor(object):
         self.robot.pose.position.x = np.random.randint(1,10)
         self.robot.pose.position.y = np.random.randint(1,10)
         self.sim = Simulator(self.robot)
-        self.robo_control = RobotController(self.robot)
+        self.robot_controller = RobotController(self.robot)
 
 
     def use_genes(self, genes):
@@ -32,7 +32,7 @@ class Supervisor(object):
         receives this current iteration of the genes
         """
 
-        self.robo_control.set_genes(genes)
+        self.robot_controller.set_genes(genes)
 
 
     def reset(self):
@@ -51,7 +51,7 @@ class Supervisor(object):
         """
         main run function
         """
-        xpos, ypos = self.robo_control.run(30)
+        xpos, ypos, _ = self.robot_controller.run(1)
 
         return xpos, ypos
 

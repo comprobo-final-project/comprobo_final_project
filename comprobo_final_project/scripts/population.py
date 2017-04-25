@@ -30,7 +30,7 @@ class Population:
         for i in range(size): pop.append(Chromosome(genes=None, supervisor=supervisor))
 
         # population class holds a generation of the population, which evolves over time
-        self.generation = list(sorted(pop, key=lambda x: x.fitness))
+        self.generations = list(sorted(pop, key=lambda x: x.fitness))
 
 
 
@@ -40,9 +40,9 @@ class Population:
         generation using a tournament selection algorithm.
         """
 
-        best = choice(self.generation)
+        best = choice(self.generations)
         for i in range(self.tournament_size):
-            cont = choice(self.generation)
+            cont = choice(self.generations)
             if (cont.fitness < best.fitness): best = cont
 
         return best
@@ -62,9 +62,9 @@ class Population:
         Method to evolve the generation of chromosomes.
         """
 
-        size = len(self.generation)
+        size = len(self.generations)
         idx = int(round(size * self.elitism))
-        buf = self.generation[:idx]
+        buf = self.generations[:idx]
 
         while (idx < size):
             if random() <= self.crossover:
@@ -78,9 +78,9 @@ class Population:
                 idx += 2
             else:
                 if random() <= self.mutation:
-                    buf.append(self.generation[idx].mutate())
+                    buf.append(self.generations[idx].mutate())
                 else:
-                    buf.append(self.generation[idx])
+                    buf.append(self.generations[idx])
                 idx += 1
 
-        self.generation = list(sorted(buf, key=lambda x: x.fitness))
+        self.generations = list(sorted(buf, key=lambda x: x.fitness))
