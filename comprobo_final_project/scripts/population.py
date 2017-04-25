@@ -4,7 +4,7 @@
 """
 CompRobo Spring 2017
 
-population script for our simplified task, one Neato moving to a goal
+generation script for our simplified task, one Neato moving to a goal
 
 """
 
@@ -15,7 +15,7 @@ from random import choice, random, randint
 
 class Population:
     """
-    A class representing a population for a genetic algorithm simulation.
+    A class representing a generation for a genetic algorithm simulation.
     """
 
     def __init__(self, size=1024, crossover=0.8, elitism=0.1, mutation=0.05,
@@ -27,20 +27,22 @@ class Population:
         self.tournament_size = int(size * 0.005)
 
         pop = []
-        for i in range(size): pop.append(Chromosome(genes=None,
-                supervisor=supervisor))
-        self.population = list(sorted(pop, key=lambda x: x.fitness))
+        for i in range(size): pop.append(Chromosome(genes=None, supervisor=supervisor))
+
+        # population class holds a generation of the population, which evolves over time
+        self.generation = list(sorted(pop, key=lambda x: x.fitness))
+
 
 
     def tournament_selection(self):
         """
         A helper method used to select a random chromosome from the
-        population using a tournament selection algorithm.
+        generation using a tournament selection algorithm.
         """
 
-        best = choice(self.population)
+        best = choice(self.generation)
         for i in range(self.tournament_size):
-            cont = choice(self.population)
+            cont = choice(self.generation)
             if (cont.fitness < best.fitness): best = cont
 
         return best
@@ -48,7 +50,7 @@ class Population:
 
     def select_parents(self):
         """
-        A helper method used to select two parents from the population using a
+        A helper method used to select two parents from the generation using a
         tournament selection algorithm.
         """
 
@@ -57,12 +59,12 @@ class Population:
 
     def evolve(self):
         """
-        Method to evolve the population of chromosomes.
+        Method to evolve the generation of chromosomes.
         """
 
-        size = len(self.population)
+        size = len(self.generation)
         idx = int(round(size * self.elitism))
-        buf = self.population[:idx]
+        buf = self.generation[:idx]
 
         while (idx < size):
             if random() <= self.crossover:
@@ -76,9 +78,9 @@ class Population:
                 idx += 2
             else:
                 if random() <= self.mutation:
-                    buf.append(self.population[idx].mutate())
+                    buf.append(self.generation[idx].mutate())
                 else:
-                    buf.append(self.population[idx])
+                    buf.append(self.generation[idx])
                 idx += 1
 
-        self.population = list(sorted(buf, key=lambda x: x.fitness))
+        self.generation = list(sorted(buf, key=lambda x: x.fitness))

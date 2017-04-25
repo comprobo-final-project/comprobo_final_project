@@ -70,18 +70,15 @@ class Chromosome:
             mutation_rate_multiplier/num_units_per_gene
         """
 
-        # Define the chance of each individual gene to be mutated
-        mutation_rate = mutation_rate_multiplier/float(NUM_GENES)
-
         # Initialize what will be the final list of mutated genes
         mutated_genes = []
 
-        # Iterate through all current genes
         for gene in self.genes:
-            # Randomly decided whether or not to mutate each individual gene
-            if random.uniform(0, 1) <= mutation_rate:
-                gene *= random.uniform(0.8, 1.2)
-            mutated_genes.append(round(gene, 3))
+            mutated_genes.append(gene)
+
+        # Select a random gene and multiply it with a random value
+        idx = random.randint(0, len(self.genes) - 1)
+        mutated_genes[idx] *= random.uniform(0.5, 2)
 
         # Create new chromosome with genes from the mutated genes
         return Chromosome(mutated_genes, self.natural_selection)

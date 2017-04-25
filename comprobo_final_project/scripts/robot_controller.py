@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     genes = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
     duration = 10
-    robot = Robot()
+    robot = Robot(real=False)
     robot_controller = RobotController(robot, genes)
 
     # Run

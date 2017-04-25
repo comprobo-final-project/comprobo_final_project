@@ -14,6 +14,8 @@ class Robot:
         # http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
         self.twist = Twist()
 
+        self.resolution = 100
+
 
     def set_twist(self, forward_rate, turn_rate):
 
@@ -27,7 +29,7 @@ class Robot:
         else:
             self.twist.angular.z = turn_rate
 
-        self.step(0.1)
+        self.step(1.0/self.resolution)
 
 
     def get_position(self):

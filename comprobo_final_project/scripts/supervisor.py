@@ -50,8 +50,8 @@ class Supervisor(object):
         """
         main run function
         """
+        xpos, ypos = self.robo_control.run(30)
 
-        xpos, ypos = self.robo_control.run(.01)
         return xpos, ypos
 
 
