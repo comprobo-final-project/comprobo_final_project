@@ -5,13 +5,10 @@ The main script of this project, runs a genetic algorithm to find the optimal
 parameters to achieve a solution.
 """
 
-from models.robot import Robot
 from population import Population
 from supervisor import Supervisor
-
-from simulator.simulator import Simulator
-from simulator.robot import Robot
 from robot_controller import RobotController
+from simulator.robot import Robot
 
 
 class GeneTrainer(object):
@@ -36,10 +33,10 @@ class GeneTrainer(object):
         generation = 0
         found = False
         while generation < self.maxGenerations:
-            print "Generation %d: %s" % (generation, self.population.generation[0].genes), self.population.generation[0].fitness
+            print "Generation %d: %s" % (generation, self.population.generations[0].genes), self.population.generations[0].fitness
 
-            if self.population.population[0].fitness < 0.05:
-                print "Most fit gene:", self.population.generation[0].genes, self.population.generation[0].fitness
+            if self.population.generations[0].fitness < 0.05:
+                print "Most fit gene:", self.population.generations[0].genes, self.population.generations[0].fitness
                 found = True
                 break
             else:
