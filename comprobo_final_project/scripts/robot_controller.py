@@ -82,6 +82,9 @@ class RobotController:
 
 
 if __name__ == '__main__':
+
+    from .simulator.simulation_visualizer import SimulationVisualizer
+
     genes = [0.0, 1.0, 1.0, 0.0]
 
     robot = Robot()
@@ -89,7 +92,7 @@ if __name__ == '__main__':
     robot.pose.position.y = 5.0
 
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 10)
 
     # Run
     robot_controller.run(duration = 15)
