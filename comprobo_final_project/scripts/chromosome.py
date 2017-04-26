@@ -10,7 +10,7 @@ import random
 import numpy as np
 
 # The number of genes that each organism has
-NUM_GENES = 6
+NUM_GENES = 4
 
 
 class Chromosome:

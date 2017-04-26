@@ -14,21 +14,29 @@ class Robot:
         self.twist = Twist()
 
         self.resolution = 10
-
+        self.update_listener = lambda x: None
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if forward_rate > .3:
+        if math.fabs(forward_rate) > .3 or math.isnan(forward_rate) or math.isinf(forward_rate):
             self.twist.linear.x = .3
         else:
             self.twist.linear.x = forward_rate
 
-        if turn_rate > 3:
+        if math.fabs(turn_rate) > 3 or math.isnan(turn_rate) or math.isinf(turn_rate):
             self.twist.angular.z = 3
         else:
             self.twist.angular.z = turn_rate
 
-        self.step(1.0/self.resolution)
+        self.step(self.resolution)
+
+
+    def set_update_listener(self, update_listener):
+        """
+        An inputted update_listener gets called whenever a robot updates
+        """
+
+        self.update_listener = update_listener
 
 
     def get_position(self):
@@ -37,7 +45,8 @@ class Robot:
                 self.pose.orientation.z
 
 
-    def step(self, step_size):
+    def step(self, step_freq):
+        step_freq = float(step_freq)
 
         twist_r = self.twist.linear.x
         twist_theta = self.twist.angular.z
@@ -46,10 +55,11 @@ class Robot:
 
         # Update velocity
         self.pose.velocity.x = twist_r * math.cos(original_velocity_theta +
-                step_size * twist_theta)
+                twist_theta / step_freq)
         self.pose.velocity.y = twist_r * math.sin(original_velocity_theta +
-                step_size * twist_theta)
+                twist_theta / step_freq)
 
         # Update pose
-        self.pose.position += step_size * self.pose.velocity
-        self.pose.orientation += step_size * self.twist.angular
+        self.pose.position += self.pose.velocity / step_freq
+        self.pose.orientation += self.twist.angular / step_freq
+        self.update_listener(step_freq)
