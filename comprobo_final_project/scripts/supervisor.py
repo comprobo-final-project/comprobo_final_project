@@ -7,7 +7,6 @@ to each calculate their own fitness using the simulation components in this clas
 """
 
 
-from simulator.simulator import Simulator
 from simulator.robot import Robot
 from robot_controller import RobotController
 
@@ -23,7 +22,6 @@ class Supervisor(object):
         self.robot = Robot()
         self.robot.pose.position.x = 3.0
         self.robot.pose.position.y = 5.0
-        self.sim = Simulator(self.robot)
         self.robot_controller = RobotController(self.robot)
 
 
