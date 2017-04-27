@@ -48,9 +48,8 @@ class Supervisor(object):
         """
         main run function
         """
-        xpos, ypos, _ = self.robot_controller.run(1)
-
-        return xpos, ypos
+        pos = self.robot_controller.run(1)
+        return pos.x, pos.y
 
 
 if __name__ == '__main__':
