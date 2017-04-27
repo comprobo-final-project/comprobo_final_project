@@ -48,7 +48,7 @@ class Supervisor(object):
         """
         main run function
         """
-        pos = self.robot_controller.run(1)
+        pos = self.robot_controller.run(20)
         return pos.x, pos.y
 
 
