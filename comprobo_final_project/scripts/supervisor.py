@@ -40,8 +40,8 @@ class Supervisor(object):
 
         self.robot.pose.position.x = 3.0
         self.robot.pose.position.y = 5.0
-        self.robot.pose.velocity.x = 0.0
-        self.robot.pose.velocity.y = 0.0
+        self.robot.pose.velocity.w = 0.0
+        self.robot.pose.velocity.r = 0.0
 
 
     def run(self):
