@@ -5,7 +5,7 @@ import numpy as np
 
 from pose import Pose
 from twist import Twist
-
+from vector_3 import Vector3
 
 class Robot:
 
@@ -13,6 +13,7 @@ class Robot:
 
         self.MAX_SPEED = 2 # m/s
         self.MAX_TURN_RATE = 2 # rad/s
+        self.HISTORY = 0.1 # How much history to use
 
         self.pose = Pose()
         self.twist = Twist()
@@ -43,7 +44,7 @@ class Robot:
 
 
     def get_direction(self):
-        return math.atan2(self.pose.velocity.y, self.pose.velocity.x)
+        return self.pose.velocity.w
 
 
     def step(self, step_freq):
@@ -61,21 +62,20 @@ class Robot:
             noise_factor = 2 * (random.random() * self.noise) + 1
 
             # Update velocity
-            vel_x = twist_r * \
-                    math.cos(original_w + twist_w / step_freq) * \
-                    noise_factor
-            vel_y = twist_r * \
-                    math.sin(original_w + twist_w / step_freq) * \
-                    noise_factor
+            vel_r = twist_r * noise_factor
+            vel_w = (original_w + (twist_w / step_freq)) * noise_factor
 
             # Average the prior velocity to get a more gradual change
-            self.pose.velocity.x = self.pose.velocity.x * 0.1 + vel_x * 0.9
-            self.pose.velocity.y = self.pose.velocity.y * 0.1 + vel_y * 0.9
+            self.pose.velocity.r = self.pose.velocity.r * self.HISTORY + \
+                vel_r * (1 - self.HISTORY)
+            self.pose.velocity.w = self.pose.velocity.w * self.HISTORY + \
+                vel_w * (1 - self.HISTORY)
 
-            # self.pose.velocity.x = vel_x
-            # self.pose.velocity.y = vel_y
 
         # Update pose
-        self.pose.position += self.pose.velocity / step_freq
+        velocity_xyz = Vector3()
+        velocity_xyz.x = self.pose.velocity.r * math.cos(self.pose.velocity.w)
+        velocity_xyz.y = self.pose.velocity.r * math.sin(self.pose.velocity.w)
+        self.pose.position += velocity_xyz / step_freq
 
         self.update_listener(step_freq)
