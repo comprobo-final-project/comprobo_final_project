@@ -89,14 +89,14 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [0.0, 3.0, 1.0, 0.0]
+    genes = [-5.729690431999708, 2.905, 12.345747976870614, 0.6868868784740744]
 
     robot = Robot(noise = 0.0)
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
 
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 0.5)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
 
     # Run
     robot_controller.run(duration = 20)
