@@ -8,6 +8,7 @@ Basic class that represents the chomosomes of our genetic algorithm.
 
 import random
 import numpy as np
+from scipy import stats
 
 # The number of genes that each organism has
 NUM_GENES = 12
@@ -23,8 +24,6 @@ class Chromosome:
         """
         Initializes the gene and fitness of an organism.
         """
-
-        #TODO vvv finish all of this down vvv
 
         # Generate a random set of genes if genes are not already defined
         if genes == None:
@@ -64,7 +63,7 @@ class Chromosome:
         return new_chromosome_1, new_chromosome_2
 
 
-    def mutate(self, mutation_rate_multiplier=1.0):
+    def mutate(self):
         """
         Mutates the genes of the specified chromosome.
 
@@ -80,7 +79,7 @@ class Chromosome:
             mutated_genes.append(gene)
 
         # Select a random gene and multiply it with a random value
-        idx = random.randint(0, len(self.genes) - 1)
+        idx = random.randint(0, NUM_GENES - 1)
         mutated_genes[idx] *= random.uniform(0.5, 2)
 
         # Create new chromosome with genes from the mutated genes
@@ -93,8 +92,13 @@ class Chromosome:
         """
 
         self.supervisor.use_genes(self.genes)
-        xpos, ypos = self.supervisor.run()
-        fitness = np.sqrt(xpos**2 + ypos**2)
+
+        xpos1, ypos1, xpos2, ypos2, xpos3, ypos3 = self.supervisor.run()
+        x = [xpos1, xpos2, xpos3]
+        y = [ypos1, ypos2, ypos3]
+
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+        fitness = r_value**2
         self.supervisor.reset()
         return fitness
 

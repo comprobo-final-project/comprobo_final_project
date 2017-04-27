@@ -63,7 +63,7 @@ class Supervisor(object):
         robot.pose.position.y = np.random.randint(1,10)
         robot.pose.velocity.x = 0.0
         robot.pose.velocity.y = 0.0
-        robot.pose.orientation.z = np.random.randint(1,10)
+        robot.pose.orientation.z = 0.0
 
 
     def run(self):
