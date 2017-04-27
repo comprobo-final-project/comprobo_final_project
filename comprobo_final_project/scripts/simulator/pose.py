@@ -1,5 +1,4 @@
 from vector_3 import Vector3
-from quaternion import Quaternion
 
 
 class Pose:

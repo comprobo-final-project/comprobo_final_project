@@ -13,6 +13,7 @@ import numpy as np
 NUM_GENES = 12
 
 
+
 class Chromosome:
     """
     Holds the genes and fitness of an organism.

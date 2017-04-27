@@ -22,7 +22,7 @@ class GeneTrainer(object):
 
     def __init__(self):
         self.supervisor = Supervisor()
-        self.population = Population(size=100, crossover=0.8, elitism=0.1, \
+        self.population = Population(size=10, crossover=0.8, elitism=0.1, \
                 mutation=0.5, supervisor=self.supervisor)
 
         self.max_generations = 16384
@@ -50,6 +50,7 @@ class GeneTrainer(object):
                 file_obj.flush()
 
                 if self.population.generations[0].fitness > .95:
+
                     print "Most fit gene:", self.population.generations[0].genes, \
                             self.population.generations[0].fitness
                     found = True

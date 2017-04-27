@@ -7,7 +7,6 @@ to each calculate their own fitness using the simulation components in this clas
 """
 
 
-from simulator.simulator import Simulator
 from simulator.robot import Robot
 from robot_controller import RobotController
 import numpy as np
@@ -34,6 +33,7 @@ class Supervisor(object):
 
         self.sim = Simulator(self.robot1, self.robot2, self.robot3)
         self.robot_controller = RobotController(self.robot1, self.robot2, self.robot3)
+
 
 
     def use_genes(self, genes):

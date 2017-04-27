@@ -11,9 +11,7 @@ determined by the organism's genes. This calculated Twist is then published.
 import math
 import time
 
-# from .models.robot import Robot
 from .simulator.robot import Robot
-from .simulator.simulator import Simulator
 
 
 class RobotController:
@@ -24,6 +22,7 @@ class RobotController:
     """
 
     def __init__(self, robot1, robot2, robot3, genes=None, simulator=None):
+
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -36,7 +35,6 @@ class RobotController:
         self.robot2 = robot2
         self.robot3 = robot3
         self.genes = genes
-        self.simulator = simulator
 
 
     def set_genes(self, genes):
@@ -82,8 +80,6 @@ class RobotController:
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
 
-                # self.simulator.update_graph()
-                # time.sleep(.001)
         except KeyboardInterrupt:
             pass
 
@@ -93,15 +89,17 @@ class RobotController:
 
 if __name__ == '__main__':
 
+    from .simulator.simulation_visualizer import SimulationVisualizer
+
     genes = [0.0, 1.0, 1.0, 0.0]
-    duration = 15
+
     robot = Robot()
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
-    # simulator = Simulator(robot, True)
-    # simulator.render()
-    # robot_controller = RobotController(robot, genes, simulator)
+
+
     robot_controller = RobotController(robot, genes)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 10)
 
     # Run
-    robot_controller.run(duration)
+    robot_controller.run(duration = 15)

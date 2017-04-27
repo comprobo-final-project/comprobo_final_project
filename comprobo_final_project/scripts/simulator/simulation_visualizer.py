@@ -6,14 +6,14 @@ import numpy as np
 from robot import Robot
 
 
-class Simulator:
+class SimulationVisualizer:
     """
     Simulates a robot without ROS.
     """
 
-    STEP_SIZE = 0.1
-    SLEEP_DURATION_S = 0.01
+    def __init__(self, robot, real_world_scale = 1):
 
+<<<<<<< HEAD:comprobo_final_project/scripts/simulator/simulator.py
     def __init__(self, robot1, robot2, robot3, enable_render = False):
         """
         enable_render : bool - Determines whether visualizations show up
@@ -22,7 +22,13 @@ class Simulator:
         self.robot2 = robot2
         self.robot3 = robot3
         self.enable_render = enable_render
+=======
+        self.robot = robot
+        self.robot.set_update_listener(self.update)
+        self.real_world_scale = real_world_scale
+>>>>>>> master:comprobo_final_project/scripts/simulator/simulation_visualizer.py
         self.quiver_manager = None # Used for visualizations
+        self.render()
 
 
     def render(self):
@@ -31,6 +37,7 @@ class Simulator:
         """
         plt.ion()
 
+        self.fig, axes = plt.subplots()
         axes = plt.gca()
         axes.set_xlim([-10, 10])
         axes.set_ylim([-10, 10])
@@ -73,6 +80,7 @@ class Simulator:
         plt.show()
 
 
+<<<<<<< HEAD:comprobo_final_project/scripts/simulator/simulator.py
     def update_graph(self):
         self.quiver_manager1.set_UVC(self.robot1.pose.velocity.x,
                 self.robot1.pose.velocity.y)
@@ -90,20 +98,21 @@ class Simulator:
                 self.robot3.pose.position.y))
         plt.draw()
         plt.pause(.001)
+=======
+    def update(self, frequency):
+        self.quiver_manager.set_UVC(self.robot.pose.velocity.x,
+                self.robot.pose.velocity.y)
+        self.quiver_manager.set_offsets((self.robot.pose.position.x,
+                self.robot.pose.position.y))
+>>>>>>> master:comprobo_final_project/scripts/simulator/simulation_visualizer.py
 
-    def run(self):
-        if (self.enable_render):
-            self.render()
-        while True:
-            self.robot.step(self.STEP_SIZE)
-            if (self.enable_render):
-                self.update_graph()
-                plt.pause(self.SLEEP_DURATION_S)
-            else:
-                time.sleep(self.SLEEP_DURATION_S)
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
+        time.sleep(1.0 / (self.real_world_scale * frequency))
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD:comprobo_final_project/scripts/simulator/simulator.py
     # robot = Robot()
     # robot.pose.position.x = 0
     # robot.pose.position.y = 0
@@ -112,3 +121,15 @@ if __name__ == "__main__":
     #
     # simulator = Simulator(robot = robot, enable_render = True)
     # simulator.run()
+=======
+    robot = Robot()
+    robot.pose.position.x = 0
+    robot.pose.position.y = 0
+    robot.twist.linear.x = 3
+    robot.twist.angular.z = 1
+    simulation_visualizer = SimulationVisualizer(robot = robot, \
+        real_world_scale = 10)
+
+    while True:
+        robot.step(2)
+>>>>>>> master:comprobo_final_project/scripts/simulator/simulation_visualizer.py
