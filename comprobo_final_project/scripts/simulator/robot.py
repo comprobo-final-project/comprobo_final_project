@@ -14,6 +14,8 @@ class Robot:
         # http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
         self.twist = Twist()
 
+        self.poses = []
+
         self.resolution = 10
 
 
@@ -66,14 +68,12 @@ class Robot:
                 self.pose.velocity.x)
 
         # Update velocity
-        # self.pose.velocity.x = twist_r * math.cos(original_velocity_theta +
-                # step_size * twist_theta)
-        # self.pose.velocity.y = twist_r * math.sin(original_velocity_theta +
-                # step_size * twist_theta)
         self.pose.velocity.x = twist_r * math.cos(self.pose.orientation.z)
         self.pose.velocity.y = twist_r * math.sin(self.pose.orientation.z)
-                
 
         # Update pose
         self.pose.position += step_size * self.pose.velocity
         self.pose.orientation += step_size * self.twist.angular
+
+        # Store current pose in list of all poses
+        self.poses.append(self.pose)

@@ -90,7 +90,7 @@ class Chromosome:
         """
 
         self.natural_selection.use_genes(self.genes)
-        xpos, ypos = self.natural_selection.run()
+        poses = self.natural_selection.run()
         fitness = np.sqrt(xpos**2 + ypos**2)
         self.natural_selection.reset()
         return fitness

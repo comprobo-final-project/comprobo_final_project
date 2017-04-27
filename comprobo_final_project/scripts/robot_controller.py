@@ -11,7 +11,6 @@ determined by the organism's genes. This calculated Twist is then published.
 import math
 import time
 
-# from .models.robot import Robot
 from .simulator.robot import Robot
 from .simulator.simulator import Simulator
 
@@ -68,12 +67,8 @@ class RobotController:
                     goal_w = math.atan2(diff_y, diff_x)
                     diff_w = goal_w - curr_w
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
-                    print 'Goal w: ', goal_w
-                    print 'Curr w: ', curr_w
-                    print 'Diff w: ', diff_w, '\n'
                 except OverflowError:
-                    print 'Overflow Error'
-                    print diff_x, diff_y
+                    print 'Overflow Error: ', diff_x, diff_y
 
                 # Define linear and angular velocities based on genes
                 a1, b1, a2, b2 = self.genes
@@ -89,7 +84,7 @@ class RobotController:
             pass
 
 
-        return self.robot.get_position()
+        return self.robot.poses()
 
 
 if __name__ == '__main__':
