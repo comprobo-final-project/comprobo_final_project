@@ -1,6 +1,8 @@
 import math
 import random
 
+import numpy as np
+
 from pose import Pose
 from twist import Twist
 
@@ -9,29 +11,22 @@ class Robot:
 
     def __init__(self, noise = 0.1):
 
-        # http://docs.ros.org/kinetic/api/geometry_msgs/html/msg/Pose.html
-        self.pose = Pose()
+        self.MAX_SPEED = 2 # m/s
+        self.MAX_TURN_RATE = 2 # rad/s
 
-        # http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
+        self.pose = Pose()
         self.twist = Twist()
 
         self.noise = noise # A value between 0 and 1.
 
-        self.resolution = 5
+        self.resolution = 10
         self.update_listener = lambda x: None
+
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if math.fabs(forward_rate) > .3 or math.isnan(forward_rate) or math.isinf(forward_rate):
-            self.twist.linear.x = .3
-        else:
-            self.twist.linear.x = forward_rate
-
-        if math.fabs(turn_rate) > 3 or math.isnan(turn_rate) or math.isinf(turn_rate):
-            self.twist.angular.z = 3
-        else:
-            self.twist.angular.z = turn_rate
-
+        self.twist.linear.x = np.clip(forward_rate, 0, self.MAX_SPEED)
+        self.twist.angular.z = np.clip(turn_rate, -self.MAX_TURN_RATE, self.MAX_TURN_RATE)
         self.step(self.resolution)
 
 
@@ -59,18 +54,18 @@ class Robot:
             step_freq = float(step_freq)
 
             twist_r = self.twist.linear.x
-            twist_theta = self.twist.angular.z
-            original_velocity_theta = self.get_direction()
+            twist_w = self.twist.angular.z
+            original_w = self.get_direction()
 
             # From 0 to 2. 1 is neutral
             noise_factor = 2 * (random.random() * self.noise) + 1
 
             # Update velocity
             vel_x = twist_r * \
-                    math.cos(original_velocity_theta + twist_theta / step_freq) * \
+                    math.cos(original_w + twist_w / step_freq) * \
                     noise_factor
             vel_y = twist_r * \
-                    math.sin(original_velocity_theta + twist_theta / step_freq) * \
+                    math.sin(original_w + twist_w / step_freq) * \
                     noise_factor
 
             # Average the prior velocity to get a more gradual change

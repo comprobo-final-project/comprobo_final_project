@@ -65,7 +65,9 @@ class RobotController:
 
                 try:
                     # Calculate angle to goal and distance to goal
+                    # http://stackoverflow.com/a/7869457/2204868
                     diff_w = math.atan2(diff_y, diff_x) - curr_w
+                    diff_w = (diff_w + math.pi) % (2*math.pi) - math.pi
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
                 except OverflowError:
                     print diff_x, diff_y
@@ -87,14 +89,14 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [0.0, 1.0, 1.0, 0.0]
+    genes = [0.0, 3.0, 1.0, 0.0]
 
-    robot = Robot(noise = 0.1)
+    robot = Robot(noise = 0)
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
 
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 1000)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 5)
 
     # Run
-    robot_controller.run(duration = 150)
+    robot_controller.run(duration = 30)
