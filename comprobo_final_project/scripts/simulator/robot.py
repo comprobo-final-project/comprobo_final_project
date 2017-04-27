@@ -47,6 +47,10 @@ class Robot:
         return self.pose.velocity.w
 
 
+    def set_direction(self, w):
+        self.pose.velocity.w = w
+
+
     def step(self, step_freq):
 
         # Skip randomly depending on our noise threshold
