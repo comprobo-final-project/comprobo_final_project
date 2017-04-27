@@ -9,7 +9,7 @@ from twist import Twist
 
 class Robot:
 
-    def __init__(self, noise = 0.1):
+    def __init__(self, noise = 0.1, resolution = 10):
 
         self.MAX_SPEED = 2 # m/s
         self.MAX_TURN_RATE = 2 # rad/s
@@ -19,7 +19,7 @@ class Robot:
 
         self.noise = noise # A value between 0 and 1.
 
-        self.resolution = 10
+        self.resolution = resolution
         self.update_listener = lambda x: None
 
 
