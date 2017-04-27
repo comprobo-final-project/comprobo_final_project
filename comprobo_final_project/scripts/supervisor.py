@@ -17,22 +17,17 @@ class Supervisor(object):
     determining fitness
     """
 
-    def __init__(self):
+    def __init__(self, number):
 
-        self.robot1 = Robot()
-        self.robot1.pose.position.x = np.random.randint(1,10)
-        self.robot1.pose.position.y = np.random.randint(1,10)
+        self.robots = []
+        for i in range(number):
+            robot = Robot()
+            robot.pose.position.x = np.random.randint(1,10)
+            robot.pose.position.y = np.random.randint(1,10)
+            self.robots.append(robot)
 
-        self.robot2 = Robot()
-        self.robot2.pose.position.x = np.random.randint(1,10)
-        self.robot2.pose.position.y = np.random.randint(1,10)
-
-        self.robot3 = Robot()
-        self.robot3.pose.position.x = np.random.randint(1,10)
-        self.robot3.pose.position.y = np.random.randint(1,10)
-
-        self.sim = Simulator(self.robot1, self.robot2, self.robot3)
-        self.robot_controller = RobotController(self.robot1, self.robot2, self.robot3)
+        self.sim = Simulator(self.robots)
+        self.robot_controller = RobotController(self.robots)
 
 
 
@@ -48,10 +43,8 @@ class Supervisor(object):
         """
         resets the simulation for the next usage
         """
-
-        self.reset_robot(self.robot1)
-        self.reset_robot(self.robot2)
-        self.reset_robot(self.robot3)
+        for robot in self.robots:
+            self.reset_robot(robot)
 
 
     def reset_robot(self, robot):
@@ -70,7 +63,7 @@ class Supervisor(object):
         """
         main run function
         """
-        xpos1, ypos1, xpos2, ypos2, xpos3, ypos3 = self.robot_controller.run(1)
+        xpos1, ypos1, o1, xpos2, ypos2, o2, xpos3, ypos3, o3 = self.robot_controller.run(1)
 
         return xpos1, ypos1, xpos2, ypos2, xpos3, ypos3
 

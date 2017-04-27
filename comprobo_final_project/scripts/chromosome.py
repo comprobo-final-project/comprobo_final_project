@@ -34,7 +34,7 @@ class Chromosome:
         # Define the chromosome's genes and fitness
         self.genes = genes
         self.supervisor = supervisor
-        self.fitness = self.get_fitness()
+        self.fitness = self.get_fitness_collinear()
 
 
     def crossover(self, other):
@@ -86,9 +86,21 @@ class Chromosome:
         return Chromosome(mutated_genes, self.supervisor)
 
 
-    def get_fitness(self):
+    def get_fitness_simple(self):
         """
-        Calculate the fitness of a specified chromosome.
+        Calculates fitness of a specified chromosome for simple task
+        """
+
+        self.supervisor.use_genes(self.genes)
+        
+        xpos, ypos = self.supervisor.run()
+        fitness = np.sqrt(xpos**2 + ypos**2)
+        self.supervisor.reset()
+        return fitness
+
+    def get_fitness_collinear(self):
+        """
+        Calculate the fitness of a specified chromosome for collinear task
         """
 
         self.supervisor.use_genes(self.genes)

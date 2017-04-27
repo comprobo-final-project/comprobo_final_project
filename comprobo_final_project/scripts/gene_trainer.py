@@ -21,7 +21,7 @@ class GeneTrainer(object):
     """
 
     def __init__(self):
-        self.supervisor = Supervisor()
+        self.supervisor = Supervisor(3)
         self.population = Population(size=10, crossover=0.8, elitism=0.1, \
                 mutation=0.5, supervisor=self.supervisor)
 
