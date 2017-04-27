@@ -1,4 +1,4 @@
-import time
+from ..helpers import sleeper
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -57,7 +57,7 @@ class SimulationVisualizer:
 
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-        time.sleep(1.0 / (self.real_world_scale * frequency))
+        sleeper.sleep(1.0 / (self.real_world_scale * frequency))
 
 
 if __name__ == "__main__":

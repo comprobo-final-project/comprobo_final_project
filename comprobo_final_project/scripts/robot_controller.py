@@ -52,7 +52,10 @@ class RobotController:
 
         try:
             while time.time() < end_time:
-                curr_x, curr_y, curr_w = self.robot.get_position()
+                curr_pos = self.robot.get_position()
+                curr_w = self.robot.get_direction()
+                curr_x = curr_pos.x
+                curr_y = curr_pos.y
                 goal_x = 0.0
                 goal_y = 0.0
 
@@ -77,7 +80,6 @@ class RobotController:
         except KeyboardInterrupt:
             pass
 
-
         return self.robot.get_position()
 
 
@@ -87,12 +89,12 @@ if __name__ == '__main__':
 
     genes = [0.0, 1.0, 1.0, 0.0]
 
-    robot = Robot()
+    robot = Robot(noise = 0.1)
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
 
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 10)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 1000)
 
     # Run
-    robot_controller.run(duration = 15)
+    robot_controller.run(duration = 150)
