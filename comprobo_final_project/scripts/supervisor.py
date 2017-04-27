@@ -38,17 +38,28 @@ class Supervisor(object):
         resets the simulation for the next usage
         """
 
+<<<<<<< HEAD
         self.robot.set_random_pose() # set random position and random orientation
         self.robot.pose.velocity.x = 0.0
         self.robot.pose.velocity.y = 0.0
+=======
+        self.robot.pose.position.x = 3.0
+        self.robot.pose.position.y = 5.0
+        self.robot.set_direction(0.0)
+>>>>>>> 94ee4ac24fc681c2059fe110eab6aaa92488aa6a
 
 
     def run(self):
         """
         main run function
         """
+<<<<<<< HEAD
 
         return self.robot_controller.run(1)
+=======
+        pos = self.robot_controller.run(20)
+        return pos.x, pos.y
+>>>>>>> 94ee4ac24fc681c2059fe110eab6aaa92488aa6a
 
 
 if __name__ == '__main__':

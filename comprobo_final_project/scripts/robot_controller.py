@@ -51,8 +51,11 @@ class RobotController:
         end_time = time.time() + duration
 
         try:
-            while time.time() < end_time:
-                curr_x, curr_y, curr_w = self.robot.get_position()
+            for _ in range(int(duration * self.robot.resolution)):
+                curr_pos = self.robot.get_position()
+                curr_w = self.robot.get_direction()
+                curr_x = curr_pos.x
+                curr_y = curr_pos.y
                 goal_x = 0.0
                 goal_y = 0.0
 
@@ -62,9 +65,11 @@ class RobotController:
 
                 try:
                     # Calculate angle to goal and distance to goal
-                    goal_w = math.atan2(diff_y, diff_x)
-                    diff_w = goal_w - curr_w
+                    # http://stackoverflow.com/a/7869457/2204868
+                    diff_w = math.atan2(diff_y, diff_x) - curr_w
+                    diff_w = (diff_w + math.pi) % (2*math.pi) - math.pi
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
+
                 except OverflowError:
                     print 'Overflow Error: ', diff_x, diff_y
 
@@ -76,11 +81,6 @@ class RobotController:
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
 
-                # @davidzhu, do I need these lines anymore?
-                ###########################################
-                # self.simulator.update_graph()
-                # time.sleep(.1)
-                ###########################################
         except KeyboardInterrupt:
             pass
 
@@ -91,11 +91,14 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [0.0, 1.0, 1.0, 0.0]
-    robot = Robot()
-    robot.set_random_pose() # give the robot a random position and orientation
+    genes = [-5.729690431999708, 2.905, 12.345747976870614, 0.6868868784740744]
+
+    robot = Robot(noise = 0.0)
+    robot.set_random_position() # give the robot a random position
+    robot.set_random_direction() # give the robot a random direction
+
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale=10)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
 
     # Run
-    robot_controller.run(duration=15)
+    robot_controller.run(duration = 20)
