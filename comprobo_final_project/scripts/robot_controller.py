@@ -12,7 +12,6 @@ import math
 import time
 
 from .simulator.robot import Robot
-from .simulator.simulator import Simulator
 
 
 class RobotController:
@@ -22,7 +21,7 @@ class RobotController:
     evaluation and then shutsdown.
     """
 
-    def __init__(self, robot, genes=None, simulator=None):
+    def __init__(self, robot, genes=None):
         """
         Initializes the node, publisher, subscriber, and the genes
         (coefficients) of the robot controller.
@@ -33,7 +32,6 @@ class RobotController:
 
         self.robot = robot
         self.genes = genes
-        self.simulator = simulator
 
 
     def set_genes(self, genes):
@@ -78,24 +76,23 @@ class RobotController:
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
 
-                self.simulator.update_graph()
-                time.sleep(.1)
+                # self.simulator.update_graph()
+                # time.sleep(.1)
         except KeyboardInterrupt:
             pass
 
-
-        return self.robot.poses()
+        return self.robot.poses
 
 
 if __name__ == '__main__':
 
+    from .simulator.simulation_visualizer import SimulationVisualizer
+
     genes = [0.0, 1.0, 1.0, 0.0]
-    duration = 15
     robot = Robot()
     robot.set_random_pose() # give the robot a random position and orientation
-    simulator = Simulator(robot, True)
-    simulator.render()
-    robot_controller = RobotController(robot, genes, simulator)
+    robot_controller = RobotController(robot, genes)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale=10)
 
     # Run
-    robot_controller.run(duration)
+    robot_controller.run(duration=15)

@@ -17,21 +17,29 @@ class Robot:
         self.poses = []
 
         self.resolution = 10
-
+        self.update_listener = lambda x: None
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if forward_rate > .3:
+        if math.fabs(forward_rate) > .3 or math.isnan(forward_rate) or math.isinf(forward_rate):
             self.twist.linear.x = .3
         else:
             self.twist.linear.x = forward_rate
 
-        if turn_rate > 3:
+        if math.fabs(turn_rate) > 3 or math.isnan(turn_rate) or math.isinf(turn_rate):
             self.twist.angular.z = 3
         else:
             self.twist.angular.z = turn_rate
 
-        self.step(1.0/self.resolution)
+        self.step(self.resolution)
+
+
+    def set_update_listener(self, update_listener):
+        """
+        An inputted update_listener gets called whenever a robot updates
+        """
+
+        self.update_listener = update_listener
 
 
     def set_random_pose(self):
@@ -60,20 +68,18 @@ class Robot:
                 self.pose.orientation.z
 
 
-    def step(self, step_size):
+    def step(self, step_freq):
 
-        twist_r = self.twist.linear.x
-        twist_theta = self.twist.angular.z
-        original_velocity_theta = math.atan2(self.pose.velocity.y,
-                self.pose.velocity.x)
+        step_freq = float(step_freq)
 
         # Update velocity
-        self.pose.velocity.x = twist_r * math.cos(self.pose.orientation.z)
-        self.pose.velocity.y = twist_r * math.sin(self.pose.orientation.z)
+        self.pose.velocity.x = self.twist.linear.x * math.cos(self.pose.orientation.z)
+        self.pose.velocity.y = self.twist.linear.x * math.sin(self.pose.orientation.z)
 
         # Update pose
-        self.pose.position += step_size * self.pose.velocity
-        self.pose.orientation += step_size * self.twist.angular
+        self.pose.position += self.pose.velocity / step_freq
+        self.pose.orientation += self.twist.angular / step_freq
+        self.update_listener(step_freq)
 
         # Store current pose in list of all poses
         self.poses.append(self.pose)

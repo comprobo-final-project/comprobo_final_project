@@ -7,7 +7,6 @@ to each calculate their own fitness using the simulation components in this clas
 """
 
 
-from simulator.simulator import Simulator
 from simulator.robot import Robot
 from robot_controller import RobotController
 
@@ -23,8 +22,7 @@ class Supervisor(object):
         self.robot = Robot()
         self.robot.pose.position.x = 3.0
         self.robot.pose.position.y = 5.0
-        self.sim = Simulator(self.robot)
-        self.robo_control = RobotController(self.robot)
+        self.robot_controller = RobotController(self.robot)
 
 
     def use_genes(self, genes):
@@ -32,7 +30,7 @@ class Supervisor(object):
         receives this current iteration of the genes
         """
 
-        self.robo_control.set_genes(genes)
+        self.robot_controller.set_genes(genes)
 
 
     def reset(self):
@@ -51,12 +49,12 @@ class Supervisor(object):
         main run function
         """
 
-        return self.robo_control.run(30)
+        return self.robot_controller.run(1)
 
 
 if __name__ == '__main__':
 
     node = Supervisor()
-    genes = [1.0,2.0,3.0,4.0,5.0,6.0]
+    genes = [1.0,2.0,3.0,4.0]
     node.use_genes(genes)
     node.run()

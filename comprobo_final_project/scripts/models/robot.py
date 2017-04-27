@@ -61,4 +61,3 @@ class Robot:
         """
 
         self.pose_stamped.pose = pose
-

@@ -1,7 +1,7 @@
 # Temporary file to demonstrate how to use our position provider.
 
 import rospy
-from providers.gazebo_pose_provider import GazeboPoseProvider
+from gazebo_pose_provider import GazeboPoseProvider
 
 rospy.init_node("example")
 

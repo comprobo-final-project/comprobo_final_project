@@ -10,7 +10,7 @@ import random
 import numpy as np
 
 # The number of genes that each organism has
-NUM_GENES = 6
+NUM_GENES = 4
 
 
 class Chromosome:
@@ -31,7 +31,7 @@ class Chromosome:
 
         # Define the chromosome's genes and fitness
         self.genes = genes
-        self.natural_selection = supervisor
+        self.supervisor = supervisor
         self.fitness = self.get_fitness()
 
 
@@ -55,8 +55,8 @@ class Chromosome:
         # Create the new crossovered genes and chromosome
         new_genes_1 = g1[:crossover_point] + g2[crossover_point:]
         new_genes_2 = g2[:crossover_point] + g1[crossover_point:]
-        new_chromosome_1 = Chromosome(new_genes_1, self.natural_selection)
-        new_chromosome_2 = Chromosome(new_genes_2, self.natural_selection)
+        new_chromosome_1 = Chromosome(new_genes_1, self.supervisor)
+        new_chromosome_2 = Chromosome(new_genes_2, self.supervisor)
 
         return new_chromosome_1, new_chromosome_2
 
@@ -81,7 +81,7 @@ class Chromosome:
         mutated_genes[idx] *= random.uniform(0.5, 2)
 
         # Create new chromosome with genes from the mutated genes
-        return Chromosome(mutated_genes, self.natural_selection)
+        return Chromosome(mutated_genes, self.supervisor)
 
 
     def get_fitness(self):
@@ -89,10 +89,11 @@ class Chromosome:
         Calculate the fitness of a specified chromosome.
         """
 
-        self.natural_selection.use_genes(self.genes)
-        poses = self.natural_selection.run()
-        fitness = np.sqrt(xpos**2 + ypos**2)
-        self.natural_selection.reset()
+        self.supervisor.use_genes(self.genes)
+        poses = self.supervisor.run()
+        distances = [np.sqrt(pose.position.x**2 + pose.position.y**2) for pose in poses]
+        fitness = np.mean(distances)
+        self.supervisor.reset()
         return fitness
 
 
