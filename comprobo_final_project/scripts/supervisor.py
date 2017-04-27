@@ -38,8 +38,7 @@ class Supervisor(object):
         resets the simulation for the next usage
         """
 
-        self.robot.pose.position.x = 3.0
-        self.robot.pose.position.y = 5.0
+        self.robot.set_random_pose() # set random position and random orientation
         self.robot.pose.velocity.x = 0.0
         self.robot.pose.velocity.y = 0.0
 
@@ -55,6 +54,6 @@ class Supervisor(object):
 if __name__ == '__main__':
 
     node = Supervisor()
-    genes = [1.0,2.0,3.0,4.0]
+    genes = [1.0, 2.0, 3.0, 4.0]
     node.use_genes(genes)
     node.run()

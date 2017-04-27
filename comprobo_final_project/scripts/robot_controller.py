@@ -76,8 +76,11 @@ class RobotController:
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
 
+                # @davidzhu, do I need these lines anymore?
+                ###########################################
                 # self.simulator.update_graph()
                 # time.sleep(.1)
+                ###########################################
         except KeyboardInterrupt:
             pass
 

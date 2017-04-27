@@ -90,8 +90,9 @@ class Chromosome:
         """
 
         self.supervisor.use_genes(self.genes)
-        poses = self.supervisor.run()
-        distances = [np.sqrt(pose.position.x**2 + pose.position.y**2) for pose in poses]
+        poses = self.supervisor.run() # all poses from birth to death
+        distances = [np.sqrt(pose.position.x**2 + pose.position.y**2) \
+                for pose in poses]
         fitness = np.mean(distances)
         self.supervisor.reset()
         return fitness
