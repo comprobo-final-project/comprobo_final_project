@@ -43,33 +43,39 @@ class RobotController:
         self.genes = genes
 
 
-    def calculate_twists_collinear(self, positions):
+    def calculate_twists_collinear(self):
         """
         calculates twists for the collinear task
         """
 
+        positions = []
+        directions = []
+        for robot in self.robots:
+            positions.append(robot.get_position())
+            directions.append(robot.get_direction())
+
         # Calculate difference between robot position and other robots position
-        diff_x21 = positions[1][0] - positions[0][0]
-        diff_y21 = positions[1][1] - positions[0][1]
+        diff_x21 = positions[1].x - positions[0].x
+        diff_y21 = positions[1].y - positions[0].y
 
-        diff_x31 = positions[2][0] - positions[0][0]
-        diff_y31 = positions[2][1] - positions[0][1]
+        diff_x31 = positions[2].x - positions[0].x
+        diff_y31 = positions[2].y - positions[0].y
 
-        diff_x32 = positions[2][0] - positions[1][0]
-        diff_y32 = positions[2][1] - positions[1][1]
+        diff_x32 = positions[2].x - positions[1].x
+        diff_y32 = positions[2].y - positions[1].y
 
         try:
             # Calculate angle to goal and distance to goal
-            diff_w21 = math.atan2(diff_y21, diff_x21) - positions[0][2]
-            diff_w12 = math.atan2(diff_y21, diff_x21) - positions[1][2]
+            diff_w21 = math.atan2(diff_y21, diff_x21) - directions[0]
+            diff_w12 = math.atan2(diff_y21, diff_x21) - directions[1]
             diff_r21 = math.sqrt(diff_x21**2 + diff_y21**2)
 
-            diff_w31 = math.atan2(diff_y31, diff_x31) - positions[0][2]
-            diff_w13 = math.atan2(diff_y31, diff_x31) - positions[2][2]
+            diff_w31 = math.atan2(diff_y31, diff_x31) - directions[0]
+            diff_w13 = math.atan2(diff_y31, diff_x31) - directions[2]
             diff_r31 = math.sqrt(diff_x31**2 + diff_y31**2)
 
-            diff_w32 = math.atan2(diff_y32, diff_x32) - positions[1][2]
-            diff_w23 = math.atan2(diff_y32, diff_x32) - positions[2][2]
+            diff_w32 = math.atan2(diff_y32, diff_x32) - directions[1]
+            diff_w23 = math.atan2(diff_y32, diff_x32) - directions[2]
             diff_r32 = math.sqrt(diff_x32**2 + diff_y32**2)
         except OverflowError:
             print diff_x21, diff_y21, diff_x31, diff_y31, diff_x32, diff_y32
@@ -96,21 +102,26 @@ class RobotController:
             index += 1
 
 
-    def calculate_twists_simple(self, positions):
+    def calculate_twists_simple(self):
         """
         calculates twist messages for the simple task
         """
+
+        position = self.robots[0].get_position()
+        direction = self.robots[0].get_direction()
+
 
         goal_x = 0.0
         goal_y = 0.0
 
         # Calculate difference between robot position and goal position
-        diff_x = goal_x - positions[0][0]
-        diff_y = goal_y - positions[0][1]
+        diff_x = goal_x - position.x
+        diff_y = goal_y - position.y
 
         try:
             # Calculate angle to goal and distance to goal
-            diff_w = math.atan2(diff_y, diff_x) - curr_w
+            diff_w = math.atan2(diff_y, diff_x) - direction
+            diff_w = (diff_w + math.pi) % (2*math.pi) - math.pi
             diff_r = math.sqrt(diff_x**2 + diff_y**2)
         except OverflowError:
             print diff_x, diff_y
@@ -135,18 +146,9 @@ class RobotController:
         duration : float - In seconds
         """
 
-        end_time = time.time() + duration
+        for _ in range(int(duration * self.robot.resolution)):
+            self.calculate_twists_collinear()
 
-        try:
-            while time.time() < end_time:
-                positions = []
-                for robot in self.robots:
-                    positions.append(robot.get_position())
-
-                    self.calculate_twists_collinear(positions)
-
-        except KeyboardInterrupt:
-            pass
 
         end_positions = []
         for robot in self.robots:
@@ -159,15 +161,15 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [0.0, 1.0, 1.0, 0.0]
+    genes = [-5.729690431999708, 2.905, 12.345747976870614, 0.6868868784740744]
 
-    robot = Robot()
+    robot = Robot(noise = 0.0)
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
 
 
     robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 10)
+    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
 
     # Run
-    robot_controller.run(duration = 15)
+    robot_controller.run(duration = 20)

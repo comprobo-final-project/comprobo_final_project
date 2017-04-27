@@ -52,20 +52,19 @@ class Supervisor(object):
         resets each robot's coordinates for next iteration
         """
 
+        robot.reset()
         robot.pose.position.x = np.random.randint(1,10)
         robot.pose.position.y = np.random.randint(1,10)
-        robot.pose.velocity.x = 0.0
-        robot.pose.velocity.y = 0.0
-        robot.pose.orientation.z = 0.0
+        robot.set_direction(0.0)
 
 
     def run(self):
         """
         main run function
         """
-        xpos1, ypos1, o1, xpos2, ypos2, o2, xpos3, ypos3, o3 = self.robot_controller.run(1)
 
-        return xpos1, ypos1, xpos2, ypos2, xpos3, ypos3
+        pos1, pos2, pos3 = self.robot_controller.run(20)
+        return pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y
 
 
 if __name__ == '__main__':

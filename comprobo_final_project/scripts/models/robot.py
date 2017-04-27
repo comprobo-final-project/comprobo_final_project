@@ -38,10 +38,7 @@ class Robot:
 
     def get_position(self):
 
-        return self.pose_stamped.pose.position.x, \
-                self.pose_stamped.pose.position.y, \
-                self.pose_stamped.orientation.z
-
+        return self.pose_stamped.pose.position
 
 
     def _pose_listener(self, pose):
