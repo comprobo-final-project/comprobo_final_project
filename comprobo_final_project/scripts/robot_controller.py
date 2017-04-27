@@ -51,7 +51,7 @@ class RobotController:
         end_time = time.time() + duration
 
         try:
-            while time.time() < end_time:
+            for _ in range(int(duration * self.robot.resolution)):
                 curr_pos = self.robot.get_position()
                 curr_w = self.robot.get_direction()
                 curr_x = curr_pos.x
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     genes = [0.0, 3.0, 1.0, 0.0]
 
-    robot = Robot(noise = 0)
+    robot = Robot(noise = 0.1)
     robot.pose.position.x = 3.0
     robot.pose.position.y = 5.0
 
@@ -99,4 +99,4 @@ if __name__ == '__main__':
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 5)
 
     # Run
-    robot_controller.run(duration = 30)
+    robot_controller.run(duration = 20)
