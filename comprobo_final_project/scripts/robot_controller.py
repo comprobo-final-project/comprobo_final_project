@@ -105,4 +105,4 @@ if __name__ == '__main__':
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
 
     # Run
-    robot_controller.run(duration = 20)
+    robot_controller.run(duration=20)

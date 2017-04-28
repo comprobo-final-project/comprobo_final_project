@@ -50,7 +50,7 @@ class Supervisor(object):
         main run function
         """
 
-        return self.robot_controller.run(1)
+        return self.robot_controller.run(20)
 
 
 if __name__ == '__main__':
