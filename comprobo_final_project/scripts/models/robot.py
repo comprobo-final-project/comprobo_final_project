@@ -1,10 +1,16 @@
 #!usr/bin/env python
 
-
+import math
 import rospy
+import tf
+
+import numpy as np
+
 from geometry_msgs.msg import PoseStamped, Twist
 from ..providers.gazebo_position_provider import GazeboPoseProvider
 from ..providers.april_pose_provider import AprilPoseProvider
+
+from ..helpers import sleeper
 
 
 class Robot:
@@ -19,9 +25,12 @@ class Robot:
         #       here.
         rospy.init_node('robot_controller')
 
+        self.MAX_SPEED = 0.3 # m/s
+        self.MAX_TURN_RATE = 0.8 * math.pi # rad/s
+
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
-        self.resolution = 100
+        self.resolution = 10
 
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
@@ -35,21 +44,23 @@ class Robot:
 
     def set_twist(self, forward_rate, turn_rate):
 
-        if forward_rate > .3:
-            self.twist.linear.x = .3
-        else:
-            self.twist.linear.x = forward_rate
-
-        if turn_rate > 3:
-            self.twist.angular.z = 3
-        else:
-            self.twist.angular.z = turn_rate
+        self.twist.linear.x = np.clip(forward_rate, 0, self.MAX_SPEED)
+        self.twist.angular.z = np.clip(turn_rate, -self.MAX_TURN_RATE, self.MAX_TURN_RATE)
 
         self.twist_publisher.publish(self.twist)
+        sleeper.sleep(1.0 / self.resolution)
 
 
     def get_position(self):
         return self.pose_stamped.pose.position
+
+
+    def get_direction(self):
+        return tf.transformations.euler_from_quaternion((
+            self.pose_stamped.pose.orientation.x,
+            self.pose_stamped.pose.orientation.y,
+            self.pose_stamped.pose.orientation.z,
+            self.pose_stamped.pose.orientation.w))[2] * 180 / (math.pi)
 
 
     def _pose_listener(self, pose):
