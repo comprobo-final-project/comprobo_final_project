@@ -32,7 +32,7 @@ class GeneTrainer(object):
 
         print "Starting the training session."
 
-        with open('logs/log_' + str(int(time.time())) + '.csv','wb') as file_obj:
+        with open('logs/log_'+str(int(time.time()))+'.csv','wb') as file_obj:
             writer = csv.writer(file_obj, delimiter = ',')
             generation = 0
             found = False
@@ -49,8 +49,9 @@ class GeneTrainer(object):
                 ])
                 file_obj.flush()
 
-                if self.population.generations[0].fitness < 0.05:
-                    print "Most fit gene:", self.population.generations[0].genes, \
+                if self.population.generations[0].fitness < 2.0:
+                    print "Most fit gene:", \
+                            self.population.generations[0].genes, \
                             self.population.generations[0].fitness
                     found = True
                     break

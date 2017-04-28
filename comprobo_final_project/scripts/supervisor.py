@@ -38,22 +38,24 @@ class Supervisor(object):
         resets the simulation for the next usage
         """
 
-        self.robot.pose.position.x = 3.0
-        self.robot.pose.position.y = 5.0
-        self.robot.set_direction(0.0)
+        # Give the robot a random position r meters away from the goal
+        self.robot.set_random_position(r=5.0)
+
+        # Give the robot a random direction
+        self.robot.set_random_direction()
 
 
     def run(self):
         """
         main run function
         """
-        pos = self.robot_controller.run(20)
-        return pos.x, pos.y
+
+        return self.robot_controller.run(1)
 
 
 if __name__ == '__main__':
 
     node = Supervisor()
-    genes = [1.0,2.0,3.0,4.0,5.0,6.0]
+    genes = [1.0, 2.0, 3.0, 4.0]
     node.use_genes(genes)
     node.run()

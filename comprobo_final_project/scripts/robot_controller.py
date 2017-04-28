@@ -50,6 +50,8 @@ class RobotController:
 
         end_time = time.time() + duration
 
+        positions = []
+
         try:
             for _ in range(int(duration * self.robot.resolution)):
                 curr_pos = self.robot.get_position()
@@ -58,6 +60,8 @@ class RobotController:
                 curr_y = curr_pos.y
                 goal_x = 0.0
                 goal_y = 0.0
+
+                positions.append(curr_pos) # store position history
 
                 # Calculate difference between robot position and goal position
                 diff_x = goal_x - curr_x
@@ -69,8 +73,9 @@ class RobotController:
                     diff_w = math.atan2(diff_y, diff_x) - curr_w
                     diff_w = (diff_w + math.pi) % (2*math.pi) - math.pi
                     diff_r = math.sqrt(diff_x**2 + diff_y**2)
+
                 except OverflowError:
-                    print diff_x, diff_y
+                    print 'Overflow Error: ', diff_x, diff_y
 
                 # Define linear and angular velocities based on genes
                 a1, b1, a2, b2 = self.genes
@@ -79,21 +84,22 @@ class RobotController:
 
                 # Set linear and angular velocities
                 self.robot.set_twist(forward_rate, turn_rate)
+
         except KeyboardInterrupt:
             pass
 
-        return self.robot.get_position()
+        return positions
 
 
 if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [-5.729690431999708, 2.905, 12.345747976870614, 0.6868868784740744]
+    genes = [-4.124, 1.355, 36.844, 1.968]
 
     robot = Robot(noise = 0.0)
-    robot.pose.position.x = 3.0
-    robot.pose.position.y = 5.0
+    robot.set_random_position() # give the robot a random position
+    robot.set_random_direction() # give the robot a random direction
 
     robot_controller = RobotController(robot, genes)
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)

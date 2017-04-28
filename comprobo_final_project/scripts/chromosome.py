@@ -12,6 +12,10 @@ import numpy as np
 # The number of genes that each organism has
 NUM_GENES = 4
 
+# Boundary values for genes
+GENE_MAX = 10000
+GENE_MIN = -10000
+
 
 class Chromosome:
     """
@@ -61,24 +65,22 @@ class Chromosome:
         return new_chromosome_1, new_chromosome_2
 
 
-    def mutate(self, mutation_rate_multiplier=1.0):
+    def mutate(self):
         """
-        Mutates the genes of the specified chromosome.
-
-        mutation_rate_multiplier: alter the chance that each individual unit of
-            a gene becomes mutated. Mutation chance per unit is
-            mutation_rate_multiplier/num_units_per_gene
+        Mutates a single random gene of the specified chromosome.
         """
 
         # Initialize what will be the final list of mutated genes
-        mutated_genes = []
-
-        for gene in self.genes:
-            mutated_genes.append(gene)
+        mutated_genes = self.genes
 
         # Select a random gene and multiply it with a random value
-        idx = random.randint(0, len(self.genes) - 1)
-        mutated_genes[idx] *= random.uniform(0.5, 2)
+        index_to_mutate = random.randint(0, len(self.genes) - 1)
+        mutated_genes[index_to_mutate] *= random.uniform(0.5, 2)
+
+        # Clip and round all genes
+        mutated_genes[index_to_mutate] = np.clip(mutated_genes[index_to_mutate],
+                GENE_MIN, GENE_MAX)
+        mutated_genes = [round(gene, 3) for gene in mutated_genes]
 
         # Create new chromosome with genes from the mutated genes
         return Chromosome(mutated_genes, self.supervisor)
@@ -89,10 +91,18 @@ class Chromosome:
         Calculate the fitness of a specified chromosome.
         """
 
+        # Apply current chromosome's genes to the supervisor
         self.supervisor.use_genes(self.genes)
-        xpos, ypos = self.supervisor.run()
-        fitness = np.sqrt(xpos**2 + ypos**2)
+
+        # Calculate fitness
+        poses = self.supervisor.run() # all poses
+        distances = [np.sqrt(pose.position.x**2 + pose.position.y**2) \
+                for pose in poses] # all distances from goal
+        fitness = np.mean(distances) # average distance from goal
+
+        # Reset the supervisor to accept new genes
         self.supervisor.reset()
+
         return fitness
 
 
