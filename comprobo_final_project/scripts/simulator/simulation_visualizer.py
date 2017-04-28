@@ -38,11 +38,11 @@ class SimulationVisualizer:
         # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.quiver
 
         # currently will show only one robot, because I'm not sure how this works for multiple
-        self.quiver_manager1 = axes.quiver(
-            self.robots[0].pose.position.x,
-            self.robots[0].pose.position.y,
-            self.robots[0].pose.velocity.x,
-            self.robots[0].pose.velocity.y,
+        self.quiver_manager = axes.quiver(
+            [self.robots[0].pose.position.x, self.robots[1].pose.position.x, self.robots[2].pose.position.x],
+            [self.robots[0].pose.position.y, self.robots[1].pose.position.y, self.robots[2].pose.position.y],
+            [self.robots[0].pose.velocity.x, self.robots[1].pose.velocity.x, self.robots[2].pose.velocity.x],
+            [self.robots[0].pose.velocity.y, self.robots[1].pose.velocity.y, self.robots[2].pose.velocity.y],
             units = 'xy',
             angles = 'xy',
             scale_units = 'xy',
@@ -57,10 +57,10 @@ class SimulationVisualizer:
 
 
     def update(self, frequency):
-        self.quiver_manager.set_UVC(self.robots[0].pose1.velocity.x,
-                self.robots[0].pose.velocity.y)
-        self.quiver_manager.set_offsets((self.robots[0].pose.position.x,
-                self.robots[0].pose.position.y))
+        self.quiver_manager.set_UVC([self.robots[0].pose.velocity.x, self.robots[1].pose.velocity.x, self.robots[2].pose.velocity.x],
+                                    [self.robots[0].pose.velocity.y, self.robots[1].pose.velocity.y, self.robots[2].pose.velocity.y])
+        self.quiver_manager.set_offsets(([self.robots[0].pose.position.x, self.robots[1].pose.position.x, self.robots[2].pose.position.x],
+                                        [self.robots[0].pose.position.y, self.robots[1].pose.position.y, self.robots[2].pose.position.y]))
 
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()

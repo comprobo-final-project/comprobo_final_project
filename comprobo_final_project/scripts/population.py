@@ -30,7 +30,7 @@ class Population:
         for i in range(size): pop.append(Chromosome(genes=None, supervisor=supervisor))
 
         # population class holds a generation of the population, which evolves over time
-        self.generations = list(sorted(pop, key=lambda x: x.fitness))
+        self.generations = list(sorted(pop, key=lambda x: x.fitness, reverse=True))
 
 
 
@@ -83,4 +83,4 @@ class Population:
                     buf.append(self.generations[idx])
                 idx += 1
 
-        self.generations = list(sorted(buf, key=lambda x: x.fitness))
+        self.generations = list(sorted(buf, key=lambda x: x.fitness, reverse=True))

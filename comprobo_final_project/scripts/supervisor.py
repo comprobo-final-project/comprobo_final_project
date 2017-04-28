@@ -26,7 +26,6 @@ class Supervisor(object):
             robot.pose.position.y = np.random.randint(1,10)
             self.robots.append(robot)
 
-        self.sim = Simulator(self.robots)
         self.robot_controller = RobotController(self.robots)
 
 

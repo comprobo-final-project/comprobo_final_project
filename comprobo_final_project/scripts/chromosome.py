@@ -92,7 +92,7 @@ class Chromosome:
         """
 
         self.supervisor.use_genes(self.genes)
-        
+
         xpos, ypos = self.supervisor.run()
         fitness = np.sqrt(xpos**2 + ypos**2)
         self.supervisor.reset()
@@ -109,9 +109,11 @@ class Chromosome:
         x = [xpos1, xpos2, xpos3]
         y = [ypos1, ypos2, ypos3]
 
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+
+        _, _, r_value, _, _ = stats.linregress(zip(x,y))
         fitness = r_value**2
         self.supervisor.reset()
+
         return fitness
 
 

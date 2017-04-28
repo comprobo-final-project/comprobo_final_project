@@ -146,13 +146,15 @@ class RobotController:
         duration : float - In seconds
         """
 
-        for _ in range(int(duration * self.robot.resolution)):
+        for _ in range(int(duration * self.robots[0].resolution)):
             self.calculate_twists_collinear()
 
 
         end_positions = []
         for robot in self.robots:
             end_positions.append(robot.get_position())
+            test = robot.get_position()
+            print test.x, test.y
 
         return end_positions
 
@@ -161,15 +163,23 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [-5.729690431999708, 2.905, 12.345747976870614, 0.6868868784740744]
+    genes = [3.494, -4.493, 0.09, -3.978, -3.429, -0.182, -0.175, 3.623, -0.559, -3.559, 3.701, -1.746]
 
-    robot = Robot(noise = 0.0)
-    robot.pose.position.x = 3.0
-    robot.pose.position.y = 5.0
+    robot1 = Robot(noise = 0.0)
+    robot1.pose.position.x = 1.0
+    robot1.pose.position.y = 1.0
+
+    robot2 = Robot(noise = 0.0)
+    robot2.pose.position.x = 3.0
+    robot2.pose.position.y = 6.0
+
+    robot3 = Robot(noise = 0.0)
+    robot3.pose.position.x = 9.0
+    robot3.pose.position.y = 2.0
 
 
-    robot_controller = RobotController(robot, genes)
-    simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
+    robot_controller = RobotController([robot1, robot2, robot3], genes)
+    simulation_visualizer = SimulationVisualizer([robot1, robot2, robot3], real_world_scale = 10)
 
     # Run
     robot_controller.run(duration = 20)
