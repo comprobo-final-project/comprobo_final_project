@@ -11,8 +11,8 @@ class Robot:
 
     def __init__(self, noise = 0.1, resolution = 10):
 
-        self.MAX_SPEED = 2 # m/s
-        self.MAX_TURN_RATE = 2 # rad/s
+        self.MAX_SPEED = 0.3 # m/s
+        self.MAX_TURN_RATE = 0.8 * math.pi # rad/s
         self.HISTORY = 0.1 # How much history to use
 
         self.pose = Pose()
