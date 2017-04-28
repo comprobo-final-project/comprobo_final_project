@@ -95,9 +95,9 @@ class Chromosome:
         self.supervisor.use_genes(self.genes)
 
         # Calculate fitness
-        poses = self.supervisor.run() # all poses
-        distances = [np.sqrt(pose.x**2 + pose.y**2) \
-                for pose in poses] # all distances from goal
+        positions = self.supervisor.run() # all positions
+        distances = [np.sqrt(position.x**2 + position.y**2) \
+                for position in positions] # all distances from goal
         fitness = np.mean(distances) # average distance from goal
 
         # Reset the supervisor to accept new genes
