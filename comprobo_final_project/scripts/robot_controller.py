@@ -50,6 +50,8 @@ class RobotController:
 
         end_time = time.time() + duration
 
+        positions = []
+
         try:
             for _ in range(int(duration * self.robot.resolution)):
                 curr_pos = self.robot.get_position()
@@ -58,6 +60,8 @@ class RobotController:
                 curr_y = curr_pos.y
                 goal_x = 0.0
                 goal_y = 0.0
+
+                positions.append(curr_pos) # store position history
 
                 # Calculate difference between robot position and goal position
                 diff_x = goal_x - curr_x
@@ -84,14 +88,14 @@ class RobotController:
         except KeyboardInterrupt:
             pass
 
-        return self.robot.poses
+        return positions
 
 
 if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [-5.728, 2.905, 12.345, 0.686]
+    genes =[1.569, 5.896, 10.584, -0.382] 
 
     robot = Robot(noise = 0.0)
     robot.set_random_position() # give the robot a random position
@@ -101,4 +105,4 @@ if __name__ == '__main__':
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
 
     # Run
-    robot_controller.run(duration = 20)
+    robot_controller.run(duration=20)

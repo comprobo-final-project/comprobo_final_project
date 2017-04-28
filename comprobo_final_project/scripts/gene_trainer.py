@@ -49,7 +49,7 @@ class GeneTrainer(object):
                 ])
                 file_obj.flush()
 
-                if self.population.generations[0].fitness < 0.05:
+                if self.population.generations[0].fitness < .25:
                     print "Most fit gene:", \
                             self.population.generations[0].genes, \
                             self.population.generations[0].fitness

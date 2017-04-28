@@ -96,7 +96,7 @@ class Chromosome:
 
         # Calculate fitness
         poses = self.supervisor.run() # all poses
-        distances = [np.sqrt(pose.position.x**2 + pose.position.y**2) \
+        distances = [np.sqrt(pose.x**2 + pose.y**2) \
                 for pose in poses] # all distances from goal
         fitness = np.mean(distances) # average distance from goal
 

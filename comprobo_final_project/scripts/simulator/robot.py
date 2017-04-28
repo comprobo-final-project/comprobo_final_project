@@ -17,7 +17,6 @@ class Robot:
 
         self.pose = Pose()
         self.twist = Twist()
-        self.poses = []
 
         self.noise = noise # A value between 0 and 1.
 
@@ -116,6 +115,3 @@ class Robot:
         self.pose.position += velocity_xyz / step_freq
 
         self.update_listener(step_freq)
-
-        # Store current pose in list of all poses
-        self.poses.append(self.pose)
