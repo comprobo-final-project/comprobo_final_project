@@ -54,13 +54,13 @@ class GoalTask(object):
 
 
     def train(self):
-        algorithm = GeneticAlgorithm(
-            gen_size=100, \
-            crossover_thresh=0.8, \
-            elitism_thresh=0.1, \
-            mutation_thresh=0.5, \
-            fitness_function=self._fitness_function)
-        algorithm.train()
+        GeneticAlgorithm(
+            gen_size=100,
+            num_genes=4,
+            elitism_thresh=0.1,
+            crossover_thresh=0.8,
+            mutation_thresh=0.5,
+            fitness_func=self._fitness_function).train()
 
 
     def test(self):
