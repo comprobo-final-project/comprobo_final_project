@@ -27,12 +27,19 @@ class Generation(object):
 
 
     def evaluate_fitness(self):
+        """
+        Calculates fitness of all organisms in the generation and sorts by most
+        fit.
+        """
         self._fitnesses = np.apply_along_axis(self.fitness_func, 1, \
             self._organisms)
         self._sort() # Make sure to sort at the end for fitness
 
 
     def get_zeroth(self):
+        """
+        Returns first organism and fitness.
+        """
         return self._organisms[0], self._fitnesses[0]
 
 
@@ -80,6 +87,9 @@ class Generation(object):
 
 
     def _sort(self):
+        """
+        Sorts organisms by fitness.
+        """
         order = self._fitnesses.argsort()
         self._organisms = self._organisms[order]
         self._fitnesses = self._fitnesses[order]

@@ -8,9 +8,15 @@ from ..visualizations import fitness_vs_run
 
 
 class GoalTask(object):
-
+    """
+    Allows a robot to move to a fixed goal.
+    """
 
     def train(self, robot):
+        """
+        Trains the task to find the most fit organism. Organisms are stored in a
+        log file along with their fitness per generation.
+        """
 
         log_location = 'logs/log_'+str(int(time.time()))+'.csv'
         print log_location
@@ -26,11 +32,19 @@ class GoalTask(object):
 
 
     def visualizer_test(self, robot, organism):
+        """
+        Use the basic visualizer to see what the robot is doing.
+        """
         simulation_visualizer = SimulationVisualizer(robot, real_world_scale=2)
         self.run_with_setup(robot, organism)
 
 
     def get_fitness_func(self, robot):
+        """
+        Provides a fitness function for the genetic alorigthm to optimize for.
+        """
+
+        # Using a closure here so we can hold our single robot instance
         def _fitness_func(organism):
             positions = self.run_with_setup(robot, organism)
 
@@ -44,12 +58,18 @@ class GoalTask(object):
 
 
     def run_with_setup(self, robot, organism):
+        """
+        For training and testing, we want to use the same setup defined here.
+        """
         robot.set_random_position(r=5.0)
         robot.set_random_direction()
         return self._run(robot=robot, duration=20, organism=organism)
 
 
     def _run(self, robot, duration, organism):
+        """
+        Runs a robot through our function, controlled by an organism's genes.
+        """
 
         goal_x = 0.0
         goal_y = 0.0
