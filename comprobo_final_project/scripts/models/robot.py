@@ -15,7 +15,7 @@ class Robot:
     set_twist(twist : Twist) : Void - Sets the Twist of the robot
     """
 
-    def __init__(self, real=False):
+    def __init__(self, resolution=10, real=False):
 
         # TODO: This needs some work, b/c we can't start multiple robot nodes
         #       here.
@@ -23,7 +23,7 @@ class Robot:
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
-        self.resolution = 10
+        self.resolution = resolution
 
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
