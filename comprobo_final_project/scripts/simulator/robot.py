@@ -34,7 +34,8 @@ class Robot:
     def set_twist(self, forward_rate, turn_rate):
 
         self.twist.linear.x = np.clip(forward_rate, 0, self.MAX_SPEED)
-        self.twist.angular.z = np.clip(turn_rate, -self.MAX_TURN_RATE, self.MAX_TURN_RATE)
+        self.twist.angular.z = np.clip(turn_rate, -self.MAX_TURN_RATE,
+                self.MAX_TURN_RATE)
         self.step(self.resolution)
 
 
@@ -46,15 +47,47 @@ class Robot:
         self.update_listener = update_listener
 
 
+    def set_random_position(self, r=5.0):
+        """ Set the robot randomly on the circumference of a circle that
+        is centered on the origin and of radius r. """
+
+        # Randomly generate x and y positions
+        x_pos = random.uniform(-r, r) # choose random x_pos
+        y_pos = math.sqrt(r**2 - x_pos**2) # set y_pos to meet r restriction
+        y_pos *= random.choice([1.0, -1.0]) # randomly make y_pos negative
+
+        # Set the robot's position
+        self.set_position(x_pos, y_pos)
+
+
+    def set_random_direction(self):
+        """ Give the robot a random direction from -pi to pi. """
+
+        # Randomly generate a direction
+        w = random.uniform(-math.pi, math.pi)
+
+        # Set the robot's direction
+        self.set_direction(w)
+
+
     def get_position(self):
+
         return self.pose.position
 
 
     def get_direction(self):
+
         return self.pose.velocity.w
 
 
+    def set_position(self, x, y):
+
+        self.pose.position.x = x
+        self.pose.position.y = y
+
+
     def set_direction(self, w):
+
         self.pose.velocity.w = w
 
 
@@ -81,7 +114,6 @@ class Robot:
                 vel_r * (1 - self.HISTORY)
             self.pose.velocity.w = self.pose.velocity.w * self.HISTORY + \
                 vel_w * (1 - self.HISTORY)
-
 
         # Update pose
         velocity_xyz = Vector3()

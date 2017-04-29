@@ -47,7 +47,6 @@ class RobotController:
         """
         calculates twists for the collinear task
         """
-
         positions = []
         directions = []
         for robot in self.robots:
@@ -102,14 +101,19 @@ class RobotController:
             index += 1
 
 
+        return positions
+
+
     def calculate_twists_simple(self):
         """
         calculates twist messages for the simple task
         """
 
+        positions = []
         position = self.robots[0].get_position()
         direction = self.robots[0].get_direction()
 
+        positions.append(position)
 
         goal_x = 0.0
         goal_y = 0.0
@@ -144,17 +148,11 @@ class RobotController:
         Main run function.
         duration : float - In seconds
         """
-
+        robot_positions = []
         for _ in range(int(duration * self.robots[0].resolution)):
-            self.calculate_twists_collinear()
+            robot_positions.append(self.calculate_twists_collinear())
 
-
-        end_positions = []
-        for robot in self.robots:
-            end_positions.append(robot.get_position())
-            test = robot.get_position()
-
-        return end_positions
+        return robot_positions
 
 
 if __name__ == '__main__':
@@ -162,18 +160,20 @@ if __name__ == '__main__':
     from .simulator.simulation_visualizer import SimulationVisualizer
 
     genes =  [3.166, 1.241, -2.04, 1.573, -2.025, 3.339, 1.868, -0.903, 2.429, 3.233, 2.82, -2.538]
-    
+
     robot1 = Robot(noise=0.0)
-    robot1.pose.position.x = 3
-    robot1.pose.position.y = 1
+    robot.set_random_position() # give the robot a random position
+    robot.set_random_direction() # give the robot a random direction
 
     robot2 = Robot(noise=0.0)
-    robot2.pose.position.x = 5
-    robot2.pose.position.y = 7
+    robot.set_random_position() # give the robot a random position
+    robot.set_random_direction() # give the robot a random direction
 
     robot3 = Robot(noise=0.0)
-    robot3.pose.position.x = 9
-    robot3.pose.position.y = 5
+    robot.set_random_position() # give the robot a random position
+    robot.set_random_direction() # give the robot a random direction
+
+    robot = Robot(noise = 0.0)
 
 
     robot_controller = RobotController([robot1, robot2, robot3], genes)

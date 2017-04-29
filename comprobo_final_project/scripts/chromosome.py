@@ -14,6 +14,10 @@ from scipy import stats
 NUM_GENES = 12
 
 
+# Boundary values for genes
+GENE_MAX = 10000
+GENE_MIN = -10000
+
 
 class Chromosome:
     """
@@ -65,22 +69,20 @@ class Chromosome:
 
     def mutate(self):
         """
-        Mutates the genes of the specified chromosome.
-
-        mutation_rate_multiplier: alter the chance that each individual unit of
-            a gene becomes mutated. Mutation chance per unit is
-            mutation_rate_multiplier/num_units_per_gene
+        Mutates a single random gene of the specified chromosome.
         """
 
         # Initialize what will be the final list of mutated genes
-        mutated_genes = []
-
-        for gene in self.genes:
-            mutated_genes.append(gene)
+        mutated_genes = self.genes
 
         # Select a random gene and multiply it with a random value
-        idx = random.randint(0, NUM_GENES - 1)
-        mutated_genes[idx] *= random.uniform(0.5, 2)
+        index_to_mutate = random.randint(0, len(self.genes) - 1)
+        mutated_genes[index_to_mutate] *= random.uniform(0.5, 2)
+
+        # Clip and round all genes
+        mutated_genes[index_to_mutate] = np.clip(mutated_genes[index_to_mutate],
+                GENE_MIN, GENE_MAX)
+        mutated_genes = [round(gene, 3) for gene in mutated_genes]
 
         # Create new chromosome with genes from the mutated genes
         return Chromosome(mutated_genes, self.supervisor)
@@ -91,11 +93,18 @@ class Chromosome:
         Calculates fitness of a specified chromosome for simple task
         """
 
+        # Apply current chromosome's genes to the supervisor
         self.supervisor.use_genes(self.genes)
 
-        xpos, ypos = self.supervisor.run()
-        fitness = np.sqrt(xpos**2 + ypos**2)
+        # Calculate fitness
+        positions = self.supervisor.run() # all positions
+        distances = [np.sqrt(position.x**2 + position.y**2) \
+                for position in positions] # all distances from goal
+        fitness = np.mean(distances) # average distance from goal
+
+        # Reset the supervisor to accept new genes
         self.supervisor.reset()
+
         return fitness
 
     def get_fitness_collinear(self):
@@ -103,19 +112,30 @@ class Chromosome:
         Calculate the fitness of a specified chromosome for collinear task
         """
 
-        self.supervisor.use_genes(self.genes)
+        fitness = []
+        for i in range(3):
+            self.supervisor.use_genes(self.genes)
 
-        xpos1, ypos1, xpos2, ypos2, xpos3, ypos3 = self.supervisor.run()
-        x = [xpos1, xpos2, xpos3]
-        y = [ypos1, ypos2, ypos3]
+            positions = self.supervisor.run()
+            r_values = []
 
-        print "ROBOT ending position", xpos1, ypos1, xpos2, ypos2, xpos3, ypos3
+            for position in positions:
+                x = []
+                y = []
+                for robot in position:
+                    x.append(robot.x)
+                    y.append(robot.y)
 
-        _, _, r_value, _, _ = stats.linregress(zip(x,y))
-        fitness = r_value**2
-        self.supervisor.reset()
+                _, _, r_value, _, _ = stats.linregress(zip(x,y))
+                r_values.append(r_value**2)
 
-        return fitness
+            final_value = numpy.mean(r_values)
+            fitness.append(final_value)
+            self.supervisor.reset()
+
+        overall_fitness = numpy.mean(fitness)
+
+        return overall_fitness
 
 
 if __name__ == '__main__':
