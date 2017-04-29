@@ -21,10 +21,11 @@ class Supervisor(object):
 
         self.robots = []
         for i in range(number):
-            robot = Robot()
+            robot = Robot(noise=0.0)
             robot.pose.position.x = np.random.randint(1,10)
             robot.pose.position.y = np.random.randint(1,10)
             self.robots.append(robot)
+            print "ROBOT starting position", robot.pose.position.x, robot.pose.position.y
 
         self.robot_controller = RobotController(self.robots)
 
@@ -55,13 +56,14 @@ class Supervisor(object):
         robot.pose.position.x = np.random.randint(1,10)
         robot.pose.position.y = np.random.randint(1,10)
         robot.set_direction(0.0)
+        print "ROBOT starting position", robot.pose.position.x, robot.pose.position.y
 
 
     def run(self):
         """
         main run function
         """
-
+        print "START of RUN"
         pos1, pos2, pos3 = self.robot_controller.run(20)
         return pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y
 

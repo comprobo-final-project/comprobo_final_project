@@ -30,7 +30,7 @@ class Robot:
         self.pose = Pose()
         self.twist = Twist()
 
-        
+
     def set_twist(self, forward_rate, turn_rate):
 
         self.twist.linear.x = np.clip(forward_rate, 0, self.MAX_SPEED)
@@ -88,5 +88,6 @@ class Robot:
         velocity_xyz.x = self.pose.velocity.r * math.cos(self.pose.velocity.w)
         velocity_xyz.y = self.pose.velocity.r * math.sin(self.pose.velocity.w)
         self.pose.position += velocity_xyz / step_freq
+
 
         self.update_listener(step_freq)

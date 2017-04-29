@@ -109,6 +109,7 @@ class Chromosome:
         x = [xpos1, xpos2, xpos3]
         y = [ypos1, ypos2, ypos3]
 
+        print "ROBOT ending position", xpos1, ypos1, xpos2, ypos2, xpos3, ypos3
 
         _, _, r_value, _, _ = stats.linregress(zip(x,y))
         fitness = r_value**2
