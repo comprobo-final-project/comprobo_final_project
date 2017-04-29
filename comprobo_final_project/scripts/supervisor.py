@@ -25,7 +25,7 @@ class Supervisor(object):
             robot.pose.position.x = np.random.randint(1,10)
             robot.pose.position.y = np.random.randint(1,10)
             self.robots.append(robot)
-            print "ROBOT starting position", robot.pose.position.x, robot.pose.position.y
+            print "ROBOT START", robot.pose.position.x, robot.pose.position.y
 
         self.robot_controller = RobotController(self.robots)
 
@@ -51,22 +51,18 @@ class Supervisor(object):
         """
         resets each robot's coordinates for next iteration
         """
-
         # Give the robot a random position r meters away from the goal
-        self.robot.set_random_position(r=5.0)
+        robot.set_random_position(r=5.0)
+        print "ROBOT START", robot.pose.position.x, robot.pose.position.y
 
         # Give the robot a random direction
-        self.robot.set_random_direction()
+        robot.set_random_direction()
 
 
     def run(self):
         """
         main run function
         """
-
-        print "START of RUN"
-        pos1, pos2, pos3 = self.robot_controller.run(20)
-        return pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y
 
         return self.robot_controller.run(20)
 

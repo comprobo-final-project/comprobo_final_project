@@ -159,26 +159,23 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes =  [3.166, 1.241, -2.04, 1.573, -2.025, 3.339, 1.868, -0.903, 2.429, 3.233, 2.82, -2.538]
+    genes =  [-0.405, -3.467, -0.36, -3.46, -1.696, -3.46, 1.345, -2.377, 0.974, -1.248, 4.973, 2.816]
 
     robot1 = Robot(noise=0.0)
-    robot.set_random_position() # give the robot a random position
-    robot.set_random_direction() # give the robot a random direction
+    robot1.set_random_position() # give the robot a random position
+    robot1.set_random_direction() # give the robot a random direction
 
     robot2 = Robot(noise=0.0)
-    robot.set_random_position() # give the robot a random position
-    robot.set_random_direction() # give the robot a random direction
+    robot2.set_random_position() # give the robot a random position
+    robot2.set_random_direction() # give the robot a random direction
 
     robot3 = Robot(noise=0.0)
-    robot.set_random_position() # give the robot a random position
-    robot.set_random_direction() # give the robot a random direction
-
-    robot = Robot(noise = 0.0)
+    robot3.set_random_position() # give the robot a random position
+    robot3.set_random_direction() # give the robot a random direction
 
 
     robot_controller = RobotController([robot1, robot2, robot3], genes)
     simulation_visualizer = SimulationVisualizer([robot1, robot2, robot3], real_world_scale = 10)
 
     # Run
-    pos1, pos2, pos3 = robot_controller.run(duration = 20)
-    print pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y
+    robot_controller.run(duration = 20)

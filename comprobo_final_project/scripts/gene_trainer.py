@@ -52,8 +52,7 @@ class GeneTrainer(object):
                 if self.population.generations[0].fitness > .95:
 
                     print "Most fit gene:", self.population.generations[0].genes, \
-
-                            self.population.generations[0].fitness
+                    self.population.generations[0].fitness
                     found = True
                     break
                 else:

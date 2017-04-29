@@ -9,7 +9,7 @@ generation script for our simplified task, one Neato moving to a goal
 """
 
 
-from chromosome import Chromosome
+from organism import Organism
 from random import choice, random, randint
 
 
@@ -27,7 +27,7 @@ class Population:
         self.tournament_size = 3
 
         pop = []
-        for i in range(size): pop.append(Chromosome(genes=None, supervisor=supervisor))
+        for i in range(size): pop.append(Organism(genes=None, supervisor=supervisor))
 
         # population class holds a generation of the population, which evolves over time
         self.generations = list(sorted(pop, key=lambda x: x.fitness, reverse=True))
