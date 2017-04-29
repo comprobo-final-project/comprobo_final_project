@@ -22,38 +22,38 @@ class Generation(object):
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
 
-        self._chromosomes = np.random.rand(gen_size, num_genes)
+        self._organisms = np.random.rand(gen_size, num_genes)
         self._fitnesses = np.zeros(gen_size)
 
 
     def evaluate_fitness(self):
         self._fitnesses = np.apply_along_axis(self.fitness_func, 1, \
-            self._chromosomes)
+            self._organisms)
         self._sort() # Make sure to sort at the end for fitness
 
 
     def get_zeroth(self):
-        return self._chromosomes[0], self._fitnesses[0]
+        return self._organisms[0], self._fitnesses[0]
 
 
     def evolve(self):
         """
-        Method to evolve the generation of chromosomes.
+        Method to evolve the generation of organisms.
         """
 
-        # Fill a percentage of the next generation with elite chromosomes
-        num_chromosomes_created = int(round(self.gen_size * self.elitism_thresh))
-        buf = self._chromosomes[:num_chromosomes_created].tolist()
+        # Fill a percentage of the next generation with elite organisms
+        num_organisms_created = int(round(self.gen_size * self.elitism_thresh))
+        buf = self._organisms[:num_organisms_created].tolist()
 
         # Create rest of chromsosomes with crossovers and mutations
-        while (num_chromosomes_created < self.gen_size):
+        while (num_organisms_created < self.gen_size):
 
-            # Randomly decide if the next chromosomes should be created
+            # Randomly decide if the next organisms should be created
             # from a crossover_thresh
-            chromosomes_to_create = self.gen_size - num_chromosomes_created
-            if np.random.rand() <= self.crossover_thresh and chromosomes_to_create >= 2:
+            organisms_to_create = self.gen_size - num_organisms_created
+            if np.random.rand() <= self.crossover_thresh and organisms_to_create >= 2:
 
-                # Create two child chromosomes from tournament-selected parents
+                # Create two child organisms from tournament-selected parents
                 (parent_1, parent_2) = self._select_parents()
                 children = self._crossover(parent_1, parent_2)
 
@@ -63,36 +63,36 @@ class Generation(object):
                         buf.append(self._mutate(child))
                     else:
                         buf.append(self._mutate(child))
-                num_chromosomes_created += 2
+                num_organisms_created += 2
 
-            # Directly move a past chromosome to the next generation with
+            # Directly move a past organism to the next generation with
             # a chance at mutation
             else:
-                curr_chromosome = self._chromosomes[num_chromosomes_created]
+                curr_organism = self._organisms[num_organisms_created]
                 if np.random.rand() <= self.mutation_thresh:
-                    buf.append(self._mutate(curr_chromosome))
+                    buf.append(self._mutate(curr_organism))
                 else:
-                    buf.append(curr_chromosome)
-                num_chromosomes_created += 1
+                    buf.append(curr_organism)
+                num_organisms_created += 1
 
         # Sort current generation by fitness
-        self._chromosomes = np.asarray(buf)
+        self._organisms = np.asarray(buf)
 
 
     def _sort(self):
         order = self._fitnesses.argsort()
-        self._chromosomes = self._chromosomes[order]
+        self._organisms = self._organisms[order]
         self._fitnesses = self._fitnesses[order]
 
 
     def _tournament_selection(self):
         """
-        A helper method used to select a random chromosome from the
+        A helper method used to select a random organism from the
         generation using a tournament selection algorithm.
         """
         choices = np.random.choice(self.gen_size, 5)
         choice = np.argmin(self._fitnesses[choices])
-        return self._chromosomes[choices][choice]
+        return self._organisms[choices][choice]
 
 
     def _select_parents(self):
@@ -103,42 +103,45 @@ class Generation(object):
         return (self._tournament_selection(), self._tournament_selection())
 
 
-    def _crossover(self, chromosome_1, chromosome_2):
+    def _crossover(self, organism_1, organism_2):
         """
-        Mixes the two specified chromosomes, returning two new chromosomes
-        that are a result of a crossover of the two original chromosomes.
+        Mixes the two specified organisms, returning two new organisms
+        that are a result of a crossover of the two original organisms.
 
-        other: second chromosome to crossover
+        other: second organism to crossover
 
-        return: two chromosomes that are crossovers between self and other
+        return: two organisms that are crossovers between self and other
         """
+
+        org_1 = organism_1[:]
+        org_2 = organism_2[:]
 
         # Define a random pivot point around which the crossover will occur
-        crossover_point = np.random.randint(0, self.num_genes-1)
+        pivot = np.random.randint(0, self.num_genes-1)
 
-        # Create the new crossovered genes and chromosome
-        new_chromosome_1 = np.concatenate((chromosome_1[:crossover_point], chromosome_2[crossover_point:]))
-        new_chromosome_2 = np.concatenate((chromosome_2[:crossover_point], chromosome_1[crossover_point:]))
+        # Create the new crossovered genes and organism
+        right_genes = org_2[:pivot].copy()
+        org_2[:pivot], org_1[:pivot] = org_1[:pivot], right_genes
 
-        return new_chromosome_1, new_chromosome_2
+        return org_1, org_2
 
 
-    def _mutate(self, chromosome):
+    def _mutate(self, organism):
         """
-        Mutates a single random gene of the specified chromosome.
+        Mutates a single random gene of the specified organism.
         """
 
-        # Don't modify existing chromosome
-        _chromosome = chromosome[:]
+        # Don't modify existing organism
+        _organism = organism[:]
 
         # Select a random gene and multiply it with a random value
-        index_to_mutate = np.random.randint(0, len(_chromosome) - 1)
-        _chromosome[index_to_mutate] *= np.random.uniform(0.5, 2)
+        index_to_mutate = np.random.randint(0, len(_organism) - 1)
+        _organism[index_to_mutate] *= np.random.uniform(0.5, 2)
 
         # Clip and round all genes
-        _chromosome[index_to_mutate] = np.clip(_chromosome[index_to_mutate],
+        _organism[index_to_mutate] = np.clip(_organism[index_to_mutate],
                 GENE_MIN, GENE_MAX)
-        _chromosome = [np.round(gene, 3) for gene in _chromosome]
+        _organism = [np.round(gene, 3) for gene in _organism]
 
-        # Create new chromosome with genes from the mutated genes
-        return _chromosome
+        # Create new organism with genes from the mutated genes
+        return _organism
