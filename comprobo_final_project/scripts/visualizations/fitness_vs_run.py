@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 seaborn.set()
 
-df = pd.read_csv('logs/log_1493168377.csv', header=None)
+df = pd.read_csv('logs/log_1493434087.csv', header=None)
 plt.plot(df[2])
 
 plt.xlabel('Generations')

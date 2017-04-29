@@ -95,11 +95,14 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [-4.124, 1.355, 36.844, 1.968]
+    genes = [2.77160000e+01, 7.72100000e+00, 7.61100000e+00, 8.00000000e-03]
 
     robot = Robot(noise = 0.0)
-    robot.set_random_position() # give the robot a random position
-    robot.set_random_direction() # give the robot a random direction
+    # robot.set_random_position() # give the robot a random position
+    # robot.set_random_direction() # give the robot a random direction
+    robot.pose.position.x = 5
+    robot.pose.position.y = 3
+    robot.set_direction(0)
 
     robot_controller = RobotController(robot, genes)
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
