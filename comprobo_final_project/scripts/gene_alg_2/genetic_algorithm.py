@@ -2,7 +2,10 @@ import time
 import csv
 
 import numpy as np
-import pandas as pd
+
+from .generation import Generation
+
+
 
 class GeneticAlgorithm(object):
 
@@ -23,10 +26,7 @@ class GeneticAlgorithm(object):
         self.fitness_function = fitness_function
         self.max_generations = 10000
 
-        self._generation = pd.DataFrame({
-            'fitness': np.zeros(shape=gen_size)
-        })
-        self._generation['chromosome'] = pd.Series(list(np.random.rand(gen_size, num_genes)))
+        self._generation = Generation(gen_size, num_genes)
 
     def train(self):
 
@@ -41,25 +41,25 @@ class GeneticAlgorithm(object):
             while gen_idx < self.max_generations:
 
                 # Evaluate the fitness for one generation
-                self._evaluate_fitness()
+                self._generation.evaluate_fitness(self.fitness_function)
 
                 # Print out the best
                 print"Generation %d: %s" % (gen_idx, \
-                        self._generation.iloc[0]['chromosome']), \
-                        self._generation.iloc[0]['fitness']
+                        self._generation.chromosomes[0]), \
+                        self._generation.fitnesses[0]
 
                 # Save to the log
                 writer.writerow([
                     gen_idx, \
-                    self._generation.iloc[0]['chromosome'], \
-                    self._generation.iloc[0]['fitness']
+                    self._generation.chromosomes[0], \
+                    self._generation.fitnesses[0]
                 ])
                 file_obj.flush()
 
-                if self._generation.iloc[0]['fitness'] < .25:
+                if self._generation.fitnesses[0] < .25:
                     print "Most fit gene:", \
-                            self._generation.iloc[0]['chromosome'], \
-                            self._generation.iloc[0]['fitness']
+                            self._generation.chromosomes[0], \
+                            self._generation.fitnesses[0]
                     found = True
                     break
                 else:
@@ -71,72 +71,44 @@ class GeneticAlgorithm(object):
             print "Maximum generations reached without success."
 
 
-    def _evaluate_fitness(self):
-        self._generation['fitness'] = self._generation['chromosome'].apply(self.fitness_function)
-        self._generation.sort(columns='fitness', ascending=True)
-
-
     def _evolve(self):
         """
         Method to evolve the generation of chromosomes.
         """
 
-        idx = int(np.round(self.gen_size * self.elitism_thresh))
-        buf = self._generation[:idx]
+        # Fill a percentage of the next generation with elite chromosomes
+        num_chromosomes_created = int(round(self.gen_size * self.elitism_thresh))
+        buf = self._generation.chromosomes[:num_chromosomes_created].tolist()
 
-        while (idx < self.gen_size):
-            if np.random.rand() <= self.crossover_thresh:
-                (parent_1, parent_2) = self._select_parents()
-                children = self._crossover(parent_1, parent_2)
+        # Create rest of chromsosomes with crossovers and mutations
+        while (num_chromosomes_created < self.gen_size):
+
+            # Randomly decide if the next chromosomes should be created
+            # from a crossover_thresh
+            chromosomes_to_create = self.gen_size - num_chromosomes_created
+            if np.random.rand() <= self.crossover_thresh and chromosomes_to_create >= 2:
+
+                # Create two child chromosomes from tournament-selected parents
+                (parent_1, parent_2) = self._generation.select_parents()
+                children = self._generation.crossover(parent_1, parent_2)
+
+                # Random chance to mutate either child
                 for child in children:
                     if np.random.rand() <= self.mutation_thresh:
-                        buf.append(child.mutate())
+                        buf.append(self._generation.mutate(child))
                     else:
-                        buf.append(child)
-                idx += 2
+                        buf.append(self._generation.mutate(child))
+                num_chromosomes_created += 2
+
+            # Directly move a past chromosome to the next generation with
+            # a chance at mutation
             else:
+                curr_chromosome = self._generation.chromosomes[num_chromosomes_created]
                 if np.random.rand() <= self.mutation_thresh:
-                    buf.append(self._generation[idx].mutate())
+                    buf.append(self._generation.mutate(curr_chromosome))
                 else:
-                    buf.append(self._generation[idx])
-                idx += 1
+                    buf.append(curr_chromosome)
+                num_chromosomes_created += 1
 
-        self._generation = list(sorted(buf, key=lambda x: x.fitness))
-
-
-    def _crossover(self, chromosome_1, chromosome_2):
-        """
-        Mixes the two specified chromosomes, returning two new chromosomes
-        that are a result of a crossover of the two original chromosomes.
-
-        other: second chromosome to crossover
-
-        return: two chromosomes that are crossovers between self and other
-        """
-
-        # Define a random pivot point around which the crossover will occur
-        crossover_point = np.random.randint(0, NUM_GENES-1)
-
-        # Create the new crossovered genes and chromosome
-        new_chromosome_1 = chromosome_1[:crossover_point] + chromosome_2[crossover_point:]
-        new_chromosome_2 = chromosome_2[:crossover_point] + chromosome_1[crossover_point:]
-
-        return new_chromosome_1, new_chromosome_2
-
-
-    def _select_parents(self):
-        """
-        A helper method used to select two parents from the generation using a
-        tournament selection algorithm.
-        """
-        return (self._tournament_selection(), self._tournament_selection())
-
-
-    def _tournament_selection(self):
-        """
-        A helper method used to select a random chromosome from the
-        generation using a tournament selection algorithm.
-        """
-        samples = self._generation.sample(frac=0.1)
-        idx = samples['fitness'].idxmin()
-        return samples['chromosome'][idx]
+        # Sort current generation by fitness
+        self._generation.chromosomes = np.asarray(buf)

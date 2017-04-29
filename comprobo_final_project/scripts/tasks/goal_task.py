@@ -8,7 +8,7 @@ class GoalTask(object):
 
 
     def __init__(self):
-        self.robot = Robot(noise=0.2)
+        self.robot = Robot(noise=0.0)
 
 
     def reset_robot(self):
@@ -69,7 +69,13 @@ class GoalTask(object):
 
     def _fitness_function(self, chromosome):
         self.reset_robot()
-        self.run(duration=20, genes=chromosome)
+        positions = self.run(duration=20, genes=chromosome)
+
+        distances = [np.sqrt(position.x**2 + position.y**2) \
+                for position in positions] # all distances from goal
+        fitness = np.mean(distances) # average distance from goal
+
+        return fitness
 
 
 if __name__ == "__main__":
