@@ -45,17 +45,17 @@ class GeneticAlgorithm(object):
 
                 # Evaluate the fitness for one generation
                 self._generation.evaluate_fitness()
-                chromosome, fitness = self._generation.get_zeroth()
+                organism, fitness = self._generation.get_zeroth()
 
                 # Print out the best
-                print"Generation %d: %s" % (gen_idx, chromosome), fitness
+                print"Generation %d: %s" % (gen_idx, organism), fitness
 
                 # Save to the log
-                writer.writerow([gen_idx, chromosome, fitness])
+                writer.writerow([gen_idx, organism, fitness])
                 file_obj.flush()
 
                 if fitness < self.fitness_thresh:
-                    print "Most fit gene:", chromosome, fitness
+                    print "Most fit gene:", organism, fitness
                     found = True
                     break
                 else:
