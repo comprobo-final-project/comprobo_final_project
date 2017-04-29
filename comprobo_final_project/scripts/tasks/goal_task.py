@@ -1,16 +1,22 @@
+import time
 import numpy as np
-
 from ..models.robot import Robot as ModelRobot
 from ..simulator.robot import Robot as SimRobot
 from ..simulator.simulation_visualizer import SimulationVisualizer
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
+from ..visualizations import fitness_vs_run
 
 
 class GoalTask(object):
 
 
     def train(self, robot):
+
+        log_location = 'logs/log_'+str(int(time.time()))+'.csv'
+        print log_location
+
         GeneticAlgorithm(
+            log_location=log_location,
             gen_size=100,
             num_genes=4,
             elitism_thresh=0.1,
@@ -84,6 +90,7 @@ if __name__ == "__main__":
 
     import argparse
 
+    # All tasks should support a standard set of commands similar to this
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--visualize', action='store_true')

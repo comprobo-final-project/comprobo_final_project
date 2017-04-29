@@ -1,4 +1,3 @@
-import time
 import csv
 import numpy as np
 from .generation import Generation
@@ -9,6 +8,7 @@ class GeneticAlgorithm(object):
     def __init__(
         self,
         fitness_func,
+        log_location,
         gen_size=1024,
         num_genes=4,
         train_thresh=10000,
@@ -16,6 +16,8 @@ class GeneticAlgorithm(object):
         elitism_thresh=0.1,
         crossover_thresh=0.8,
         mutation_thresh=0.05):
+
+        self.log_location = log_location
 
         # Used for training
         self.train_thresh = train_thresh
@@ -35,7 +37,7 @@ class GeneticAlgorithm(object):
 
         print "Starting the training session."
 
-        with open('logs/log_'+str(int(time.time()))+'.csv','wb') as file_obj:
+        with open(self.log_location,'wb') as file_obj:
 
             writer = csv.writer(file_obj, delimiter = ',')
             gen_idx = 0
