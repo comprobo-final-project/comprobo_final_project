@@ -7,10 +7,21 @@ import matplotlib.pyplot as plt
 
 seaborn.set()
 
-df = pd.read_csv('logs/log_1493434087.csv', header=None)
-plt.plot(df[2])
+def graph(log_location):
+    df = pd.read_csv(log_location, header=None)
+    plt.plot(df[2])
 
-plt.xlabel('Generations')
-plt.ylabel('Fitness')
+    plt.xlabel('Generations')
+    plt.ylabel('Fitness')
 
-plt.show()
+    plt.show()
+
+
+if __name__ == "__main__":
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--loc', action='store')
+    FLAGS, _ = parser.parse_known_args()
+
+    graph(FLAGS.loc)
