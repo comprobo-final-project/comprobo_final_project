@@ -16,10 +16,10 @@ class AprilPoseProvider(object):
 
         self.pose_callback = None
         self.orient = None
-        rospy.Subscriber("/STAR_pose_continuous", PoseStamped, self.getPos, queue_size=10)
+        rospy.Subscriber("/STAR_pose_continuous", PoseStamped, self.get_position, queue_size=10)
 
 
-    def getPos(self, april_data):
+    def get_position(self, april_data):
         """
         Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
         """
