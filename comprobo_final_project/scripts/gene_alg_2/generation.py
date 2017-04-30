@@ -52,7 +52,7 @@ class Generation(object):
         num_organisms_created = int(round(self.gen_size * self.elitism_thresh))
         buf = self._organisms[:num_organisms_created].tolist()
 
-        # Create rest of chromsosomes with crossovers and mutations
+        # Create rest of organisms with crossovers and mutations
         while (num_organisms_created < self.gen_size):
 
             # Randomly decide if the next organisms should be created
@@ -100,9 +100,16 @@ class Generation(object):
         A helper method used to select a random organism from the
         generation using a tournament selection algorithm.
         """
-        choices = np.random.choice(self.gen_size, 5)
-        choice = np.argmin(self._fitnesses[choices])
-        return self._organisms[choices][choice]
+        # First, get some random indexes
+        choices_idx = np.random.choice(self.gen_size, 5)
+
+        # From those indexes, get the fitnesses and get the choice index of the
+        # most fit
+        min_idx = np.argmin(self._fitnesses[choices_idx])
+
+        # Get the subset of organisms from the random sample. Then, use the
+        # min_idx to get the most fit organism in the sample
+        return self._organisms[choices_idx][min_idx]
 
 
     def _select_parents(self):
@@ -118,9 +125,8 @@ class Generation(object):
         Mixes the two specified organisms, returning two new organisms
         that are a result of a crossover of the two original organisms.
 
-        other: second organism to crossover
-
-        return: two organisms that are crossovers between self and other
+        organism_1, organism_2: organisms to crossover
+        return: two organisms that are crossed over
         """
 
         org_1 = organism_1[:]

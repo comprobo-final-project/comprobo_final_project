@@ -34,6 +34,10 @@ class GeneticAlgorithm(object):
 
 
     def train(self):
+        """
+        Train the algorith and save results to a set location. Results include
+        the most fit gene as well as its fitness per generation.
+        """
 
         print "Starting the training session."
 
