@@ -91,7 +91,11 @@ class Robot:
             twist_w = self.twist.angular.z
             original_w = self.get_direction()
 
-            # From 0 to 2. 1 is neutral
+            # A factor multipled to our updates, which causes the
+            # update value to range from 0 to 2. Low noise makes this
+            # deviation less noticeable, for instance, from 0.9 to 1.1X
+            # the update value. Without noise, this factor does not do
+            # anything (noise_factor == 1).
             noise_factor = 2 * self.noise * (np.random.random() - 0.5)  + 1
 
             # Update velocity
