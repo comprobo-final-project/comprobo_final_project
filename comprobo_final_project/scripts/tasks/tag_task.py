@@ -12,7 +12,7 @@ from ..visualizations import fitness_vs_run
 
 class TagTask(object):
     """
-    Allows a robot to move to a fixed goal.
+    Allow two robots to play tag. One robot chases and one robot runs away.
     """
 
     def train(self, robots):
@@ -34,7 +34,7 @@ class TagTask(object):
             fitness_func=self.get_fitness_func(robots)).train()
 
 
-    def visualizer_test(self, robot, organism):
+    def visualizer_test(self, robots, organism):
         """
         Use the basic visualizer to see what the robot is doing.
         """
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         task.train([chasing_robot, running_robot])
 
     if FLAGS.visualize:
-        chasisng_robot = SimRobot()
+        chasing_robot = SimRobot()
         running_robot = SimRobot()
         task.visualizer_test([chasing_robot, running_robot], organism)
 
