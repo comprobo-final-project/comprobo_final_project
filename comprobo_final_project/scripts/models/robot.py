@@ -1,6 +1,5 @@
 #!usr/bin/env python
 
-import math
 import rospy
 import tf
 
@@ -26,7 +25,7 @@ class Robot:
         rospy.init_node('robot_controller')
 
         self.MAX_SPEED = 0.3 # m/s
-        self.MAX_TURN_RATE = 0.8 * math.pi # rad/s
+        self.MAX_TURN_RATE = 0.8 * np.pi # rad/s
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
@@ -60,7 +59,7 @@ class Robot:
             self.pose_stamped.pose.orientation.x,
             self.pose_stamped.pose.orientation.y,
             self.pose_stamped.pose.orientation.z,
-            self.pose_stamped.pose.orientation.w))[2] * 180 / (math.pi)
+            self.pose_stamped.pose.orientation.w))[2] * 180 / (np.pi)
 
 
     def set_random_position(self, r=1):
@@ -78,4 +77,3 @@ class Robot:
         Callback function for organism position.
         """
         self.pose_stamped.pose = pose
-        
