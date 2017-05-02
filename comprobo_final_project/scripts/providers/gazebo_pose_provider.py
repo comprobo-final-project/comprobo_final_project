@@ -2,7 +2,7 @@
 
 from gazebo_msgs.msg import ModelStates
 
-class GazeboPoseProvider:
+class GazeboPoseProvider(object):
     """
     Provides the world pose of our robot from Gazebo.
     """

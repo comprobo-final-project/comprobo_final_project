@@ -119,17 +119,19 @@ if __name__ == "__main__":
 
     FLAGS, _ = parser.parse_known_args()
 
+    # Initialize task
     task = GoalTask()
-    organism = [13.909, 3.869, 40.304, 0.184] # Temporary
+    organism = [0.046, 1.779, 12.361, 0.111] # Temporary
+
+    # Create robots, both simulation ones and real ones
+    sim_robot = SimRobot(noise=0.2)
+    model_robot = ModelRobot(real=FLAGS.real)
 
     if FLAGS.train:
-        robot = SimRobot()
-        task.train(robot)
+        task.train(sim_robot)
 
     if FLAGS.visualize:
-        robot = SimRobot()
-        task.visualizer_test(robot, organism)
+        task.visualizer_test(sim_robot, organism)
 
-    if FLAGS.gazebo or FLAGS.real:
-        robot = ModelRobot(real=FLAGS.real)
-        task.run_with_setup(robot, organism)
+    if FLAGS.real or FLAGS.gazebo:
+        task.run_with_setup(model_robot, organism)
