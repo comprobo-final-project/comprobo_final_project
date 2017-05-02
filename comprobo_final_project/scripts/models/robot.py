@@ -2,10 +2,14 @@
 
 import rospy
 import tf
+
+import numpy as np
 from geometry_msgs.msg import PoseStamped, Twist
 from ..helpers import sleeper
 from ..providers.gazebo_position_provider import GazeboPoseProvider
 from ..providers.april_pose_provider import AprilPoseProvider
+
+from ..helpers import sleeper
 
 
 class Robot:
@@ -16,6 +20,8 @@ class Robot:
 
     def __init__(self, resolution=10, real=False, name=""):
 
+        self.MAX_SPEED = 0.3 # m/s
+        self.MAX_TURN_RATE = 0.8 * np.pi # rad/s
         rospy.init_node('robot_controller', anonymous=True)
 
         self.pose_stamped = PoseStamped()
@@ -35,8 +41,8 @@ class Robot:
 
     def set_twist(self, forward_rate, turn_rate):
 
-        self.twist.linear.x = .3 if forward_rate > .3 else forward_rate
-        self.twist.angular.z = 3 if turn_rate > 3 else turn_rate
+        self.twist.linear.x = np.clip(forward_rate, 0, self.MAX_SPEED)
+        self.twist.angular.z = np.clip(turn_rate, -self.MAX_TURN_RATE, self.MAX_TURN_RATE)
 
         self.twist_publisher.publish(self.twist)
         sleeper.sleep(1.0 / self.resolution)
@@ -69,5 +75,4 @@ class Robot:
         """
         Callback function for organism position.
         """
-
         self.pose_stamped.pose = pose

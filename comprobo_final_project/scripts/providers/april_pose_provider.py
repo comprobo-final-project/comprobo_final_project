@@ -13,41 +13,22 @@ class AprilPoseProvider(object):
     """
 
     def __init__(self, rospy, name):
-
         self.pose_callback = None
-        self.orient = None
         self.name = name
-        rospy.Subscriber(self.name+"/STAR_pose_continuous", PoseStamped, self.get_position, queue_size=10)
-
-
-    def get_position(self, april_data):
-        """
-        Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
-        """
-        if self.pose_callback is not None:
-            self.pose_callback(april_data.pose)
-
-        #if we ever want it, orientation is here too
-        self.orient = april_data.pose.orientation.x, april_data.pose.orientation.y, april_data.pose.orientation.z, april_data.pose.orientation.w
-        eulers = tf.transformations.euler_from_quaternion(self.orient)
+        rospy.Subscriber(self.name+"/STAR_pose_continuous", PoseStamped, \
+            self._on_pose_msg_received, queue_size=10)
 
 
     def subscribe(self, pose_callback):
         """
         updates new callback function for packaging purposes
         """
-
         self.pose_callback = pose_callback
 
 
-    def run(self):
+    def _on_pose_msg_received(self, msg):
         """
-        main loop
+        Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
         """
-
-        rospy.spin()
-
-
-if __name__=="__main__":
-    node = AprilPoseProvider()
-    node.run()
+        if self.pose_callback is not None:
+            self.pose_callback(msg.pose)
