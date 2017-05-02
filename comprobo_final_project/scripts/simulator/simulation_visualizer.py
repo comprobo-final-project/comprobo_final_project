@@ -39,7 +39,7 @@ class SimulationVisualizer:
 
         # currently will show only one robot, because I'm not sure how this works for multiple
         self.quiver_manager = axes.quiver(
-            [self.robots[0].pose.position.x, self.robots[1].pose.position.x, self.robots[2].pose.position.x],
+            [robot.pose.position.x for robot in self.robots],
             [self.robots[0].pose.position.y, self.robots[1].pose.position.y, self.robots[2].pose.position.y],
             [self.robots[0].pose.velocity.x, self.robots[1].pose.velocity.x, self.robots[2].pose.velocity.x],
             [self.robots[0].pose.velocity.y, self.robots[1].pose.velocity.y, self.robots[2].pose.velocity.y],

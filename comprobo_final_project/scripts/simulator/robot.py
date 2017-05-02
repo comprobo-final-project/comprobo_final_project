@@ -9,7 +9,7 @@ from vector_3 import Vector3
 
 class Robot:
 
-    def __init__(self, noise = 0.1, resolution = 10):
+    def __init__(self, resolution=10, noise=0.1):
 
         self.MAX_SPEED = 2 # m/s
         self.MAX_TURN_RATE = 2 # rad/s

@@ -11,7 +11,7 @@ import csv
 from population import Population
 from supervisor import Supervisor
 from robot_controller import RobotController
-from simulator.robot import Robot
+from ..simulator.robot import Robot
 
 
 class GeneTrainer(object):
@@ -22,7 +22,7 @@ class GeneTrainer(object):
 
     def __init__(self):
         self.supervisor = Supervisor(3)
-        self.population = Population(size=1, crossover=0.8, elitism=0.1, \
+        self.population = Population(size=100, crossover=0.8, elitism=0.1, \
                 mutation=0.5, supervisor=self.supervisor)
 
         self.max_generations = 16384

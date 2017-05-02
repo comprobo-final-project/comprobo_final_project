@@ -7,7 +7,7 @@ to each calculate their own fitness using the simulation components in this clas
 """
 
 
-from simulator.robot import Robot
+from ..simulator.robot import Robot
 from robot_controller import RobotController
 import numpy as np
 
@@ -25,7 +25,7 @@ class Supervisor(object):
             robot.pose.position.x = np.random.randint(1,10)
             robot.pose.position.y = np.random.randint(1,10)
             self.robots.append(robot)
-            print "ROBOT START", robot.pose.position.x, robot.pose.position.y
+            # print "ROBOT START", robot.pose.position.x, robot.pose.position.y
 
         self.robot_controller = RobotController(self.robots)
 
@@ -53,7 +53,7 @@ class Supervisor(object):
         """
         # Give the robot a random position r meters away from the goal
         robot.set_random_position(r=5.0)
-        print "ROBOT START", robot.pose.position.x, robot.pose.position.y
+        # print "ROBOT START", robot.pose.position.x, robot.pose.position.y
 
         # Give the robot a random direction
         robot.set_random_direction()

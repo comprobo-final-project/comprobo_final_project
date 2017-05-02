@@ -11,7 +11,7 @@ determined by the organism's genes. This calculated Twist is then published.
 import math
 import time
 
-from .simulator.robot import Robot
+from ..simulator.robot import Robot
 
 
 class RobotController:
@@ -157,21 +157,23 @@ class RobotController:
 
 if __name__ == '__main__':
 
-    from .simulator.simulation_visualizer import SimulationVisualizer
+    from ..simulator.simulation_visualizer import SimulationVisualizer
 
-    genes =  [-0.405, -3.467, -0.36, -3.46, -1.696, -3.46, 1.345, -2.377, 0.974, -1.248, 4.973, 2.816]
+    genes =  [0.472, -2.264, -0.48, 3.669, -3.244, -0.746, -4.727, 4.552, 3.9, 3.054, -1.903, -3.669]
 
     robot1 = Robot(noise=0.0)
-    robot1.set_random_position() # give the robot a random position
+    # robot1.set_random_position() # give the robot a random position
+
     robot1.set_random_direction() # give the robot a random direction
 
     robot2 = Robot(noise=0.0)
-    robot2.set_random_position() # give the robot a random position
+    # robot2.set_random_position() # give the robot a random position
     robot2.set_random_direction() # give the robot a random direction
 
     robot3 = Robot(noise=0.0)
-    robot3.set_random_position() # give the robot a random position
+    # robot3.set_random_position() # give the robot a random position
     robot3.set_random_direction() # give the robot a random direction
+
 
 
     robot_controller = RobotController([robot1, robot2, robot3], genes)

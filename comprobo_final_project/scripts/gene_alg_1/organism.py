@@ -118,7 +118,7 @@ class Organism:
 
             positions = self.supervisor.run()
             end = positions[-1]
-            print "ROBOT END", end[0].x, end[0].y, end[1].x, end[1].y, end[2].x, end[2].y
+            # print "ROBOT END", end[0].x, end[0].y, end[1].x, end[1].y, end[2].x, end[2].y
             r_values = []
 
             for position in positions:
@@ -134,29 +134,16 @@ class Organism:
             final_value = np.mean(r_values)
             fitness.append(final_value)
             self.supervisor.reset()
+            print
 
         overall_fitness = np.mean(fitness)
-
+        print overall_fitness
         return overall_fitness
 
 
 if __name__ == '__main__':
 
     # Test basic functionality
-
-    c1 = Organism()
-    c2 = Organism()
-    print "First generation:"
-    print c1.genes
-    print c2.genes, "\n"
-
-    c3, c4 = c1.crossover(c2)
-    print "Second generation (after crossover):"
-    print c3.genes
-    print c4.genes, "\n"
-
-    c3.mutate()
-    c4.mutate()
-    print "Second generation (after mutation):"
-    print c3.genes
-    print c4.genes
+    from supervisor import Supervisor
+    test = Supervisor()
+    c1 = Organism([0.472, -2.264, -0.48, 3.669, -3.244, -0.746, -4.727, 4.552, 3.9, 3.054, -1.903, -3.669], test)
