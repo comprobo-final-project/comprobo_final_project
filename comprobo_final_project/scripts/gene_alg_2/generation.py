@@ -22,7 +22,7 @@ class Generation(object):
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
 
-        self._organisms = np.random.rand(gen_size, num_genes)
+        self._organisms = np.around(np.random.rand(gen_size, num_genes), 3)
         self._fitnesses = np.zeros(gen_size)
 
 
@@ -58,7 +58,8 @@ class Generation(object):
             # Randomly decide if the next organisms should be created
             # from a crossover_thresh
             organisms_to_create = self.gen_size - num_organisms_created
-            if np.random.rand() <= self.crossover_thresh and organisms_to_create >= 2:
+            crossover = 1 if np.random.rand() <= self.crossover_thresh else 0
+            if crossover and organisms_to_create >= 2:
 
                 # Create two child organisms from tournament-selected parents
                 (parent_1, parent_2) = self._select_parents()

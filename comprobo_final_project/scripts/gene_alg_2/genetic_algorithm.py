@@ -1,3 +1,6 @@
+#!usr/bin/env python
+
+
 import csv
 import numpy as np
 from .generation import Generation

@@ -10,7 +10,7 @@ from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
 from ..visualizations import fitness_vs_run
 
 
-class GoalTask(object):
+class TagTask(object):
     """
     Allows a robot to move to a fixed goal.
     """
@@ -38,6 +38,7 @@ class GoalTask(object):
         """
         Use the basic visualizer to see what the robot is doing.
         """
+
         simulation_visualizer = SimulationVisualizer(robot, real_world_scale=2)
         self.run_with_setup(robot, organism)
 
@@ -64,12 +65,17 @@ class GoalTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
-        robot.set_random_position(r=5.0)
-        robot.set_random_direction()
-        return self._run(robot=robot, duration=20, organism=organism)
+
+        robot_1.set_random_position(r=5.0)
+        robot_1.set_random_direction()
+        robot_2.set_random_position(r=5.0)
+        robot_2.set_random_direction()
+
+        return self._run(robots=[robot_1, robot_2], duration=20,
+                organism=organism)
 
 
-    def _run(self, robot, duration, organism):
+    def _run(self, robots, duration, organism):
         """
         Runs a robot through our function, controlled by an organism's genes.
         """
@@ -80,17 +86,20 @@ class GoalTask(object):
 
         for _ in range(int(duration * robot.resolution)):
 
-            curr_w = robot.get_direction()
-            curr_pos = robot.get_position()
+            curr_ws = [robot.get_direction() for robot in robots]
+            curr_poss = [robot.get_position() for robot in robots]
 
-            curr_x = curr_pos.x
-            curr_y = curr_pos.y
+            curr_xs = [curr_pos.x for curr_pos in curr_poss]
+            curr_ys = [curr_pos.y for curr_pos in curr_poss]
 
-            positions.append(curr_pos) # store position history
+            positions.append(curr_poss) # store position history
 
-            # Calculate difference between robot position and goal position
-            diff_x = goal_x - curr_x
-            diff_y = goal_y - curr_y
+            # Calculate difference between running robot's position and chasing
+            # robot's position
+            diff_xs = curr_xs[1] - curr_xs[0]
+            diff_ys = curr_ys[1] - curr_ys[0]
+
+            #TODO: continue porting to tag task after this point -------
 
             # Calculate angle to goal and distance to goal
             # http://stackoverflow.com/a/7869457/2204868
@@ -122,8 +131,9 @@ if __name__ == "__main__":
 
     FLAGS, _ = parser.parse_known_args()
 
-    task = GoalTask()
-    organism = [13.909, 3.869, 40.304, 0.184] # Temporary
+    task = TagTask()
+    # organism = [13.909, 3.869, 40.304, 0.184] # Temporary
+    organism = [1.00000000e-02, 9.98000000e-01, 2.14310000e+01, 1.18000000e-01]
 
     if FLAGS.train:
         robot = SimRobot()
