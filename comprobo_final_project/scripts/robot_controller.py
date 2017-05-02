@@ -101,9 +101,6 @@ if __name__ == '__main__':
     robot.set_random_position() # give the robot a random position
     robot.set_random_direction() # give the robot a random direction
     simulation_visualizer = SimulationVisualizer(robot, real_world_scale = 2)
-
-    # from .models.robot import Robot
-    # robot = Robot()
     robot_controller = RobotController(robot, genes)
 
     # Run
