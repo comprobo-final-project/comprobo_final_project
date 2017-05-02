@@ -92,7 +92,7 @@ class Robot:
             original_w = self.get_direction()
 
             # From 0 to 2. 1 is neutral
-            noise_factor = 2 * (np.random.random() * self.noise) + 1
+            noise_factor = 2 * self.noise * (np.random.random() - 0.5)  + 1
 
             # Update velocity
             vel_r = twist_r * noise_factor
