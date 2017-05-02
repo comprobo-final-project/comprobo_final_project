@@ -12,11 +12,12 @@ class AprilPoseProvider(object):
     Takes data from the Apriltags and can sends it to RobotController
     """
 
-    def __init__(self, rospy):
+    def __init__(self, rospy, name):
 
         self.pose_callback = None
         self.orient = None
-        rospy.Subscriber("/STAR_pose_continuous", PoseStamped, self.get_position, queue_size=10)
+        self.name = name
+        rospy.Subscriber(self.name+"/STAR_pose_continuous", PoseStamped, self.get_position, queue_size=10)
 
 
     def get_position(self, april_data):

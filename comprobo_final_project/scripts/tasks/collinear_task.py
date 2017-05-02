@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
     task = CollinearTask()
     sim_robots = [SimRobot() for i in range(3)]
-    model_robots = [ModelRobot(real=FLAGS.real) for i in range(3)]
+    model_robots = [ModelRobot(real=FLAGS.real, name="robot"+str(i)) for i in range(3)]
 
     if FLAGS.train:
         task.train(sim_robots)
