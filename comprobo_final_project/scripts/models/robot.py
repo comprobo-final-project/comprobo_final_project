@@ -5,8 +5,8 @@ import rospy
 import tf
 
 import numpy as np
-
 from geometry_msgs.msg import PoseStamped, Twist
+from ..helpers import sleeper
 from ..providers.gazebo_position_provider import GazeboPoseProvider
 from ..providers.april_pose_provider import AprilPoseProvider
 
@@ -19,7 +19,7 @@ class Robot:
     set_twist(twist : Twist) : Void - Sets the Twist of the robot
     """
 
-    def __init__(self, real=False):
+    def __init__(self, resolution=10, real=False):
 
         # TODO: This needs some work, b/c we can't start multiple robot nodes
         #       here.
@@ -30,7 +30,7 @@ class Robot:
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
-        self.resolution = 10
+        self.resolution = resolution
 
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
@@ -63,9 +63,19 @@ class Robot:
             self.pose_stamped.pose.orientation.w))[2] * 180 / (math.pi)
 
 
+    def set_random_position(self, r=1):
+        # TODO: Set a random position in gazebo. Ignore if real.
+        pass
+
+
+    def set_random_direction(self):
+        # TODO: Set a random direction in gazebo. Ignore if real.
+        pass
+
+
     def _pose_listener(self, pose):
         """
         Callback function for organism position.
         """
-
         self.pose_stamped.pose = pose
+        

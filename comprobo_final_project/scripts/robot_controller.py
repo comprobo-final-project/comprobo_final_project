@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     from .simulator.simulation_visualizer import SimulationVisualizer
 
-    genes = [-4.124, 1.355, 36.844, 1.968]
+    genes = [2.77160000e+01, 7.72100000e+00, 7.61100000e+00, 8.00000000e-03]
 
     robot = Robot(noise = 0.0)
     robot.set_random_position() # give the robot a random position
@@ -104,7 +104,6 @@ if __name__ == '__main__':
 
     # from .models.robot import Robot
     # robot = Robot()
-
     robot_controller = RobotController(robot, genes)
 
     # Run
