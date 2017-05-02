@@ -122,7 +122,6 @@ if __name__ == "__main__":
     # Initialize task
     task = GoalTask()
     organism = [0.046, 1.779, 12.361, 0.111] # Temporary
-    # organism = [13.909, 3.869, 40.304, 0.184]
 
     # Create robots, both simulation ones and real ones
     sim_robot = SimRobot(noise=0.2)
