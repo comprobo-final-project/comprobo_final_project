@@ -1,4 +1,5 @@
 import numpy as np
+from multiprocess import Pool
 
 # Boundary values for genes
 GENE_MAX = 10000
@@ -13,7 +14,8 @@ class Generation(object):
         elitism_thresh,
         crossover_thresh,
         mutation_thresh,
-        fitness_func):
+        fitness_func,
+        num_jobs=8):
 
         self.gen_size = gen_size
         self.num_genes = num_genes
@@ -21,6 +23,7 @@ class Generation(object):
         self.crossover_thresh = crossover_thresh
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
+        self._num_jobs = num_jobs
 
         self._organisms = np.random.rand(gen_size, num_genes)
         self._fitnesses = np.zeros(gen_size)
@@ -31,8 +34,10 @@ class Generation(object):
         Calculates fitness of all organisms in the generation and sorts by most
         fit.
         """
-        self._fitnesses = np.apply_along_axis(self.fitness_func, 1, \
-            self._organisms)
+        pool = Pool(processes=self._num_jobs)
+        self._fitnesses = np.array(pool.map(self.fitness_func, self._organisms))
+        pool.close()
+        pool.join()
         self._sort() # Make sure to sort at the end for fitness
 
 
