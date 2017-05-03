@@ -22,7 +22,7 @@ class CollinearTask(object):
         GeneticAlgorithm(
             log_location=log_location,
             gen_size=100,
-            num_genes=12,
+            num_genes=24,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
             mutation_thresh=0.2,
@@ -80,7 +80,7 @@ class CollinearTask(object):
         for robot in robots:
             robot.set_random_position(r=5.0)
             robot.set_random_direction()
-        return self._run(robots=robots, duration=20, organism=organism)
+        return self._run(robots=robots, duration=15, organism=organism)
 
 
     def _run(self, robots, duration, organism):
@@ -126,17 +126,18 @@ class CollinearTask(object):
                 print diff_10.x, diff_10.y, diff_20.x, diff_20.y, diff_21.x, diff_21.y
 
             # Define linear and angular velocities based on genes
-            a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3 = organism
+            a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4, \
+                e1, e2, e3, e4, f1, f2, f3, f4 = organism
 
             # calculate movements for each robot
-            forward_rate1 = a2*diff_w10 + b2*diff_r10 + a3*diff_w20 + b3*diff_r20
-            turn_rate1 = c2*diff_w10 + d2*diff_r10 + c3*diff_w20 + d3*diff_r20
+            forward_rate1 = a1*diff_w10 + a2*diff_r10 + a3*diff_w20 + a4*diff_r20
+            turn_rate1 = b1*diff_w10 + b2*diff_r10 + b3*diff_w20 + b4s*diff_r20
 
-            forward_rate2 = a1*diff_w01 + b1*diff_r10 + a3*diff_w21 + b3*diff_r21
-            turn_rate2 = c1*diff_w01 + d1*diff_r10 + c3*diff_w21 + d3*diff_r21
+            forward_rate2 = c1*diff_w01 + c2*diff_r10 + c3*diff_w21 + c4*diff_r21
+            turn_rate2 = d1*diff_w01 + d2*diff_r10 + d3*diff_w21 + d4*diff_r21
 
-            forward_rate3 = a1*diff_w02 + b1*diff_r20 + a2*diff_w12 + b2*diff_r21
-            turn_rate3 = c1*diff_w02 + d1*diff_r20 + c2*diff_w12 + d2*diff_r21
+            forward_rate3 = e1*diff_w02 + e2*diff_r20 + e3*diff_w12 + e4*diff_r21
+            turn_rate3 = f1*diff_w02 + f2*diff_r20 + f3*diff_w12 + f4*diff_r21
 
             twists = [(forward_rate1, turn_rate1), (forward_rate2, turn_rate2), (forward_rate3, turn_rate3)]
 
@@ -167,7 +168,7 @@ if __name__ == "__main__":
     from ..simulator.robot import Robot as SimRobot
     sim_robots = [SimRobot() for i in range(3)]
 
-    organism = [0.189, 1.453, 0.319, 0.004, 0.744, 0.504, 0.224, 0.015, 2.2, 0.972, 1.67, 0.273]
+    organism = [7.17100000e+00, 1.87000000e-01, 3.96000000e-01, 3.03600000e+00, 9.00000000e-03, 7.24700000e+00, 1.36850000e+01, 1.47000000e-01 , 7.49000000e-01, 2.91200000e+00, 3.63000000e-01, 2.00000000e-02]
 
     if FLAGS.train:
         task.train(sim_robots)
