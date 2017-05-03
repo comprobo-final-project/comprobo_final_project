@@ -10,7 +10,7 @@ from scipy import stats
 
 class CollinearTask(object):
     """
-    Allows a robot to move to a fixed goal.
+    Allows three robots to form a line by moving in relation to each other starting from random locations
     """
 
     def train(self, robots):
