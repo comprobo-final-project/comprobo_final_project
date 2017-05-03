@@ -3,9 +3,6 @@ from ..helpers import sleeper
 import matplotlib.pyplot as plt
 import numpy as np
 
-from robot import Robot
-
-
 class SimulationVisualizer:
     """
     Simulates a robot without ROS.
@@ -62,12 +59,12 @@ class SimulationVisualizer:
         if self.update_count % len(self.robots) == 0:
             self.update_count = 0
 
+            self.quiver_manager.set_offsets(
+                [(robot.pose.position.x, robot.pose.position.y) \
+                    for robot in self.robots])
             self.quiver_manager.set_UVC(
                 [robot.pose.velocity.x for robot in self.robots],
                 [robot.pose.velocity.y for robot in self.robots])
-            self.quiver_manager.set_offsets((
-                [robot.pose.position.x for robot in self.robots],
-                [robot.pose.position.y for robot in self.robots]))
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
             sleeper.sleep(1.0 / (self.real_world_scale * frequency))
@@ -76,14 +73,17 @@ class SimulationVisualizer:
 
 
 if __name__ == "__main__":
+    from robot import Robot
 
-    robot = Robot()
-    robot.pose.position.x = 0
-    robot.pose.position.y = 0
-    robot.twist.linear.x = 3
-    robot.twist.angular.z = 1
-    simulation_visualizer = SimulationVisualizer(robot = robot, \
-        real_world_scale = 10)
+    rb1 = Robot(noise = 0, resolution=4)
+    rb1.pose.position.x = 0
+    rb1.pose.position.y = 0
+    rb2 = Robot(noise = 0, resolution=4)
+    rb2.pose.position.x = 0
+    rb2.pose.position.y = 0
+    simulation_visualizer = SimulationVisualizer(robots=[rb1, rb2], \
+        real_world_scale = 3)
 
     while True:
-        robot.step(2)
+        rb1.set_twist(1, 0.3)
+        rb2.set_twist(1, -0.3)
