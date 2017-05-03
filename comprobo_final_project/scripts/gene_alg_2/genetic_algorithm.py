@@ -14,6 +14,7 @@ class GeneticAlgorithm(object):
         log_location,
         gen_size=1024,
         num_genes=4,
+        num_organisms=2,
         train_thresh=10000,
         fitness_thresh=0.25,
         elitism_thresh=0.1,
@@ -30,6 +31,7 @@ class GeneticAlgorithm(object):
         self._generation = Generation(
             gen_size=gen_size,
             num_genes=num_genes,
+            num_organisms=num_organisms,
             elitism_thresh=elitism_thresh,
             crossover_thresh=crossover_thresh,
             mutation_thresh=mutation_thresh,
