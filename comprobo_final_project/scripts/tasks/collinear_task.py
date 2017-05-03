@@ -1,7 +1,6 @@
 import time
 import numpy as np
-from ..models.robot import Robot as ModelRobot
-from ..simulator.robot import Robot as SimRobot
+
 from ..simulator.simulation_visualizer import SimulationVisualizer
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
 from ..visualizations import fitness_vs_run
@@ -55,7 +54,7 @@ class CollinearTask(object):
             """
             fitness = []
 
-            for i in range(4):
+            for i in range(3):
                 positions = self.run_with_setup(robots, organism)
                 r2_values = []
 
@@ -72,10 +71,10 @@ class CollinearTask(object):
             # print  np.mean(fitness)
             # import pdb; pdb.set_trace()
 
-            overall_fitness = np.mean(fitness)
+            worst_fit = np.min(fitness)
 
             # currently negating to match with the generation's determination of best fitness
-            return -1*overall_fitness
+            return -1*worst_fit
 
         return _get_fitness_collinear
 
@@ -170,10 +169,11 @@ if __name__ == "__main__":
     FLAGS, _ = parser.parse_known_args()
 
     task = CollinearTask()
-    sim_robots = [SimRobot() for i in range(3)]
-    model_robots = [ModelRobot(real=FLAGS.real) for i in range(3)]
 
-    organism = [0.41, 0.144, 0.683, 0.781, 1.206, 0.025, 0.263, 0.038, 0.338, 0.014, 0.878, 0.476]
+    from ..simulator.robot import Robot as SimRobot
+    sim_robots = [SimRobot() for i in range(3)]
+
+    organism = [0.736, 0.373, 0.902, 1.655, 0.593, 0.418, 0.251, 0.637, 0.13, 0.044, 0.487, 0.352]
 
     if FLAGS.train:
         task.train(sim_robots)
@@ -182,4 +182,6 @@ if __name__ == "__main__":
         task.visualizer_test(sim_robots, organism)
 
     if FLAGS.gazebo or FLAGS.real:
+        from ..models.robot import Robot as ModelRobot
+        model_robots = [ModelRobot(real=FLAGS.real) for i in range(3)]
         task.run_with_setup(model_robots, organism)
