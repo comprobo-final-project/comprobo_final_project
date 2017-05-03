@@ -1,10 +1,17 @@
 class Vector3:
 
     def __init__(self):
-
         self.x = 0
         self.y = 0
         self.z = 0
+
+
+    def __sub__(self, other):
+        result = Vector3()
+        result.x = self.x - other.x
+        result.y = self.y - other.y
+        result.z = self.z - other.z
+        return result
 
 
     def __rmul__(self, other):

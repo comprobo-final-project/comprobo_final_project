@@ -15,7 +15,7 @@ class Generation(object):
         crossover_thresh,
         mutation_thresh,
         fitness_func,
-        num_jobs=8):
+        num_jobs=None):
 
         self.gen_size = gen_size
         self.num_genes = num_genes

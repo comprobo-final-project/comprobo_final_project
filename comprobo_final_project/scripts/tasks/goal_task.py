@@ -35,7 +35,7 @@ class GoalTask(object):
         """
         Use the basic visualizer to see what the robot is doing.
         """
-        simulation_visualizer = SimulationVisualizer(robot, real_world_scale=2)
+        simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
         self.run_with_setup(robot, organism)
 
 
