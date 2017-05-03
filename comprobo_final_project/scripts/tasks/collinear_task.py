@@ -38,7 +38,6 @@ class CollinearTask(object):
         simulation_visualizer = SimulationVisualizer(robots, real_world_scale=10)
         get_fitness = self.get_fitness_func(robots)
         print get_fitness(organism)
-        # self.run_with_setup(robots, organism)
 
 
     def get_fitness_func(self, robots):
@@ -53,14 +52,14 @@ class CollinearTask(object):
             """
             fitness = []
 
-            for i in range(4):
+            for i in range(3):
                 positions = self.run_with_setup(robots, organism)
                 r2_values = []
 
                 for position in positions:
-                    robots_xy = [(robot.x, robot.y) for robot in position]
-                    _, _, r_value, _, _ = stats.linregress(robots_xy)
-                    r2_values.append(r_value**2)
+                    r2_values.append(
+                        self._get_linregress_r2(
+                            [(robot.x, robot.y) for robot in position]))
 
                 final_value = np.mean(r2_values)
                 fitness.append(final_value)
@@ -77,9 +76,18 @@ class CollinearTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
-        for robot in robots:
-            robot.set_random_position(r=5.0)
-            robot.set_random_direction()
+        straight_thresh = 0.5
+        r2 = 1
+
+        # Use a threshold so we don't randomly start with a straight line
+        while r2 > straight_thresh:
+            for robot in robots:
+                robot.set_random_position(r=5.0)
+                robot.set_random_direction()
+            r2 = self._get_linregress_r2(
+                [(robot.pose.position.x, robot.pose.position.y) \
+                    for robot in robots])
+
         return self._run(robots=robots, duration=15, organism=organism)
 
 
@@ -150,6 +158,11 @@ class CollinearTask(object):
         return robot_positions
 
 
+    def _get_linregress_r2(self, points):
+        _, _, r_value, _, _ = stats.linregress(points)
+        return r_value**2
+
+
 if __name__ == "__main__":
 
     import argparse
@@ -168,7 +181,9 @@ if __name__ == "__main__":
     from ..simulator.robot import Robot as SimRobot
     sim_robots = [SimRobot() for i in range(3)]
 
-    organism = [7.17100000e+00, 1.87000000e-01, 3.96000000e-01, 3.03600000e+00, 9.00000000e-03, 7.24700000e+00, 1.36850000e+01, 1.47000000e-01 , 7.49000000e-01, 2.91200000e+00, 3.63000000e-01, 2.00000000e-02]
+    organism = [0.88, 0.538, 0.31, 0.003, 0.905, 0.847, 0.658, 0.054, 0.583, \
+        0.016, 0.983, 0.466, 0.243, 0.388, 0.704, 0.31, 0.939, 0.584, 0.542, \
+        0.72, 0.188, 0.817, 0.382, 0.952]
 
     if FLAGS.train:
         task.train(sim_robots)
