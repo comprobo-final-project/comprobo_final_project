@@ -86,7 +86,8 @@ class CollinearTask(object):
                 robot.set_random_position(r=5.0)
                 robot.set_random_direction()
             r2 = self._get_linregress_r2(
-                [(robot.pose_stamped.pose.position.x, robot.pose_stamped.pose.position.y) \
+
+                [(robot.get_position().x, robot.get_position().y) \
                     for robot in robots])
 
         return self._run(robots=robots, duration=15, organism=organism)
@@ -103,13 +104,16 @@ class CollinearTask(object):
             directions = [robot.get_direction() for robot in robots]
 
             # Calculate difference between robot position and other robots position
-            diff_10 = positions[1] - positions[0]
-            diff_20 = positions[2] - positions[0]
-            diff_21 = positions[2] - positions[1]
+            diff_10_x = positions[1].x - positions[0].x
+            diff_10_y = positions[1].y - positions[0].y
+            diff_20_x = positions[2].x - positions[0].x
+            diff_20_y = positions[2].y - positions[0].y
+            diff_21_x = positions[2].x - positions[1].x
+            diff_21_y = positions[2].y - positions[1].y
 
-            angle_10 = np.arctan2(diff_10.y, diff_10.x)
-            angle_20 = np.arctan2(diff_20.y, diff_20.x)
-            angle_21 = np.arctan2(diff_21.y, diff_21.x)
+            angle_10 = np.arctan2(diff_10_y, diff_10_x)
+            angle_20 = np.arctan2(diff_20_y, diff_20_x)
+            angle_21 = np.arctan2(diff_21_y, diff_21_x)
 
             try:
                 # Calculate angle to goal and distance to goal
@@ -117,22 +121,22 @@ class CollinearTask(object):
                 diff_w10 = (diff_w10 + np.pi) % (2*np.pi) - np.pi
                 diff_w01 = angle_10 - directions[1]
                 diff_w01 = (diff_w10 + np.pi) % (2*np.pi) - np.pi
-                diff_r10 = np.sqrt(diff_10.x**2 + diff_10.y**2)
+                diff_r10 = np.sqrt(diff_10_x**2 + diff_10_y**2)
 
                 diff_w20 = angle_20 - directions[0]
                 diff_w20 = (diff_w20 + np.pi) % (2*np.pi) - np.pi
                 diff_w02 = angle_20 - directions[2]
                 diff_w02 = (diff_w02 + np.pi) % (2*np.pi) - np.pi
-                diff_r20 = np.sqrt(diff_20.x**2 + diff_20.y**2)
+                diff_r20 = np.sqrt(diff_20_x**2 + diff_20_y**2)
 
                 diff_w21 = angle_21 - directions[1]
                 diff_w21 = (diff_w21 + np.pi) % (2*np.pi) - np.pi
                 diff_w12 = angle_21 - directions[2]
                 diff_w12 = (diff_w12 + np.pi) % (2*np.pi) - np.pi
-                diff_r21 = np.sqrt(diff_21.x**2 + diff_21.y**2)
+                diff_r21 = np.sqrt(diff_21_x**2 + diff_21_y**2)
 
             except OverflowError:
-                print diff_10.x, diff_10.y, diff_20.x, diff_20.y, diff_21.x, diff_21.y
+                print diff_10_x, diff_10_y, diff_20_x, diff_20_y, diff_21_x, diff_21_y
 
             # Define linear and angular velocities based on genes
             a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4, \
