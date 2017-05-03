@@ -53,7 +53,7 @@ class CollinearTask(object):
             """
             fitness = []
 
-            for i in range(3):
+            for i in range(4):
                 positions = self.run_with_setup(robots, organism)
                 r2_values = []
 
@@ -64,11 +64,6 @@ class CollinearTask(object):
 
                 final_value = np.mean(r2_values)
                 fitness.append(final_value)
-
-            # print len(fitness)
-            # print fitness
-            # print  np.mean(fitness)
-            # import pdb; pdb.set_trace()
 
             worst_fit = np.min(fitness)
 
