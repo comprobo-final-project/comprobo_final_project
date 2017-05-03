@@ -116,10 +116,6 @@ class Robot:
                 vel_w * (1 - self.HISTORY)
 
         # Update pose
-        velocity_xyz = Vector3()
-        velocity_xyz.x = self.pose.velocity.r * np.cos(self.pose.velocity.w)
-        velocity_xyz.y = self.pose.velocity.r * np.sin(self.pose.velocity.w)
-        self.pose.position += velocity_xyz / step_freq
 
-
+        self.pose.position += self.pose.velocity.to_vector_3() / step_freq
         self.update_listener(step_freq)

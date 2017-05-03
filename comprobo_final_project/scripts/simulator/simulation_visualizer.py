@@ -3,9 +3,6 @@ from ..helpers import sleeper
 import matplotlib.pyplot as plt
 import numpy as np
 
-from robot import Robot
-
-
 class SimulationVisualizer:
     """
     Simulates a robot without ROS.
@@ -21,6 +18,10 @@ class SimulationVisualizer:
             robot.set_update_listener(self.update)
         self.real_world_scale = real_world_scale
         self.quiver_manager = None # Used for visualizations
+
+        # We use this value to debounce update calls
+        self.update_count = 0
+
         self.render()
 
 
@@ -40,9 +41,9 @@ class SimulationVisualizer:
         # currently will show only one robot, because I'm not sure how this works for multiple
         self.quiver_manager = axes.quiver(
             [robot.pose.position.x for robot in self.robots],
-            [self.robots[0].pose.position.y, self.robots[1].pose.position.y, self.robots[2].pose.position.y],
-            [self.robots[0].pose.velocity.x, self.robots[1].pose.velocity.x, self.robots[2].pose.velocity.x],
-            [self.robots[0].pose.velocity.y, self.robots[1].pose.velocity.y, self.robots[2].pose.velocity.y],
+            [robot.pose.position.y for robot in self.robots],
+            [robot.pose.velocity.x for robot in self.robots],
+            [robot.pose.velocity.y for robot in self.robots],
             units = 'xy',
             angles = 'xy',
             scale_units = 'xy',
@@ -55,27 +56,37 @@ class SimulationVisualizer:
         plt.grid(True)
         plt.show()
 
-
     def update(self, frequency):
-        self.quiver_manager.set_UVC([self.robots[0].pose.velocity.x, self.robots[1].pose.velocity.x, self.robots[2].pose.velocity.x],
-                                    [self.robots[0].pose.velocity.y, self.robots[1].pose.velocity.y, self.robots[2].pose.velocity.y])
-        self.quiver_manager.set_offsets(([self.robots[0].pose.position.x, self.robots[1].pose.position.x, self.robots[2].pose.position.x],
-                                        [self.robots[0].pose.position.y, self.robots[1].pose.position.y, self.robots[2].pose.position.y]))
 
-        self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
-        sleeper.sleep(1.0 / (self.real_world_scale * frequency))
+        if self.update_count % len(self.robots) == 0:
+            self.update_count = 0
+
+            self.quiver_manager.set_offsets(
+                [(robot.pose.position.x, robot.pose.position.y) \
+                    for robot in self.robots])
+            self.quiver_manager.set_UVC(
+                [robot.pose.velocity.x for robot in self.robots],
+                [robot.pose.velocity.y for robot in self.robots])
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+            sleeper.sleep(1.0 / (self.real_world_scale * frequency))
+
+        self.update_count += 1
 
 
 if __name__ == "__main__":
 
-    robot = Robot()
-    robot.pose.position.x = 0
-    robot.pose.position.y = 0
-    robot.twist.linear.x = 3
-    robot.twist.angular.z = 1
-    simulation_visualizer = SimulationVisualizer(robot = robot, \
-        real_world_scale = 10)
+    from robot import Robot
+
+    rb1 = Robot(noise = 0, resolution=4)
+    rb1.pose.position.x = 0
+    rb1.pose.position.y = 0
+    rb2 = Robot(noise = 0, resolution=4)
+    rb2.pose.position.x = 0
+    rb2.pose.position.y = 0
+    simulation_visualizer = SimulationVisualizer(robots=[rb1, rb2], \
+        real_world_scale = 3)
 
     while True:
-        robot.step(2)
+        rb1.set_twist(1, 0.3)
+        rb2.set_twist(1, -0.3)

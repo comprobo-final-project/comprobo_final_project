@@ -1,4 +1,5 @@
-import math
+import numpy as np
+from vector_3 import Vector3
 
 class PolarVector(object):
 
@@ -18,14 +19,21 @@ class PolarVector(object):
 
     @w.setter
     def w(self, val):
-        self._w = (val + math.pi) % (2*math.pi) - math.pi
+        self._w = (val + np.pi) % (2*np.pi) - np.pi
 
 
     @property
     def x(self):
-        return self.r * math.cos(self.w)
+        return self.r * np.cos(self.w)
 
 
     @property
     def y(self):
-        return self.r * math.sin(self.w)
+        return self.r * np.sin(self.w)
+
+
+    def to_vector_3(self):
+        vector = Vector3()
+        vector.x = self.x
+        vector.y = self.y
+        return vector
