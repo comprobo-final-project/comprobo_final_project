@@ -64,10 +64,10 @@ class CollinearTask(object):
                 final_value = np.mean(r2_values)
                 fitness.append(final_value)
 
-            worst_fit = np.min(fitness)
+            mean_fit = np.mean(fitness)
 
             # currently negating to match with the generation's determination of best fitness
-            return -1*worst_fit
+            return -1*mean_fit
 
         return _get_fitness_collinear
 
