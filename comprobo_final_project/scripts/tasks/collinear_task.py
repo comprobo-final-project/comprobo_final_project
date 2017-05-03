@@ -131,7 +131,7 @@ class CollinearTask(object):
 
             # calculate movements for each robot
             forward_rate1 = a1*diff_w10 + a2*diff_r10 + a3*diff_w20 + a4*diff_r20
-            turn_rate1 = b1*diff_w10 + b2*diff_r10 + b3*diff_w20 + b4s*diff_r20
+            turn_rate1 = b1*diff_w10 + b2*diff_r10 + b3*diff_w20 + b4*diff_r20
 
             forward_rate2 = c1*diff_w01 + c2*diff_r10 + c3*diff_w21 + c4*diff_r21
             turn_rate2 = d1*diff_w01 + d2*diff_r10 + d3*diff_w21 + d4*diff_r21
