@@ -1,9 +1,7 @@
 import time
 import numpy as np
 
-from ..simulator.simulation_visualizer import SimulationVisualizer
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
-from ..visualizations import fitness_vs_run
 from scipy import stats
 
 
@@ -36,6 +34,7 @@ class CollinearTask(object):
         """
         Use the basic visualizer to see what the robots is doing.
         """
+        from ..simulator.simulation_visualizer import SimulationVisualizer
         simulation_visualizer = SimulationVisualizer(robots, real_world_scale=10)
         get_fitness = self.get_fitness_func(robots)
         print get_fitness(organism)
