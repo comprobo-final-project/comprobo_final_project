@@ -175,9 +175,12 @@ if __name__ == "__main__":
 
     FLAGS, _ = parser.parse_known_args()
 
+    #TODO: need an organism
+
     task = CollinearTask()
     sim_robots = [SimRobot() for i in range(3)]
-    model_robots = [ModelRobot(real=FLAGS.real, name="robot"+str(i)) for i in range(3)]
+    model_robots = [ModelRobot(real=FLAGS.real, name="robot"+str(i)) for i in range(1,4)]
+
 
     if FLAGS.train:
         task.train(sim_robots)
