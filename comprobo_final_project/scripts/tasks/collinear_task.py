@@ -172,7 +172,7 @@ if __name__ == "__main__":
     from ..simulator.robot import Robot as SimRobot
     sim_robots = [SimRobot() for i in range(3)]
 
-    organism = [0.736, 0.373, 0.902, 1.655, 0.593, 0.418, 0.251, 0.637, 0.13, 0.044, 0.487, 0.352]
+    organism = [0.189, 1.453, 0.319, 0.004, 0.744, 0.504, 0.224, 0.015, 2.2, 0.972, 1.67, 0.273]
 
     if FLAGS.train:
         task.train(sim_robots)
