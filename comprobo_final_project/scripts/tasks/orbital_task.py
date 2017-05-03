@@ -20,10 +20,11 @@ class GoalTask(object):
         GeneticAlgorithm(
             log_location=log_location,
             gen_size=100,
-            num_genes=4,
+            num_genes=8,
+            fitness_thresh=0.05,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
-            mutation_thresh=0.2,
+            mutation_thresh=0.1,
             fitness_func=self.get_fitness_func(robot)).train()
 
 
@@ -32,7 +33,9 @@ class GoalTask(object):
         Use the basic visualizer to see what the robot is doing.
         """
         simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
-        self.run_with_setup(robot, organism)
+        get_fitness = self.get_fitness_func(robot)
+        fitness = get_fitness(organism)
+        print fitness
 
 
     def get_fitness_func(self, robot):
@@ -42,19 +45,25 @@ class GoalTask(object):
 
         # Using a closure here so we can hold our single robot instance
         def _fitness_func(organism):
-            positions = self.run_with_setup(robot, organism)
 
-            ideal_radius = 1 # Let it rotate 1m away from goal
+            avg_fit = []
 
-            radius_err = np.mean([np.absolute(
-                np.sqrt(position[0]**2 + position[1]**2) - ideal_radius) \
-                for position in positions])
+            for _ in range(3):
+                positions = self.run_with_setup(robot, organism)
 
-            centroid = positions.mean(axis=0)
-            centroid_err = np.sqrt(centroid[0]**2 + centroid[1]**2)
+                ideal_radius = 1.5 # Let it rotate 1m away from goal
 
-            fitness = radius_err * centroid_err + radius_err + centroid_err
-            return fitness
+                radius_err = np.mean([np.absolute(
+                    np.sqrt(position[0]**2 + position[1]**2) - ideal_radius) \
+                    for position in positions])
+
+                centroid = positions.mean(axis=0)
+                centroid_err = np.sqrt(centroid[0]**2 + centroid[1]**2)
+
+                fitness = radius_err * centroid_err + radius_err + centroid_err
+                avg_fit.append(fitness)
+
+            return np.mean(avg_fit)
 
         return _fitness_func
 
@@ -63,7 +72,7 @@ class GoalTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
-        robot.set_random_position(r=5.0)
+        robot.set_random_position(r=1.5)
         robot.set_random_direction()
         return self._run(robot=robot, duration=20, organism=organism)
 
@@ -98,9 +107,9 @@ class GoalTask(object):
             diff_r = np.sqrt(diff_x**2 + diff_y**2)
 
             # Define linear and angular velocities based on organism
-            a1, b1, a2, b2 = organism
-            forward_rate = a1*diff_w + b1*diff_r
-            turn_rate = a2*diff_w + b2*diff_r
+            a1, b1, a2, b2, c1, c2, d1, d2 = organism
+            forward_rate = a1*diff_w + b1*diff_r + c1*diff_w**2 + d1*diff_r**2
+            turn_rate = a2*diff_w + b2*diff_r + + c2*diff_w**2 + d2*diff_r**2
 
             # Set linear and angular velocities
             robot.set_twist(forward_rate, turn_rate)
@@ -123,11 +132,13 @@ if __name__ == "__main__":
 
     # Initialize task
     task = GoalTask()
-    organism = [0.046, 1.779, 12.361, 0.111] # Temporary
+    organism = [1.00000000e+04, 4.84443000e+03, 7.54000000e-01, \
+        3.14000000e-01, 1.00000000e+04, 2.59000000e-01, 5.73096300e+03, \
+        1.10000000e-02] # Temporary
 
     # Create robots, both simulation ones and real ones
     from ..simulator.robot import Robot as SimRobot
-    sim_robot = SimRobot(noise=0.2)
+    sim_robot = SimRobot(noise=0.1)
 
     if FLAGS.train:
         task.train(sim_robot)
