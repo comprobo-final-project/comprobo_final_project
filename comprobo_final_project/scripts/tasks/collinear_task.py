@@ -28,17 +28,19 @@ class CollinearTask(object):
             num_genes=12,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
-            mutation_thresh=0.5,
+            mutation_thresh=0.2,
             fitness_thresh = -.95,
             fitness_func=self.get_fitness_func(robots)).train()
 
 
-    def visualizer_test(self, robot, organism):
+    def visualizer_test(self, robots, organism):
         """
-        Use the basic visualizer to see what the robot is doing.
+        Use the basic visualizer to see what the robots is doing.
         """
-        simulation_visualizer = SimulationVisualizer(robot, real_world_scale=2)
-        self.run_with_setup(robot, organism)
+        simulation_visualizer = SimulationVisualizer(robots, real_world_scale=10)
+        get_fitness = self.get_fitness_func(robots)
+        print get_fitness(organism)
+        # self.run_with_setup(robots, organism)
 
 
     def get_fitness_func(self, robots):
@@ -51,32 +53,28 @@ class CollinearTask(object):
             """
             Calculate the fitness of a specified organism for collinear task
             """
-
             fitness = []
-            for i in range(3):
 
+            for i in range(4):
                 positions = self.run_with_setup(robots, organism)
-                # end = positions[-1]
-                # print "ROBOT END", end[0].x, end[0].y, end[1].x, end[1].y, end[2].x, end[2].y
                 r2_values = []
 
                 for position in positions:
-                    x = []
-                    y = []
-                    for robot in position:
-                        x.append(robot.x)
-                        y.append(robot.y)
-
-                    _, _, r_value, _, _ = stats.linregress(zip(x,y))
+                    robots_xy = [(robot.x, robot.y) for robot in position]
+                    _, _, r_value, _, _ = stats.linregress(robots_xy)
                     r2_values.append(r_value**2)
 
                 final_value = np.mean(r2_values)
                 fitness.append(final_value)
 
+            # print len(fitness)
+            # print fitness
+            # print  np.mean(fitness)
+            # import pdb; pdb.set_trace()
+
             overall_fitness = np.mean(fitness)
 
             # currently negating to match with the generation's determination of best fitness
-            # print -1*overall_fitness
             return -1*overall_fitness
 
         return _get_fitness_collinear
@@ -99,56 +97,53 @@ class CollinearTask(object):
         robot_positions = []
         for _ in range(int(duration * robots[0].resolution)):
 
-            positions = []
-            directions = []
-            for robot in robots:
-                positions.append(robot.get_position())
-                directions.append(robot.get_direction())
+            positions = [robot.get_position() for robot in robots]
+            directions = [robot.get_direction() for robot in robots]
 
             # Calculate difference between robot position and other robots position
-            diff_x21 = positions[1].x - positions[0].x
-            diff_y21 = positions[1].y - positions[0].y
+            diff_10 = positions[1] - positions[0]
+            diff_20 = positions[2] - positions[0]
+            diff_21 = positions[2] - positions[1]
 
-            diff_x31 = positions[2].x - positions[0].x
-            diff_y31 = positions[2].y - positions[0].y
-
-            diff_x32 = positions[2].x - positions[1].x
-            diff_y32 = positions[2].y - positions[1].y
+            angle_10 = np.arctan2(diff_10.y, diff_10.x)
+            angle_20 = np.arctan2(diff_20.y, diff_20.x)
+            angle_21 = np.arctan2(diff_21.y, diff_21.x)
 
             try:
                 # Calculate angle to goal and distance to goal
-                diff_w21 = np.arctan2(diff_y21, diff_x21) - directions[0]
+                diff_w10 = angle_10 - directions[0]
+                diff_w10 = (diff_w10 + np.pi) % (2*np.pi) - np.pi
+                diff_w01 = angle_10 - directions[1]
+                diff_w01 = (diff_w10 + np.pi) % (2*np.pi) - np.pi
+                diff_r10 = np.sqrt(diff_10.x**2 + diff_10.y**2)
+
+                diff_w20 = angle_20 - directions[0]
+                diff_w20 = (diff_w20 + np.pi) % (2*np.pi) - np.pi
+                diff_w02 = angle_20 - directions[2]
+                diff_w02 = (diff_w02 + np.pi) % (2*np.pi) - np.pi
+                diff_r20 = np.sqrt(diff_20.x**2 + diff_20.y**2)
+
+                diff_w21 = angle_21 - directions[1]
                 diff_w21 = (diff_w21 + np.pi) % (2*np.pi) - np.pi
-                diff_w12 = np.arctan2(diff_y21, diff_x21) - directions[1]
+                diff_w12 = angle_21 - directions[2]
                 diff_w12 = (diff_w12 + np.pi) % (2*np.pi) - np.pi
-                diff_r21 = np.sqrt(diff_x21**2 + diff_y21**2)
+                diff_r21 = np.sqrt(diff_21.x**2 + diff_21.y**2)
 
-                diff_w31 = np.arctan2(diff_y31, diff_x31) - directions[0]
-                diff_w31 = (diff_w31 + np.pi) % (2*np.pi) - np.pi
-                diff_w13 = np.arctan2(diff_y31, diff_x31) - directions[2]
-                diff_w13 = (diff_w13 + np.pi) % (2*np.pi) - np.pi
-                diff_r31 = np.sqrt(diff_x31**2 + diff_y31**2)
-
-                diff_w32 = np.arctan2(diff_y32, diff_x32) - directions[1]
-                diff_w32 = (diff_w32 + np.pi) % (2*np.pi) - np.pi
-                diff_w23 = np.arctan2(diff_y32, diff_x32) - directions[2]
-                diff_w23 = (diff_w23 + np.pi) % (2*np.pi) - np.pi
-                diff_r32 = np.sqrt(diff_x32**2 + diff_y32**2)
             except OverflowError:
-                print diff_x21, diff_y21, diff_x31, diff_y31, diff_x32, diff_y32
+                print diff_10.x, diff_10.y, diff_20.x, diff_20.y, diff_21.x, diff_21.y
 
             # Define linear and angular velocities based on genes
             a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3 = organism
 
             # calculate movements for each robot
-            forward_rate1 = a2*diff_w21 + b2*diff_r21 + a3*diff_w31 + b3*diff_r31
-            turn_rate1 = c2*diff_w21 + d2*diff_r21 + c3*diff_w31 + d3*diff_r31
+            forward_rate1 = a2*diff_w10 + b2*diff_r10 + a3*diff_w20 + b3*diff_r20
+            turn_rate1 = c2*diff_w10 + d2*diff_r10 + c3*diff_w20 + d3*diff_r20
 
-            forward_rate2 = a1*diff_w12 + b1*diff_r21 + a3*diff_w32 + b3*diff_r32
-            turn_rate2 = c1*diff_w12 + d1*diff_r21 + c3*diff_w32 + d3*diff_r32
+            forward_rate2 = a1*diff_w01 + b1*diff_r10 + a3*diff_w21 + b3*diff_r21
+            turn_rate2 = c1*diff_w01 + d1*diff_r10 + c3*diff_w21 + d3*diff_r21
 
-            forward_rate3 = a1*diff_w13 + b1*diff_r31 + a2*diff_w23 + b2*diff_r32
-            turn_rate3 = c1*diff_w13 + d1*diff_r31 + c2*diff_w23 + d2*diff_r32
+            forward_rate3 = a1*diff_w02 + b1*diff_r20 + a2*diff_w12 + b2*diff_r21
+            turn_rate3 = c1*diff_w02 + d1*diff_r20 + c2*diff_w12 + d2*diff_r21
 
             twists = [(forward_rate1, turn_rate1), (forward_rate2, turn_rate2), (forward_rate3, turn_rate3)]
 
@@ -157,7 +152,6 @@ class CollinearTask(object):
                 robot.set_twist(twists[idx][0], twists[idx][1])
 
             robot_positions.append(positions)
-
 
         return robot_positions
 
@@ -178,6 +172,8 @@ if __name__ == "__main__":
     task = CollinearTask()
     sim_robots = [SimRobot() for i in range(3)]
     model_robots = [ModelRobot(real=FLAGS.real) for i in range(3)]
+
+    organism = [0.41, 0.144, 0.683, 0.781, 1.206, 0.025, 0.263, 0.038, 0.338, 0.014, 0.878, 0.476]
 
     if FLAGS.train:
         task.train(sim_robots)
