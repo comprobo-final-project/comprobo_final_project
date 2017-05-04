@@ -1,8 +1,4 @@
-import math
-import random
-
 import numpy as np
-
 from pose import Pose
 from twist import Twist
 from vector_3 import Vector3
@@ -11,8 +7,8 @@ class Robot:
 
     def __init__(self, resolution=10, noise=0.1):
 
-        self.MAX_SPEED = 2 # m/s
-        self.MAX_TURN_RATE = 2 # rad/s
+        self.MAX_SPEED = 0.3 # m/s
+        self.MAX_TURN_RATE = 0.8 * np.pi # rad/s
         self.HISTORY = 0.1 # How much history to use
 
         self.pose = Pose()
@@ -45,9 +41,9 @@ class Robot:
         is centered on the origin and of radius r. """
 
         # Randomly generate x and y positions
-        x_pos = random.uniform(-r, r) # choose random x_pos
-        y_pos = math.sqrt(r**2 - x_pos**2) # set y_pos to meet r restriction
-        y_pos *= random.choice([1.0, -1.0]) # randomly make y_pos negative
+        x_pos = np.random.uniform(-r, r) # choose random x_pos
+        y_pos = np.sqrt(r**2 - x_pos**2) # set y_pos to meet r restriction
+        y_pos *= np.random.choice([1.0, -1.0]) # randomly make y_pos negative
 
         # Set the robot's position
         self.set_position(x_pos, y_pos)
@@ -57,7 +53,7 @@ class Robot:
         """ Give the robot a random direction from -pi to pi. """
 
         # Randomly generate a direction
-        w = random.uniform(-math.pi, math.pi)
+        w = np.random.uniform(-np.pi, np.pi)
 
         # Set the robot's direction
         self.set_direction(w)
@@ -87,7 +83,7 @@ class Robot:
     def step(self, step_freq):
 
         # Skip randomly depending on our noise threshold
-        if (random.random() > self.noise):
+        if (np.random.random() > self.noise):
 
             step_freq = float(step_freq)
 
@@ -95,8 +91,12 @@ class Robot:
             twist_w = self.twist.angular.z
             original_w = self.get_direction()
 
-            # From 0 to 2. 1 is neutral
-            noise_factor = 2 * (random.random() * self.noise) + 1
+            # A factor multipled to our updates, which causes the
+            # update value to range from 0 to 2. Low noise makes this
+            # deviation less noticeable, for instance, from 0.9 to 1.1X
+            # the update value. Without noise, this factor does not do
+            # anything (noise_factor == 1).
+            noise_factor = 2 * self.noise * (np.random.random() - 0.5)  + 1
 
             # Update velocity
             vel_r = twist_r * noise_factor
@@ -109,9 +109,5 @@ class Robot:
                 vel_w * (1 - self.HISTORY)
 
         # Update pose
-        velocity_xyz = Vector3()
-        velocity_xyz.x = self.pose.velocity.r * math.cos(self.pose.velocity.w)
-        velocity_xyz.y = self.pose.velocity.r * math.sin(self.pose.velocity.w)
-        self.pose.position += velocity_xyz / step_freq
-
+        self.pose.position += self.pose.velocity.to_vector_3() / step_freq
         self.update_listener(step_freq)

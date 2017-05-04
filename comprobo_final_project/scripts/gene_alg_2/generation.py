@@ -1,4 +1,5 @@
 import numpy as np
+from multiprocess import Pool
 
 # Boundary values for genes
 GENE_MAX = 10000
@@ -14,7 +15,8 @@ class Generation(object):
         elitism_thresh,
         crossover_thresh,
         mutation_thresh,
-        fitness_func):
+        fitness_func,
+        num_jobs=None):
 
         self.gen_size = gen_size
         self.num_genes = num_genes
@@ -23,6 +25,7 @@ class Generation(object):
         self.crossover_thresh = crossover_thresh
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
+        self._num_jobs = num_jobs
 
         self._organisms = np.around(np.random.rand(num_organisms, gen_size,
                 num_genes), 3)
@@ -37,14 +40,33 @@ class Generation(object):
         fit.
         """
 
-        for i in range(self.num_organisms):
-            for j in range(self.gen_size):
-                all_organisms_in_gen = np.array([organism[j] for organism in \
-                        self._organisms])
-                self._fitness_lists[i][j] = self.fitness_func(
-                        all_organisms_in_gen)[i]
-
+        pool = Pool(processes=2)
+        tuple_thing = np.transpose(self._organisms).tolist()
+        print np.transpose(self._organisms, (0,1)).shape
+        print 'Len tuple thing: ', len(tuple_thing)
+        self._fitness_lists = np.array(pool.map(self.fitness_func,
+                tuple_thing))
+        pool.close()
+        pool.join()
         self._sort() # Make sure to sort at the end for fitness
+
+# <<<<<<< HEAD
+
+        # for i in range(self.num_organisms):
+            # for j in range(self.gen_size):
+                # all_organisms_in_gen = np.array([organism[j] for organism in \
+                        # self._organisms])
+                # self._fitness_lists[i][j] = self.fitness_func(
+                        # all_organisms_in_gen)[i]
+
+# =======
+        # for i in range(len(self._organisms)):
+            # pool = Pool(processes=self._num_jobs)
+            # self._fitness_lists[i] = np.array(pool.map(self.fitness_func, \
+                    # self._organisms[i]))
+            # pool.close()
+            # pool.join()
+            # self._sort() # Make sure to sort at the end for fitness
 
 
     def get_zeroths(self):
