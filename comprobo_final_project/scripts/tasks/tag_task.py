@@ -35,13 +35,13 @@ class TagTask(object):
             fitness_func=self.get_fitness_func(robots)).train()
 
 
-    def visualizer_test(self, robots, organism):
+    def visualizer_test(self, robots, organisms):
         """
         Use the basic visualizer to see what the robot is doing.
         """
 
         simulation_visualizer = SimulationVisualizer(robots, real_world_scale=2)
-        self.run_with_setup(robots, organism)
+        self.run_with_setup(robots, organisms)
 
 
     def get_fitness_func(self, robots):
@@ -49,17 +49,19 @@ class TagTask(object):
         Provides a fitness function for the genetic alorigthm to optimize for.
         """
 
-        chasing_robot, running_robot = robots 
-
         # Using a closure here so we can hold our single robot instance
         def _fitness_func(organism):
-            positions = self.run_with_setup(robots, organism)
+            position_matrix = self.run_with_setup(robots, organism)
 
-            distances = [np.sqrt(position.x**2 + position.y**2) \
-                    for position in positions] # all distances from goal
+            distances = np.array([])
+            for position_array in position_matrix:
+                diff_x = position_array[1].x - position_array[0].x
+                diff_y = position_array[1].y - position_array[1].y
+                distances = np.append(distances, np.sqrt(diff_x**2 + diff_y**2))
             fitness = round(np.mean(distances), 5) # average distance from goal
 
-            return fitness, fitness * -1
+            # Chasing robot fitness, running robot fitness
+            return fitness, -fitness
 
         return _fitness_func
 
@@ -114,13 +116,13 @@ class TagTask(object):
             # Define linear and angular velocities based on organism
             forward_rate = np.array([])
             turn_rate = np.array([])
-            print "Organisms: ", organisms
-            for organism_num, organism_gene in enumerate(organisms):
-                print "Organism genes: ", organism_gene
-                forward_rate = np.append(forward_rate, organism_gene[0] * \
-                        diff_w + organism_gene[1] * diff_r)
-                turn_rate = np.append(turn_rate, organism_gene[2] * diff_w + \
-                        organism_gene[3] * diff_r)
+            # print "Organisms: ", organisms
+            for i in range(len(organisms)):
+                # print "Organism genes: ", organisms[i]
+                forward_rate = np.append(forward_rate, organisms[i][0] * \
+                        diff_ws[i] + organisms[i][1] * diff_r)
+                turn_rate = np.append(turn_rate, organisms[i][2] * \
+                        diff_ws[i] + organisms[i][3] * diff_r)
 
             # Set linear and angular velocities
             for robot_num, robot in enumerate(robots):
@@ -144,8 +146,10 @@ if __name__ == "__main__":
 
     task = TagTask()
     # organism = [13.909, 3.869, 40.304, 0.184] # Temporary
-    organisms = [[1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01],
-            [1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01]]
+    # organisms = [[1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01],
+            # [1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01]]
+    organisms = [[7.155e+03, 1.000e+04, 6.525e+03, 3.770e-01 ],
+            [8.805e+03, 1.000e+04, 3.973e+03, 5.070e-01]]
 
     if FLAGS.train:
         chasing_robot = SimRobot()

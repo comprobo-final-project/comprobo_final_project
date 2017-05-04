@@ -26,9 +26,9 @@ class Generation(object):
 
         self._organisms = np.around(np.random.rand(num_organisms, gen_size,
                 num_genes), 3)
-        self._fitness_lists = np.zeros(gen_size)
+        self._fitness_lists = np.zeros((num_organisms, gen_size))
 
-        print self._organisms
+        print 'Generation init organisms:\n', self._organisms
 
 
     def evaluate_fitness(self):
@@ -36,29 +36,29 @@ class Generation(object):
         Calculates fitness of all organisms in the generation and sorts by most
         fit.
         """
-        self._fitness_lists = np.apply_along_axis(self.fitness_func, 1, \
-            self._organisms)
 
-        self._fitness_lists = np.array([])
-        for i in range(len(organisms)):
-            self._fitness_lists = np.append(self._fitness_lists[i],
-                    np.apply_along_axis(self.fitness_func, 1, \
-                    self._organisms[i]))
+        for i in range(self.num_organisms):
+            for j in range(self.gen_size):
+                all_organisms_in_gen = np.array([organism[j] for organism in \
+                        self._organisms])
+                self._fitness_lists[i][j] = self.fitness_func(
+                        all_organisms_in_gen)[i]
 
         self._sort() # Make sure to sort at the end for fitness
 
 
-    def get_zeroth(self):
+    def get_zeroths(self):
         """
         Returns first organism and fitness.
         """
 
-        best_genes = np.array([])
-        for i in range(len(organisms)):
-            bests = np.append(bests, [self._organisms[i][0],
-                    self._fitness_lists[i][0]])
+        best_organisms = []
+        best_fitnesses = []
+        for i in range(len(self._organisms)):
+            best_organisms.append(self._organisms[i][0]) 
+            best_fitnesses.append(self._fitness_lists[i][0])
 
-        return bests
+        return best_organisms, best_fitnesses
 
 
     def evolve(self):
@@ -113,7 +113,7 @@ class Generation(object):
         Sorts organisms by fitness.
         """
 
-        for i in range(len(organisms)):
+        for i in range(len(self._organisms)):
             order = self._fitness_lists[i].argsort()
             self._organisms[i] = self._organisms[i][order]
             self._fitness_lists[i] = self._fitness_lists[i][order]

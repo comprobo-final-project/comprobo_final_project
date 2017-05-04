@@ -56,21 +56,23 @@ class GeneticAlgorithm(object):
 
                 # Evaluate the fitness for one generation
                 self._generation.evaluate_fitness()
-                organism, fitness = self._generation.get_zeroth()
+                best_organisms, best_fitnesses = \
+                        np.array(self._generation.get_zeroths())
 
-                # Print out the best
-                print"Generation %d: %s" % (gen_idx, organism), fitness
+                # Print out the bests
+                for i in range(len(best_organisms)):
+                    print"Generation %d: %s" % (gen_idx, best_organisms[i]), \
+                            best_fitnesses[i]
 
                 # Save to the log
-                writer.writerow([gen_idx, organism, fitness])
+                row = np.array([gen_idx])
+                for i in range(len(best_organisms)):
+                    row = np.append(row, best_organisms[i])
+                    row = np.append(row, best_fitnesses[i])
+                writer.writerow(row)
                 file_obj.flush()
 
-                if fitness < self.fitness_thresh:
-                    print "Most fit gene:", organism, fitness
-                    found = True
-                    break
-                else:
-                    self._generation.evolve()
+                self._generation.evolve()
 
                 gen_idx += 1
 
