@@ -51,19 +51,17 @@ class TagTask(object):
 
         # Using a closure here so we can hold our single robot instance
         def _fitness_func(organisms):
-            # position_matrix = self.run_with_setup(robots, organisms)
+            position_matrix = self.run_with_setup(robots, organisms)
 
-            # distances = np.array([])
-            # for position_array in position_matrix:
-                # diff_x = position_array[1].x - position_array[0].x
-                # diff_y = position_array[1].y - position_array[1].y
-                # distances = np.append(distances, np.sqrt(diff_x**2 + diff_y**2))
-            # fitness = round(np.mean(distances), 5) # average distance from goal
+            distances = np.array([])
+            for position_array in position_matrix:
+                diff_x = position_array[1].x - position_array[0].x
+                diff_y = position_array[1].y - position_array[1].y
+                distances = np.append(distances, np.sqrt(diff_x**2 + diff_y**2))
+            fitness = round(np.mean(distances), 5) # average distance from goal
 
             # Chasing robot fitness, running robot fitness
-            # return fitness, -fitness
-            print 'Len org: ', len(organisms)
-            return 0.0, 0.0
+            return fitness, -fitness
 
         return _fitness_func
 
