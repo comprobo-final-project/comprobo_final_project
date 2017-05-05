@@ -14,7 +14,8 @@ class AprilPoseProvider(object):
 
     def __init__(self, rospy, name):
         self.pose_callback = None
-        rospy.Subscriber(name+"/STAR_pose_continuous", PoseStamped, \
+        self.name = name
+        rospy.Subscriber(self.name+"/STAR_pose_continuous", PoseStamped, \
             self._on_pose_msg_received, queue_size=10)
 
 
