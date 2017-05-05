@@ -9,7 +9,7 @@ import numpy as np
 from ..models.robot import Robot as ModelRobot
 from ..simulator.robot import Robot as SimRobot
 from ..simulator.simulation_visualizer import SimulationVisualizer
-from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
+from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
 from ..visualizations import fitness_vs_run
 
 
