@@ -1,13 +1,9 @@
 import time
 import numpy as np
 
-<<<<<<< HEAD
 from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
-=======
-from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
 from ..simulator.robot import Robot as SimRobot
 from ..models.robot import Robot as ModelRobot
->>>>>>> 46d1a5a46f96519c5003f14659c02f646a87019c
 from scipy import stats
 
 class CollinearTask(object):
