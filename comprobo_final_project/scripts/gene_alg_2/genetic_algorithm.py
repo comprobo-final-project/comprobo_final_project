@@ -56,8 +56,7 @@ class GeneticAlgorithm(object):
 
                 # Evaluate the fitness for one generation
                 self._generation.evaluate_fitness()
-                best_organisms, best_fitnesses = \
-                        np.array(self._generation.get_zeroths())
+                best_organisms, best_fitnesses = self._generation.get_zeroths()
 
                 # Print out the bests
                 for i in range(len(best_organisms)):
@@ -65,10 +64,7 @@ class GeneticAlgorithm(object):
                             best_fitnesses[i]
 
                 # Save to the log
-                row = np.array([gen_idx])
-                for i in range(len(best_organisms)):
-                    row = np.append(row, best_organisms[i])
-                    row = np.append(row, best_fitnesses[i])
+                row = [gen_idx, np.array(best_organisms).tolist(), best_fitnesses]
                 writer.writerow(row)
                 file_obj.flush()
 

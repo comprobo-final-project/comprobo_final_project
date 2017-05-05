@@ -27,11 +27,9 @@ class Generation(object):
         self.fitness_func = fitness_func
         self.num_jobs = num_jobs
 
-        self._organisms = np.around(np.random.rand(num_organisms, gen_size,
-                num_genes), 3)
+        self._organisms = np.around(np.random.rand(num_organisms, gen_size, \
+            num_genes), 3)
         self._fitness_lists = np.zeros((num_organisms, gen_size))
-
-        print 'Generation init organisms:\n', self._organisms
 
 
     def evaluate_fitness(self):
@@ -42,7 +40,8 @@ class Generation(object):
 
         pool = Pool(processes=self.num_jobs)
         self._fitness_lists = np.array(pool.map(self.fitness_func, \
-            np.transpose(self._organisms, (1,0,2)))).transpose()
+            np.transpose(self._organisms, (1,0,2)))).reshape((\
+            self.num_organisms, self.gen_size))
         pool.close()
         pool.join()
         self._sort() # Make sure to sort at the end for fitness
@@ -113,7 +112,7 @@ class Generation(object):
         """
         Sorts organisms by fitness.
         """
-
+        print self._organisms.shape
         for i in range(len(self._organisms)):
             order = self._fitness_lists[i].argsort()
             self._organisms[i] = self._organisms[i][order]

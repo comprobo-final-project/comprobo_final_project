@@ -3,11 +3,7 @@
 
 import time
 import numpy as np
-from ..models.robot import Robot as ModelRobot
-from ..simulator.robot import Robot as SimRobot
-from ..simulator.simulation_visualizer import SimulationVisualizer
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
-from ..visualizations import fitness_vs_run
 
 
 class GoalTask(object):
@@ -27,6 +23,7 @@ class GoalTask(object):
         GeneticAlgorithm(
             log_location=log_location,
             gen_size=100,
+            num_organisms=1,
             num_genes=4,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
@@ -34,12 +31,12 @@ class GoalTask(object):
             fitness_func=self.get_fitness_func(robot)).train()
 
 
-    def visualizer_test(self, robot, organism):
+    def visualizer_test(self, robot, organisms):
         """
         Use the basic visualizer to see what the robot is doing.
         """
         simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
-        self.run_with_setup(robot, organism)
+        self.run_with_setup(robot, organisms)
 
 
     def get_fitness_func(self, robot):
@@ -48,8 +45,8 @@ class GoalTask(object):
         """
 
         # Using a closure here so we can hold our single robot instance
-        def _fitness_func(organism):
-            positions = self.run_with_setup(robot, organism)
+        def _fitness_func(organisms):
+            positions = self.run_with_setup(robot, organisms)
 
             distances = [np.sqrt(position.x**2 + position.y**2) \
                     for position in positions] # all distances from goal
@@ -60,16 +57,16 @@ class GoalTask(object):
         return _fitness_func
 
 
-    def run_with_setup(self, robot, organism):
+    def run_with_setup(self, robot, organisms):
         """
         For training and testing, we want to use the same setup defined here.
         """
         robot.set_random_position(r=5.0)
         robot.set_random_direction()
-        return self._run(robot=robot, duration=20, organism=organism)
+        return self._run(robot=robot, duration=20, organisms=organisms)
 
 
-    def _run(self, robot, duration, organism):
+    def _run(self, robot, duration, organisms):
         """
         Runs a robot through our function, controlled by an organism's genes.
         """
@@ -99,7 +96,7 @@ class GoalTask(object):
             diff_r = np.sqrt(diff_x**2 + diff_y**2)
 
             # Define linear and angular velocities based on organism
-            a1, b1, a2, b2 = organism
+            a1, b1, a2, b2 = organisms[0]
             forward_rate = a1*diff_w + b1*diff_r
             turn_rate = a2*diff_w + b2*diff_r
 
@@ -127,14 +124,17 @@ if __name__ == "__main__":
     organism = [0.046, 1.779, 12.361, 0.111] # Temporary
 
     # Create robots, both simulation ones and real ones
+    from ..simulator.robot import Robot as SimRobot
     sim_robot = SimRobot(noise=0.2)
-    model_robot = ModelRobot(real=FLAGS.real)
 
     if FLAGS.train:
         task.train(sim_robot)
 
     if FLAGS.visualize:
-        task.visualizer_test(sim_robot, organism)
+        from ..simulator.simulation_visualizer import SimulationVisualizer
+        task.visualizer_test(sim_robot, [organism])
 
     if FLAGS.real or FLAGS.gazebo:
-        task.run_with_setup(model_robot, organism)
+        from ..models.robot import Robot as ModelRobot
+        model_robot = ModelRobot(real=FLAGS.real)
+        task.run_with_setup(model_robot, [organism])
