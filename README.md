@@ -13,7 +13,7 @@ Change directory into the ROS package. Because of the way that sections of our c
 
 `roscd comprobo_final_project`
 
-Run the genetic algorithm with on the desired task with the desired options.
+Run the genetic algorithm on the desired task with the desired options.
 
 `python -m scripts.tasks.<TASK_NAME> --<COMMAND>`
 
