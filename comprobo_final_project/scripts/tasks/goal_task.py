@@ -27,7 +27,7 @@ class GoalTask(object):
             num_genes=4,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
-            mutation_thresh=0.5,
+            mutation_thresh=0.2,
             fitness_func=self.get_fitness_func(robot)).train()
 
 
@@ -121,11 +121,12 @@ if __name__ == "__main__":
 
     # Initialize task
     task = GoalTask()
-    organism = [0.046, 1.779, 12.361, 0.111] # Temporary
+    # organism = [0.046, 1.779, 12.361, 0.111] # Temporary
+    organism = [0.032, 2.167, 11.41, 0.006]
 
     # Create robots, both simulation ones and real ones
     from ..simulator.robot import Robot as SimRobot
-    sim_robot = SimRobot(noise=0.2)
+    sim_robot = SimRobot(noise=0.1)
 
     if FLAGS.train:
         task.train(sim_robot)

@@ -39,8 +39,9 @@ class Generation(object):
         """
 
         pool = Pool(processes=self.num_jobs)
-        self._fitness_lists = np.array(pool.map(self.fitness_func, \
-            np.transpose(self._organisms, (1,0,2)))).reshape((\
+        fitness_output = np.array(pool.map(self.fitness_func, \
+            np.transpose(self._organisms, (1,0,2))))
+        self._fitness_lists = fitness_output.transpose().reshape((\
             self.num_organisms, self.gen_size))
         pool.close()
         pool.join()
@@ -112,7 +113,6 @@ class Generation(object):
         """
         Sorts organisms by fitness.
         """
-        print self._organisms.shape
         for i in range(len(self._organisms)):
             order = self._fitness_lists[i].argsort()
             self._organisms[i] = self._organisms[i][order]

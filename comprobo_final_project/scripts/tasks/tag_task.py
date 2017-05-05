@@ -26,12 +26,12 @@ class TagTask(object):
 
         GeneticAlgorithm(
             log_location=log_location,
-            gen_size=10,
+            gen_size=8,
             num_genes=4,
             num_organisms=2,
             elitism_thresh=0.1,
             crossover_thresh=0.8,
-            mutation_thresh=0.5,
+            mutation_thresh=0.2,
             fitness_func=self.get_fitness_func(robots)).train()
 
 
