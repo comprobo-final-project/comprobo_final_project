@@ -26,7 +26,7 @@ class TagTask(object):
 
         GeneticAlgorithm(
             log_location=log_location,
-            gen_size=8,
+            gen_size=100,
             num_genes=4,
             num_organisms=2,
             elitism_thresh=0.1,
@@ -148,8 +148,10 @@ if __name__ == "__main__":
     # organism = [13.909, 3.869, 40.304, 0.184] # Temporary
     # organisms = [[1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01],
             # [1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01]]
-    organisms = [[7.155e+03, 1.000e+04, 6.525e+03, 3.770e-01 ],
-            [8.805e+03, 1.000e+04, 3.973e+03, 5.070e-01]]
+    # organisms = [[7.155e+03, 1.000e+04, 6.525e+03, 3.770e-01 ],
+    #         [8.805e+03, 1.000e+04, 3.973e+03, 5.070e-01]]
+    organisms = [[1.78, 29.463, 44.463, 0.257],
+        [2.25700000e+00, 2.08809700e+03, 5.73800000e+01, 4.90000000e-02]]
 
     if FLAGS.train:
         chasing_robot = SimRobot()
