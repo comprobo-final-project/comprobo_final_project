@@ -11,6 +11,7 @@ class Generation(object):
         self,
         gen_size,
         num_genes,
+        num_organisms,
         elitism_thresh,
         crossover_thresh,
         mutation_thresh,
@@ -19,14 +20,16 @@ class Generation(object):
 
         self.gen_size = gen_size
         self.num_genes = num_genes
+        self.num_organisms = num_organisms
         self.elitism_thresh = elitism_thresh
         self.crossover_thresh = crossover_thresh
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
-        self._num_jobs = num_jobs
+        self.num_jobs = num_jobs
 
-        self._organisms = np.random.rand(gen_size, num_genes)
-        self._fitnesses = np.zeros(gen_size)
+        self._organisms = np.around(np.random.rand(num_organisms, gen_size, \
+            num_genes), 3)
+        self._fitness_lists = np.zeros((num_organisms, gen_size))
 
 
     def evaluate_fitness(self):
@@ -34,18 +37,29 @@ class Generation(object):
         Calculates fitness of all organisms in the generation and sorts by most
         fit.
         """
-        pool = Pool(processes=self._num_jobs)
-        self._fitnesses = np.array(pool.map(self.fitness_func, self._organisms))
+
+        pool = Pool(processes=self.num_jobs)
+        fitness_output = np.array(pool.map(self.fitness_func, \
+            np.transpose(self._organisms, (1,0,2))))
+        self._fitness_lists = fitness_output.transpose().reshape((\
+            self.num_organisms, self.gen_size))
         pool.close()
         pool.join()
         self._sort() # Make sure to sort at the end for fitness
 
 
-    def get_zeroth(self):
+    def get_zeroths(self):
         """
         Returns first organism and fitness.
         """
-        return self._organisms[0], self._fitnesses[0]
+
+        best_organisms = []
+        best_fitnesses = []
+        for i in range(len(self._organisms)):
+            best_organisms.append(self._organisms[i][0])
+            best_fitnesses.append(self._fitness_lists[i][0])
+
+        return best_organisms, best_fitnesses
 
 
     def evolve(self):
@@ -53,54 +67,59 @@ class Generation(object):
         Method to evolve the generation of organisms.
         """
 
-        # Fill a percentage of the next generation with elite organisms
-        num_organisms_created = int(round(self.gen_size * self.elitism_thresh))
-        buf = self._organisms[:num_organisms_created].tolist()
+        for i in range(len(self._organisms)):
 
-        # Create rest of organisms with crossovers and mutations
-        while (num_organisms_created < self.gen_size):
+            # Fill a percentage of the next generation with elite organisms
+            num_organisms_created = int(round(self.gen_size *
+                    self.elitism_thresh))
+            buf = self._organisms[i][:num_organisms_created].tolist()
 
-            # Randomly decide if the next organisms should be created
-            # from a crossover_thresh
-            organisms_to_create = self.gen_size - num_organisms_created
-            if np.random.rand() <= self.crossover_thresh and organisms_to_create >= 2:
+            # Create rest of organisms with crossovers and mutations
+            while (num_organisms_created < self.gen_size):
 
-                # Create two child organisms from tournament-selected parents
-                (parent_1, parent_2) = self._select_parents()
-                children = self._crossover(parent_1, parent_2)
+                # Randomly decide if the next organisms should be created
+                # from a crossover_thresh
+                organisms_to_create = self.gen_size - num_organisms_created
+                crossover = 1 if np.random.rand()<=self.crossover_thresh else 0
+                if crossover and organisms_to_create >= 2:
 
-                # Random chance to mutate either child
-                for child in children:
-                    if np.random.rand() <= self.mutation_thresh:
-                        buf.append(self._mutate(child))
-                    else:
-                        buf.append(self._mutate(child))
-                num_organisms_created += 2
+                    # Make two child organisms from tournament-selected parents
+                    (parent_1, parent_2) = self._select_parents(i)
+                    children = self._crossover(parent_1, parent_2)
 
-            # Directly move a past organism to the next generation with
-            # a chance at mutation
-            else:
-                curr_organism = self._organisms[num_organisms_created]
-                if np.random.rand() <= self.mutation_thresh:
-                    buf.append(self._mutate(curr_organism))
+                    # Random chance to mutate either child
+                    for child in children:
+                        if np.random.rand() <= self.mutation_thresh:
+                            buf.append(self._mutate(child))
+                        else:
+                            buf.append(self._mutate(child))
+                    num_organisms_created += 2
+
+                # Directly move a past organism to the next generation with
+                # a chance at mutation
                 else:
-                    buf.append(curr_organism)
-                num_organisms_created += 1
+                    curr_organism = self._organisms[i][num_organisms_created]
+                    if np.random.rand() <= self.mutation_thresh:
+                        buf.append(self._mutate(curr_organism))
+                    else:
+                        buf.append(curr_organism)
+                    num_organisms_created += 1
 
-        # Sort current generation by fitness
-        self._organisms = np.asarray(buf)
+            # Sort current generation by fitness
+            self._organisms[i] = np.asarray(buf)
 
 
     def _sort(self):
         """
         Sorts organisms by fitness.
         """
-        order = self._fitnesses.argsort()
-        self._organisms = self._organisms[order]
-        self._fitnesses = self._fitnesses[order]
+        for i in range(len(self._organisms)):
+            order = self._fitness_lists[i].argsort()
+            self._organisms[i] = self._organisms[i][order]
+            self._fitness_lists[i] = self._fitness_lists[i][order]
 
 
-    def _tournament_selection(self):
+    def _tournament_selection(self, organism_num):
         """
         A helper method used to select a random organism from the
         generation using a tournament selection algorithm.
@@ -110,19 +129,20 @@ class Generation(object):
 
         # From those indexes, get the fitnesses and get the choice index of the
         # most fit
-        min_idx = np.argmin(self._fitnesses[choices_idx])
+        min_idx = np.argmin(self._fitness_lists[organism_num][choices_idx])
 
         # Get the subset of organisms from the random sample. Then, use the
         # min_idx to get the most fit organism in the sample
-        return self._organisms[choices_idx][min_idx]
+        return self._organisms[organism_num][choices_idx][min_idx]
 
 
-    def _select_parents(self):
+    def _select_parents(self, organism_num):
         """
         A helper method used to select two parents from the generation using a
         tournament selection algorithm.
         """
-        return (self._tournament_selection(), self._tournament_selection())
+        return (self._tournament_selection(organism_num),
+                self._tournament_selection(organism_num))
 
 
     def _crossover(self, organism_1, organism_2):

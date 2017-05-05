@@ -1,5 +1,6 @@
 import time
 import seaborn
+import json
 
 import pandas as pd
 import numpy as np
@@ -10,15 +11,28 @@ seaborn.set()
 
 def graph(log_location):
     df = pd.read_csv(log_location, header=None)
+    df[2] = df[2].apply(_to_list)
     b, a = signal.butter(3, 0.03)
-    y = signal.filtfilt(b, a, df[2])
-    plt.plot(df[2], alpha=0.3)
-    plt.plot(y)
+
+    # Plot all fitnesses
+    for i in range(len(df[2][0])):
+        y_data = df[2].apply(lambda x: _get_inner_column(x, i))
+        plt.plot(y_data, alpha=0.3)
+        y = signal.filtfilt(b, a, y_data)
+        plt.plot(y)
 
     plt.xlabel('Generations')
     plt.ylabel('Fitness')
 
     plt.show()
+
+
+def _to_list(text):
+    return json.loads(text)
+
+
+def _get_inner_column(l, idx):
+    return l[idx]
 
 
 if __name__ == "__main__":
