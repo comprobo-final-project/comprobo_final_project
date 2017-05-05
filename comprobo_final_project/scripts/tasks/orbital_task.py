@@ -3,9 +3,9 @@ import numpy as np
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
 
 
-class GoalTask(object):
+class OrbitalTask(object):
     """
-    Allows a robot to move to a fixed goal.
+    Allows a robot to orbit around a fixed goal.
     """
 
     def train(self, robot):
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     FLAGS, _ = parser.parse_known_args()
 
     # Initialize task
-    task = GoalTask()
+    task = OrbitalTask()
     # organism = [1.00000000e+04, 4.84443000e+03, 7.54000000e-01, \
     #     3.14000000e-01, 1.00000000e+04, 2.59000000e-01, 5.73096300e+03, \
     #     1.10000000e-02] # Temporary
