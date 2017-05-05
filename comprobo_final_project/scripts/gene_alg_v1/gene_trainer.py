@@ -11,7 +11,7 @@ import csv
 from population import Population
 from supervisor import Supervisor
 from robot_controller import RobotController
-from ..simulator.robot import Robot
+from simulator.robot import Robot
 
 
 class GeneTrainer(object):
@@ -21,7 +21,7 @@ class GeneTrainer(object):
     """
 
     def __init__(self):
-        self.supervisor = Supervisor(3)
+        self.supervisor = Supervisor()
         self.population = Population(size=100, crossover=0.8, elitism=0.1, \
                 mutation=0.5, supervisor=self.supervisor)
 
@@ -44,15 +44,15 @@ class GeneTrainer(object):
                 # Save to the log
                 writer.writerow([
                     generation,
-                    self.population.generations[0].genes, \
+                    self.population.generations[0].genes,
                     self.population.generations[0].fitness
                 ])
                 file_obj.flush()
 
-                if self.population.generations[0].fitness > .95:
-
-                    print "Most fit gene:", self.population.generations[0].genes, \
-                    self.population.generations[0].fitness
+                if self.population.generations[0].fitness < .25:
+                    print "Most fit gene:", \
+                            self.population.generations[0].genes, \
+                            self.population.generations[0].fitness
                     found = True
                     break
                 else:

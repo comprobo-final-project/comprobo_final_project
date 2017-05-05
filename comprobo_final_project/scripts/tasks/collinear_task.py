@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
+from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
 from ..simulator.robot import Robot as SimRobot
 from ..models.robot import Robot as ModelRobot
 from scipy import stats

@@ -8,18 +8,16 @@ Basic class that represents the chomosomes of our genetic algorithm.
 
 import random
 import numpy as np
-from scipy import stats
 
 # The number of genes that each organism has
-NUM_GENES = 12
-
+NUM_GENES = 4
 
 # Boundary values for genes
 GENE_MAX = 10000
 GENE_MIN = -10000
 
 
-class Organism:
+class Chromosome:
     """
     Holds the genes and fitness of an organism.
     """
@@ -35,20 +33,20 @@ class Organism:
             for x in range(NUM_GENES):
                 genes.append(round(random.uniform(-5, 5), 3))
 
-        # Define the organism's genes and fitness
+        # Define the chromosome's genes and fitness
         self.genes = genes
         self.supervisor = supervisor
-        self.fitness = self.get_fitness_collinear()
+        self.fitness = self.get_fitness()
 
 
     def crossover(self, other):
         """
-        Mixes the two specified organisms, returning two new organisms
-        that are a result of a crossover of the two original organisms.
+        Mixes the two specified chromosomes, returning two new chromosomes
+        that are a result of a crossover of the two original chromosomes.
 
-        other: second organism to crossover
+        other: second chromosome to crossover
 
-        return: two organisms that are crossovers between self and other
+        return: two chromosomes that are crossovers between self and other
         """
 
         # Define the genes that will be crossovered
@@ -58,18 +56,18 @@ class Organism:
         # Define a random pivot point around which the crossover will occur
         crossover_point = random.randint(0, NUM_GENES-1)
 
-        # Create the new crossovered genes and organism
+        # Create the new crossovered genes and chromosome
         new_genes_1 = g1[:crossover_point] + g2[crossover_point:]
         new_genes_2 = g2[:crossover_point] + g1[crossover_point:]
-        new_organism_1 = Organism(new_genes_1, self.supervisor)
-        new_organism_2 = Organism(new_genes_2, self.supervisor)
+        new_chromosome_1 = Chromosome(new_genes_1, self.supervisor)
+        new_chromosome_2 = Chromosome(new_genes_2, self.supervisor)
 
-        return new_organism_1, new_organism_2
+        return new_chromosome_1, new_chromosome_2
 
 
     def mutate(self):
         """
-        Mutates a single random gene of the specified organism.
+        Mutates a single random gene of the specified chromosome.
         """
 
         # Initialize what will be the final list of mutated genes
@@ -84,16 +82,16 @@ class Organism:
                 GENE_MIN, GENE_MAX)
         mutated_genes = [round(gene, 3) for gene in mutated_genes]
 
-        # Create new organism with genes from the mutated genes
-        return Organism(mutated_genes, self.supervisor)
+        # Create new chromosome with genes from the mutated genes
+        return Chromosome(mutated_genes, self.supervisor)
 
 
-    def get_fitness_simple(self):
+    def get_fitness(self):
         """
-        Calculates fitness of a specified organism for simple task
+        Calculate the fitness of a specified chromosome.
         """
 
-        # Apply current organism's genes to the supervisor
+        # Apply current chromosome's genes to the supervisor
         self.supervisor.use_genes(self.genes)
 
         # Calculate fitness
@@ -107,43 +105,24 @@ class Organism:
 
         return fitness
 
-    def get_fitness_collinear(self):
-        """
-        Calculate the fitness of a specified organism for collinear task
-        """
-
-        fitness = []
-        for i in range(3):
-            self.supervisor.use_genes(self.genes)
-
-            positions = self.supervisor.run()
-            end = positions[-1]
-            # print "ROBOT END", end[0].x, end[0].y, end[1].x, end[1].y, end[2].x, end[2].y
-            r_values = []
-
-            for position in positions:
-                x = []
-                y = []
-                for robot in position:
-                    x.append(robot.x)
-                    y.append(robot.y)
-
-                _, _, r_value, _, _ = stats.linregress(zip(x,y))
-                r_values.append(r_value**2)
-
-            final_value = np.mean(r_values)
-            fitness.append(final_value)
-            self.supervisor.reset()
-            print
-
-        overall_fitness = np.mean(fitness)
-        print overall_fitness
-        return overall_fitness
-
 
 if __name__ == '__main__':
 
     # Test basic functionality
-    from supervisor import Supervisor
-    test = Supervisor()
-    c1 = Organism([0.472, -2.264, -0.48, 3.669, -3.244, -0.746, -4.727, 4.552, 3.9, 3.054, -1.903, -3.669], test)
+
+    c1 = Chromosome()
+    c2 = Chromosome()
+    print "First generation:"
+    print c1.genes
+    print c2.genes, "\n"
+
+    c3, c4 = c1.crossover(c2)
+    print "Second generation (after crossover):"
+    print c3.genes
+    print c4.genes, "\n"
+
+    c3.mutate()
+    c4.mutate()
+    print "Second generation (after mutation):"
+    print c3.genes
+    print c4.genes

@@ -7,9 +7,9 @@ to each calculate their own fitness using the simulation components in this clas
 """
 
 
-from ..simulator.robot import Robot
+from simulator.robot import Robot
 from robot_controller import RobotController
-import numpy as np
+
 
 class Supervisor(object):
     """
@@ -17,18 +17,12 @@ class Supervisor(object):
     determining fitness
     """
 
-    def __init__(self, number):
+    def __init__(self):
 
-        self.robots = []
-        for i in range(number):
-            robot = Robot(noise=0.0)
-            robot.pose.position.x = np.random.randint(1,10)
-            robot.pose.position.y = np.random.randint(1,10)
-            self.robots.append(robot)
-            # print "ROBOT START", robot.pose.position.x, robot.pose.position.y
-
-        self.robot_controller = RobotController(self.robots)
-
+        self.robot = Robot()
+        self.robot.pose.position.x = 3.0
+        self.robot.pose.position.y = 5.0
+        self.robot_controller = RobotController(self.robot)
 
 
     def use_genes(self, genes):
@@ -43,20 +37,12 @@ class Supervisor(object):
         """
         resets the simulation for the next usage
         """
-        for robot in self.robots:
-            self.reset_robot(robot)
 
-
-    def reset_robot(self, robot):
-        """
-        resets each robot's coordinates for next iteration
-        """
         # Give the robot a random position r meters away from the goal
-        robot.set_random_position(r=5.0)
-        # print "ROBOT START", robot.pose.position.x, robot.pose.position.y
+        self.robot.set_random_position(r=5.0)
 
         # Give the robot a random direction
-        robot.set_random_direction()
+        self.robot.set_random_direction()
 
 
     def run(self):

@@ -18,17 +18,17 @@ class Generation(object):
         fitness_func,
         num_jobs=None):
 
-        self.gen_size = gen_size
-        self.num_genes = num_genes
-        self.num_organisms = num_organisms
+        self.gen_size = gen_size # number of organisms per generation
+        self.num_genes = num_genes # number of genes per organism
+        self.num_organisms = num_organisms # number of unique organisms
         self.elitism_thresh = elitism_thresh
         self.crossover_thresh = crossover_thresh
         self.mutation_thresh = mutation_thresh
         self.fitness_func = fitness_func
-        self.num_jobs = num_jobs
+        self.num_jobs = num_jobs # number of cores to use in parallel processing
 
         self._organisms = np.around(np.random.rand(num_organisms, gen_size, \
-            num_genes), 3)
+            num_genes), 3) # randomly initialize organism genetics
         self._fitness_lists = np.zeros((num_organisms, gen_size))
 
 
@@ -38,6 +38,7 @@ class Generation(object):
         fit.
         """
 
+        # Run fitness calculations in parallel on multiple cores
         pool = Pool(processes=self.num_jobs)
         fitness_output = np.array(pool.map(self.fitness_func, \
             np.transpose(self._organisms, (1,0,2))))
@@ -45,12 +46,13 @@ class Generation(object):
             self.num_organisms, self.gen_size))
         pool.close()
         pool.join()
+
         self._sort() # Make sure to sort at the end for fitness
 
 
     def get_zeroths(self):
         """
-        Returns first organism and fitness.
+        Returns most fit of each unique organism and fitness.
         """
 
         best_organisms = []
@@ -67,6 +69,7 @@ class Generation(object):
         Method to evolve the generation of organisms.
         """
 
+        # For each unique organism
         for i in range(len(self._organisms)):
 
             # Fill a percentage of the next generation with elite organisms
@@ -111,8 +114,9 @@ class Generation(object):
 
     def _sort(self):
         """
-        Sorts organisms by fitness.
+        Sorts organisms and fitnesses by fitness.
         """
+
         for i in range(len(self._organisms)):
             order = self._fitness_lists[i].argsort()
             self._organisms[i] = self._organisms[i][order]
@@ -124,6 +128,7 @@ class Generation(object):
         A helper method used to select a random organism from the
         generation using a tournament selection algorithm.
         """
+
         # First, get some random indexes
         choices_idx = np.random.choice(self.gen_size, 5)
 
@@ -141,6 +146,7 @@ class Generation(object):
         A helper method used to select two parents from the generation using a
         tournament selection algorithm.
         """
+
         return (self._tournament_selection(organism_num),
                 self._tournament_selection(organism_num))
 
