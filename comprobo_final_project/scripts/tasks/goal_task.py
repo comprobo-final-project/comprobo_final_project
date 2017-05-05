@@ -3,7 +3,7 @@
 
 import time
 import numpy as np
-from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
+from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
 
 
 class GoalTask(object):

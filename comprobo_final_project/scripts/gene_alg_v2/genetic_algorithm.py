@@ -24,8 +24,8 @@ class GeneticAlgorithm(object):
         self.log_location = log_location
 
         # Used for training
-        self.train_thresh = train_thresh
-        self.fitness_thresh = fitness_thresh
+        self.train_thresh = train_thresh # generation end condition
+        self.fitness_thresh = fitness_thresh # fitness end condition
 
         # Rest of the hyperparams are used for evolution
         self._generation = Generation(
@@ -49,27 +49,32 @@ class GeneticAlgorithm(object):
         with open(self.log_location,'wb') as file_obj:
 
             writer = csv.writer(file_obj, delimiter = ',')
-            gen_idx = 0
-            found = False
+            gen_idx = 0 # start at generation zero
+            found = False # organism above fitness threshold not yet found
 
+            # Until max number of generations reached
             while gen_idx < self.train_thresh:
 
                 # Evaluate the fitness for one generation
                 self._generation.evaluate_fitness()
                 best_organisms, best_fitnesses = self._generation.get_zeroths()
 
-                # Print out the bests
+                # Print out the genes and fitnesses of the most fit organisms
                 for i in range(len(best_organisms)):
                     print"Generation %d: %s" % (gen_idx, best_organisms[i]), \
                             best_fitnesses[i]
 
-                # Save to the log
-                row = [gen_idx, np.array(best_organisms).tolist(), best_fitnesses]
+                # Save generation number and genes and fitness of most fit
+                # organisms to a log file
+                row = [gen_idx, np.array(best_organisms).tolist(), 
+                        best_fitnesses]
                 writer.writerow(row)
                 file_obj.flush()
 
+                # Evolve the generation
                 self._generation.evolve()
 
+                # Increment the generation number
                 gen_idx += 1
 
         if not found:
