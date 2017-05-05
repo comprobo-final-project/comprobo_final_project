@@ -32,6 +32,7 @@ class Robot:
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
         self.pose_provider = AprilPoseProvider(rospy, self.name) if real \
+
                 else GazeboPoseProvider(rospy)
         self.pose_provider.subscribe(self._pose_listener)
 
