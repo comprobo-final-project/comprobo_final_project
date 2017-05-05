@@ -20,21 +20,19 @@ class Robot:
 
     def __init__(self, resolution=10, real=False, name=""):
 
-        # TODO: This needs some work, b/c we can't start multiple robot nodes
-        #       here.
-
         self.MAX_SPEED = 0.3 # m/s
         self.MAX_TURN_RATE = 0.8 * np.pi # rad/s
-        rospy.init_node('robot_controller')
+        rospy.init_node('robot_controller', anonymous=True)
 
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
         self.resolution = resolution
-        self.name=name
+        self.name = name
 
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
-        self.pose_provider = AprilPoseProvider(rospy, name) if real \
+        self.pose_provider = AprilPoseProvider(rospy, self.name) if real \
+
                 else GazeboPoseProvider(rospy)
         self.pose_provider.subscribe(self._pose_listener)
 
@@ -52,6 +50,7 @@ class Robot:
 
 
     def get_position(self):
+
         return self.pose_stamped.pose.position
 
 

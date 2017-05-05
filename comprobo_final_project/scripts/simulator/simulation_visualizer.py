@@ -49,6 +49,7 @@ class SimulationVisualizer:
             scale_units = 'xy',
             scale = 1)
 
+
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.title('World')
@@ -56,6 +57,7 @@ class SimulationVisualizer:
         plt.show()
 
     def update(self, frequency):
+
         if self.update_count % len(self.robots) == 0:
             self.update_count = 0
 
@@ -73,6 +75,7 @@ class SimulationVisualizer:
 
 
 if __name__ == "__main__":
+
     from robot import Robot
 
     rb1 = Robot(noise = 0, resolution=4)

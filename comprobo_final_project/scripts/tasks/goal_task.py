@@ -137,5 +137,5 @@ if __name__ == "__main__":
 
     if FLAGS.real or FLAGS.gazebo:
         from ..models.robot import Robot as ModelRobot
-        model_robot = ModelRobot(real=FLAGS.real, name="robot1")
+        model_robot = ModelRobot(real=FLAGS.real, name="")
         task.run_with_setup(model_robot, [organism])

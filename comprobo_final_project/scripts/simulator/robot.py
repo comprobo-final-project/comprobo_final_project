@@ -11,13 +11,20 @@ class Robot:
         self.MAX_TURN_RATE = 0.8 * np.pi # rad/s
         self.HISTORY = 0.1 # How much history to use
 
-        self.pose = Pose()
-        self.twist = Twist()
+        self.reset()
 
         self.noise = noise # A value between 0 and 1.
 
         self.resolution = resolution
         self.update_listener = lambda x: None
+
+
+    def reset(self):
+        """
+        resets the robot's positions and stuffs
+        """
+        self.pose = Pose()
+        self.twist = Twist()
 
 
     def set_twist(self, forward_rate, turn_rate):
@@ -109,5 +116,6 @@ class Robot:
                 vel_w * (1 - self.HISTORY)
 
         # Update pose
+
         self.pose.position += self.pose.velocity.to_vector_3() / step_freq
         self.update_listener(step_freq)

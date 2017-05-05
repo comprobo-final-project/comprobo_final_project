@@ -1,9 +1,14 @@
 import time
 import numpy as np
 
+<<<<<<< HEAD
 from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
+=======
+from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
+from ..simulator.robot import Robot as SimRobot
+from ..models.robot import Robot as ModelRobot
+>>>>>>> 46d1a5a46f96519c5003f14659c02f646a87019c
 from scipy import stats
-
 
 class CollinearTask(object):
     """
@@ -85,6 +90,7 @@ class CollinearTask(object):
                 robot.set_random_position(r=5.0)
                 robot.set_random_direction()
             r2 = self._get_linregress_r2(
+
                 [(robot.get_position().x, robot.get_position().y) \
                     for robot in robots])
 
@@ -179,18 +185,18 @@ if __name__ == "__main__":
 
     FLAGS, _ = parser.parse_known_args()
 
-    task = CollinearTask()
-
-    from ..simulator.robot import Robot as SimRobot
-    sim_robots = [SimRobot() for i in range(3)]
-
     organism = [4.12460000e+01, 1.34800000e+01, 2.65000000e-01, \
-        9.15890000e+01, 2.71200000e+03, 7.40949000e+02, 3.83599600e+03, \
-        6.56000000e+00, 1.14720000e+01, 9.03200000e+00, 8.97511000e+02, \
-        6.43300000e+00, 1.16084100e+03, 4.92770000e+01, 1.83480000e+02, \
-        1.51405000e+02, 1.46484000e+02, 3.91480000e+01, 5.07955000e+02, \
-        2.48448700e+03, 2.74000000e-01, 1.18584000e+02, 2.69167000e+02, \
-        5.30000000e-02]
+    9.15890000e+01, 2.71200000e+03, 7.40949000e+02, 3.83599600e+03, \
+    6.56000000e+00, 1.14720000e+01, 9.03200000e+00, 8.97511000e+02, \
+    6.43300000e+00, 1.16084100e+03, 4.92770000e+01, 1.83480000e+02, \
+    1.51405000e+02, 1.46484000e+02, 3.91480000e+01, 5.07955000e+02, \
+    2.48448700e+03, 2.74000000e-01, 1.18584000e+02, 2.69167000e+02, \
+    5.30000000e-02]
+
+    task = CollinearTask()
+    sim_robots = [SimRobot() for i in range(3)]
+    model_robots = [ModelRobot(real=FLAGS.real, name="robot"+str(i)) for i in range(1,4)]
+
 
     if FLAGS.train:
         task.train(sim_robots)
@@ -199,6 +205,4 @@ if __name__ == "__main__":
         task.visualizer_test(sim_robots, organism)
 
     if FLAGS.gazebo or FLAGS.real:
-        from ..models.robot import Robot as ModelRobot
-        model_robots = [ModelRobot(real=FLAGS.real) for i in range(3)]
         task.run_with_setup(model_robots, organism)
