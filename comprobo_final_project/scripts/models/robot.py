@@ -18,7 +18,7 @@ class Robot:
     set_twist(twist : Twist) : Void - Sets the Twist of the robot
     """
 
-    def __init__(self, resolution=10, real=False):
+    def __init__(self, resolution=10, real=False, name=""):
 
         # TODO: This needs some work, b/c we can't start multiple robot nodes
         #       here.
@@ -30,15 +30,16 @@ class Robot:
         self.pose_stamped = PoseStamped()
         self.twist = Twist()
         self.resolution = resolution
+        self.name=name
 
         # Suscribe to position of Neato robot, can switch between real world
         # vs gazebo
-        self.pose_provider = AprilPoseProvider(rospy) if real \
+        self.pose_provider = AprilPoseProvider(rospy, name) if real \
                 else GazeboPoseProvider(rospy)
         self.pose_provider.subscribe(self._pose_listener)
 
         # Create publisher for current detected ball characteristics
-        self.twist_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+        self.twist_publisher = rospy.Publisher(self.name+'/cmd_vel', Twist, queue_size=10)
 
 
     def set_twist(self, forward_rate, turn_rate):

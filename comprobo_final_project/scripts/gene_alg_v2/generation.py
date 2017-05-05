@@ -2,8 +2,8 @@ import numpy as np
 from multiprocess import Pool
 
 # Boundary values for genes
-GENE_MAX = 10000
-GENE_MIN = -10000
+GENE_MAX = 1000
+GENE_MIN = -1000
 
 class Generation(object):
 

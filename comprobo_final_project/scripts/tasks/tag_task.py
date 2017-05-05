@@ -166,6 +166,6 @@ if __name__ == "__main__":
         task.visualizer_test([chasing_robot, running_robot], organisms)
 
     if FLAGS.gazebo or FLAGS.real:
-        chasing_robot = ModelRobot(real=FLAGS.real)
-        running_robot = ModelRobot(real=FLAGS.real)
+        chasing_robot = ModelRobot(real=FLAGS.real, name="robot2")
+        running_robot = ModelRobot(real=FLAGS.real, name="robot1")
         task.run_with_setup([chasing_robot, running_robot], organisms)
