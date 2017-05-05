@@ -1,3 +1,7 @@
+"""
+An Attempted Task class that would evolve organisms to revolve around a point
+"""
+
 import time
 import numpy as np
 from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
@@ -33,6 +37,7 @@ class OrbitalTask(object):
         """
         Use the basic visualizer to see what the robot is doing.
         """
+
         simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
         get_fitness = self.get_fitness_func(robot)
         fitness = get_fitness(organisms)
@@ -73,6 +78,7 @@ class OrbitalTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
+
         robot.set_random_position(r=1.5)
         robot.set_random_direction()
         return self._run(robot=robot, duration=duration, organism=organism)
@@ -133,9 +139,7 @@ if __name__ == "__main__":
 
     # Initialize task
     task = OrbitalTask()
-    # organism = [1.00000000e+04, 4.84443000e+03, 7.54000000e-01, \
-    #     3.14000000e-01, 1.00000000e+04, 2.59000000e-01, 5.73096300e+03, \
-    #     1.10000000e-02] # Temporary
+
     organisms = [[141.013, 1000.0, 0.922, 0.457, 1000.0, 0.327, 1000.0, 0.129]]
 
     # Create robots, both simulation ones and real ones

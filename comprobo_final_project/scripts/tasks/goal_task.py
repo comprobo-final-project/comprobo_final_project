@@ -1,5 +1,8 @@
 #!usr/bin/env python
 
+"""
+Task class that evolves organisms to reach a goal
+"""
 
 import time
 import numpy as np
@@ -35,6 +38,7 @@ class GoalTask(object):
         """
         Use the basic visualizer to see what the robot is doing.
         """
+        
         simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
         self.run_with_setup(robot, organisms)
 
@@ -61,6 +65,7 @@ class GoalTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
+
         robot.set_random_position(r=5.0)
         robot.set_random_direction()
         return self._run(robot=robot, duration=30, organisms=organisms)

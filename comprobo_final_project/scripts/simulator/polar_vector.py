@@ -1,14 +1,20 @@
+"""
+Custom made vector attribute made in polar coordinates, for simulation
+"""
+
 import numpy as np
 from vector_3 import Vector3
 
 class PolarVector(object):
 
     def __init__(self):
+
         self.r = 0
         self._w = 0
 
 
     def __str__(self):
+
         return str(self.r) + ", " + str(self.w)
 
 
@@ -33,6 +39,7 @@ class PolarVector(object):
 
 
     def to_vector_3(self):
+        
         vector = Vector3()
         vector.x = self.x
         vector.y = self.y

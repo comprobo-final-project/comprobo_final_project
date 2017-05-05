@@ -1,3 +1,9 @@
+#!usr/bin/env python
+
+"""
+Task class that evolves organisms to form a straight line.
+"""
+
 import time
 import numpy as np
 
@@ -35,6 +41,7 @@ class CollinearTask(object):
         """
         Use the basic visualizer to see what the robots is doing.
         """
+
         from ..simulator.simulation_visualizer import SimulationVisualizer
         simulation_visualizer = SimulationVisualizer(robots, real_world_scale=10)
         get_fitness = self.get_fitness_func(robots)
@@ -51,6 +58,7 @@ class CollinearTask(object):
             """
             Calculate the fitness of a specified organism for collinear task
             """
+
             fitness = []
 
             for i in range(3):
@@ -77,6 +85,7 @@ class CollinearTask(object):
         """
         For training and testing, we want to use the same setup defined here.
         """
+
         straight_thresh = 0.5
         r2 = 1
 
@@ -97,6 +106,7 @@ class CollinearTask(object):
         """
         Runs a robot through our function, controlled by an organism's genes.
         """
+        
         robot_positions = []
         for _ in range(int(duration * robots[0].resolution)):
 

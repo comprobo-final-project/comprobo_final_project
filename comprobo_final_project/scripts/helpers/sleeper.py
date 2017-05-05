@@ -1,8 +1,14 @@
+"""
+A sleeper class meant to assist with simulation time vs real time to make the simulation
+as real as possible while also keeping simulation times reasonable.
+"""
+
 import time
 
 CALIBRATION_FACTOR = 11658482
 
 def sleep(duration):
+    
     if duration < 0.1:
         count = 0
         while count < duration * CALIBRATION_FACTOR:

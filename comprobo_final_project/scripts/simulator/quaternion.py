@@ -1,3 +1,7 @@
+"""
+Custom made Quaternion attribute made for simulation
+"""
+
 class Quaternion:
 
     def __init__(self):

@@ -33,7 +33,6 @@ class Population:
         self.generations = list(sorted(pop, key=lambda x: x.fitness))
 
 
-
     def tournament_selection(self):
         """
         A helper method used to select a random chromosome from the

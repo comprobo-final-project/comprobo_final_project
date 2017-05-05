@@ -1,11 +1,20 @@
 import numpy as np
 from multiprocess import Pool
 
+"""
+New and improved generation script that holds all populations of organisms
+and performs all evolutions and fitness evaluations
+"""
+
 # Boundary values for genes
 GENE_MAX = 1000
 GENE_MIN = -1000
 
 class Generation(object):
+    """
+    the Generation class that holds the population or organisms and determines
+    evolution, fitness, and most fit organisms
+    """
 
     def __init__(
         self,

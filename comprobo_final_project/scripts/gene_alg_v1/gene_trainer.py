@@ -29,6 +29,9 @@ class GeneTrainer(object):
 
 
     def train(self):
+        """
+        trains generations of organisms
+        """
 
         print "Starting the training session."
 
@@ -36,6 +39,7 @@ class GeneTrainer(object):
             writer = csv.writer(file_obj, delimiter = ',')
             generation = 0
             found = False
+
             while generation < self.max_generations:
                 print"Generation %d: %s" % (generation, \
                         self.population.generations[0].genes), \
@@ -49,6 +53,7 @@ class GeneTrainer(object):
                 ])
                 file_obj.flush()
 
+                #end condition for most fit organism
                 if self.population.generations[0].fitness < .25:
                     print "Most fit gene:", \
                             self.population.generations[0].genes, \

@@ -1,3 +1,7 @@
+"""
+Custom made pose attribute for simulation
+"""
+
 import math
 
 from vector_3 import Vector3

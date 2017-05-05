@@ -1,9 +1,19 @@
+"""
+Simulation robot class made to be modular and mirror the model robot class.
+It acts as the virtual robot and performs all simulation runs, with the hopes of
+finding the most fit gene that will eventually be passed to the model robot.
+"""
+
 import numpy as np
 from pose import Pose
 from twist import Twist
 from vector_3 import Vector3
 
 class Robot:
+    """
+    Simulation robot that uses custom made attributes to run organism's genes
+    and decide their fitness for the given task
+    """
 
     def __init__(self, resolution=10, noise=0.1):
 
@@ -23,6 +33,7 @@ class Robot:
         """
         resets the robot's positions and stuffs
         """
+        
         self.pose = Pose()
         self.twist = Twist()
 

@@ -1,3 +1,8 @@
+"""
+Visualizer class mainly used to see a simulation run graphically.
+Can be used for debugging and validation
+"""
+
 from ..helpers import sleeper
 
 import matplotlib.pyplot as plt
@@ -12,6 +17,7 @@ class SimulationVisualizer:
         """
         enable_render : bool - Determines whether visualizations show up
         """
+
         self.robots = robots
 
         for robot in self.robots:
@@ -29,6 +35,7 @@ class SimulationVisualizer:
         """
         Renders the simulated world
         """
+        
         plt.ion()
 
         self.fig, axes = plt.subplots()

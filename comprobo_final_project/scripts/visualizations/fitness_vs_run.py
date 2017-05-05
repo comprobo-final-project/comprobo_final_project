@@ -1,3 +1,8 @@
+"""
+Visualization script that takes logs and plots the fitness of generations in
+a given simulation
+"""
+
 import time
 import seaborn
 import json
@@ -10,6 +15,7 @@ import matplotlib.pyplot as plt
 seaborn.set()
 
 def graph(log_location):
+
     df = pd.read_csv(log_location, header=None)
     df[2] = df[2].apply(_to_list)
     b, a = signal.butter(3, 0.03)
@@ -28,10 +34,12 @@ def graph(log_location):
 
 
 def _to_list(text):
+
     return json.loads(text)
 
 
 def _get_inner_column(l, idx):
+    
     return l[idx]
 
 

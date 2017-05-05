@@ -1,3 +1,7 @@
+"""
+Custom made Twist message attribute for simulation
+"""
+
 from vector_3 import Vector3
 from quaternion import Quaternion
 

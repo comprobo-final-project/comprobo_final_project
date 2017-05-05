@@ -1,5 +1,9 @@
 #!usr/bin/env python
 
+"""
+New and improved genetics algorithm script that is adapted to the new generation
+script structure. Still trains the organisms to find the most fit over many generations
+"""
 
 import csv
 import numpy as np
@@ -7,6 +11,10 @@ from .generation import Generation
 
 
 class GeneticAlgorithm(object):
+    """
+    The GeneticAlgorithm class which trains generations to find the most fit
+    organism
+    """
 
     def __init__(
         self,
@@ -66,7 +74,7 @@ class GeneticAlgorithm(object):
 
                 # Save generation number and genes and fitness of most fit
                 # organisms to a log file
-                row = [gen_idx, np.array(best_organisms).tolist(), 
+                row = [gen_idx, np.array(best_organisms).tolist(),
                         best_fitnesses]
                 writer.writerow(row)
                 file_obj.flush()

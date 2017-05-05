@@ -13,6 +13,7 @@ class AprilPoseProvider(object):
     """
 
     def __init__(self, rospy, name):
+        
         self.pose_callback = None
         self.name = name
         rospy.Subscriber(self.name+"/STAR_pose_continuous", PoseStamped, \
@@ -23,6 +24,7 @@ class AprilPoseProvider(object):
         """
         updates new callback function for packaging purposes
         """
+
         self.pose_callback = pose_callback
 
 
@@ -30,5 +32,6 @@ class AprilPoseProvider(object):
         """
         Takes the pose and ships it off to the currently assigned callback (which should be in RobotController)
         """
+
         if self.pose_callback is not None:
             self.pose_callback(msg.pose)

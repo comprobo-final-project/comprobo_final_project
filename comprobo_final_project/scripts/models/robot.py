@@ -1,5 +1,11 @@
 #!usr/bin/env python
 
+"""
+The real world robot class which has been made modular to mirror the simulation
+robot class. It connects to april tags in the real world (or Gazebo) and can run
+the most fit organism in the same way as done in simulation.
+"""
+
 import rospy
 import tf
 
@@ -54,6 +60,7 @@ class Robot:
 
 
     def get_direction(self):
+
         return tf.transformations.euler_from_quaternion((
             self.pose_stamped.pose.orientation.x,
             self.pose_stamped.pose.orientation.y,
@@ -62,11 +69,13 @@ class Robot:
 
 
     def set_random_position(self, r=1):
+
         # TODO: Set a random position in gazebo. Ignore if real.
         pass
 
 
     def set_random_direction(self):
+
         # TODO: Set a random direction in gazebo. Ignore if real.
         pass
 
@@ -75,4 +84,5 @@ class Robot:
         """
         Callback function for organism position.
         """
+        
         self.pose_stamped.pose = pose

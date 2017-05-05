@@ -1,3 +1,5 @@
+# Record of the most fit organism for collinear task
+
 `logs/log_1493835608.csv`
 noise = 0.1
 straight_thresh = 0.5

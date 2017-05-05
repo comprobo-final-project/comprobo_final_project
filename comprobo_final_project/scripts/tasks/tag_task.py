@@ -1,12 +1,15 @@
 #!usr/bin/env python
 
+"""
+Task class to evolve organisms against each other to play tag
+"""
 
 import time
 import numpy as np
 from ..models.robot import Robot as ModelRobot
 from ..simulator.robot import Robot as SimRobot
 from ..simulator.simulation_visualizer import SimulationVisualizer
-from ..gene_alg_v2.genetic_algorithm import GeneticAlgorithm
+from ..gene_alg_2.genetic_algorithm import GeneticAlgorithm
 from ..visualizations import fitness_vs_run
 
 
@@ -51,6 +54,7 @@ class TagTask(object):
 
         # Using a closure here so we can hold our single robot instance
         def _fitness_func(organisms):
+
             position_matrix = self.run_with_setup(robots, organisms)
 
             distances = np.array([])
@@ -145,13 +149,7 @@ if __name__ == "__main__":
     FLAGS, _ = parser.parse_known_args()
 
     task = TagTask()
-    # organism = [13.909, 3.869, 40.304, 0.184] # Temporary
-    # organisms = [[1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01],
-            # [1.000e-02, 9.980e-01, 2.143e+01, 1.180e-01]]
-    # organisms = [[7.155e+03, 1.000e+04, 6.525e+03, 3.770e-01 ],
-    #         [8.805e+03, 1.000e+04, 3.973e+03, 5.070e-01]]
-    # organisms = [[1.78, 29.463, 44.463, 0.257],
-    #     [2.25700000e+00, 2.08809700e+03, 5.73800000e+01, 4.90000000e-02]]
+
     organisms = [1003.736, 10000.0, 5508.399, 0.257], \
       [10000.0, 4512.93, 2510.197, 0.049]
 
@@ -166,6 +164,6 @@ if __name__ == "__main__":
         task.visualizer_test([chasing_robot, running_robot], organisms)
 
     if FLAGS.gazebo or FLAGS.real:
-        chasing_robot = ModelRobot(real=FLAGS.real, name="robot2")
+        chasing_robot = ModelRobot(real=FLAGS.real, name="robot3")
         running_robot = ModelRobot(real=FLAGS.real, name="robot1")
         task.run_with_setup([chasing_robot, running_robot], organisms)

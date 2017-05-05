@@ -9,6 +9,8 @@ https://comprobo-final-project.github.io/
 
 ## Run
 
+** Note: these steps require that you have a Neato or other mobile robot and are already connected to said robot. **
+
 Change directory into the ROS package. Because of the way that sections of our code are imported into other sections, it is important that you run all commands from this directory.
 
 `roscd comprobo_final_project`
