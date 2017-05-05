@@ -1,4 +1,4 @@
-# CompRobo Final Project
+# Project Nevo
 
 ### [Shane Kelly](https://github.com/shanek21), [Kevin Zhang](https://github.com/kzhang8850), [David Zhu](https://github.com/hdavidzhu)
 
