@@ -14,12 +14,13 @@ class GoalTask(object):
         log file along with their fitness per generation.
         """
 
-        log_location = 'logs/log_'+str(int(time.time()))+'.csv'
+        log_location = 'logs/orbital_'+str(int(time.time()))+'.csv'
         print log_location
 
         GeneticAlgorithm(
             log_location=log_location,
             gen_size=100,
+            num_organisms=1,
             num_genes=8,
             fitness_thresh=0.05,
             elitism_thresh=0.1,
@@ -28,13 +29,13 @@ class GoalTask(object):
             fitness_func=self.get_fitness_func(robot)).train()
 
 
-    def visualizer_test(self, robot, organism):
+    def visualizer_test(self, robot, organisms):
         """
         Use the basic visualizer to see what the robot is doing.
         """
         simulation_visualizer = SimulationVisualizer([robot], real_world_scale=2)
         get_fitness = self.get_fitness_func(robot)
-        fitness = get_fitness(organism)
+        fitness = get_fitness(organisms)
         print fitness
 
 
@@ -44,12 +45,12 @@ class GoalTask(object):
         """
 
         # Using a closure here so we can hold our single robot instance
-        def _fitness_func(organism):
+        def _fitness_func(organisms):
 
             avg_fit = []
 
             for _ in range(3):
-                positions = self.run_with_setup(robot, organism)
+                positions = self.run_with_setup(robot, organisms[0])
 
                 ideal_radius = 1.5 # Let it rotate 1m away from goal
 
@@ -68,13 +69,13 @@ class GoalTask(object):
         return _fitness_func
 
 
-    def run_with_setup(self, robot, organism):
+    def run_with_setup(self, robot, organism, duration=20):
         """
         For training and testing, we want to use the same setup defined here.
         """
         robot.set_random_position(r=1.5)
         robot.set_random_direction()
-        return self._run(robot=robot, duration=20, organism=organism)
+        return self._run(robot=robot, duration=duration, organism=organism)
 
 
     def _run(self, robot, duration, organism):
@@ -132,9 +133,10 @@ if __name__ == "__main__":
 
     # Initialize task
     task = GoalTask()
-    organism = [1.00000000e+04, 4.84443000e+03, 7.54000000e-01, \
-        3.14000000e-01, 1.00000000e+04, 2.59000000e-01, 5.73096300e+03, \
-        1.10000000e-02] # Temporary
+    # organism = [1.00000000e+04, 4.84443000e+03, 7.54000000e-01, \
+    #     3.14000000e-01, 1.00000000e+04, 2.59000000e-01, 5.73096300e+03, \
+    #     1.10000000e-02] # Temporary
+    organisms = [[141.013, 1000.0, 0.922, 0.457, 1000.0, 0.327, 1000.0, 0.129]]
 
     # Create robots, both simulation ones and real ones
     from ..simulator.robot import Robot as SimRobot
@@ -145,9 +147,9 @@ if __name__ == "__main__":
 
     if FLAGS.visualize:
         from ..simulator.simulation_visualizer import SimulationVisualizer
-        task.visualizer_test(sim_robot, organism)
+        task.visualizer_test(sim_robot, organisms)
 
     if FLAGS.real or FLAGS.gazebo:
         from ..models.robot import Robot as ModelRobot
         model_robot = ModelRobot(real=FLAGS.real)
-        task.run_with_setup(model_robot, organism)
+        task.run_with_setup(model_robot, organisms[0], duration=300)
