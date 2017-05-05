@@ -63,7 +63,7 @@ class GoalTask(object):
         """
         robot.set_random_position(r=5.0)
         robot.set_random_direction()
-        return self._run(robot=robot, duration=20, organisms=organisms)
+        return self._run(robot=robot, duration=30, organisms=organisms)
 
 
     def _run(self, robot, duration, organisms):
@@ -137,5 +137,5 @@ if __name__ == "__main__":
 
     if FLAGS.real or FLAGS.gazebo:
         from ..models.robot import Robot as ModelRobot
-        model_robot = ModelRobot(real=FLAGS.real)
+        model_robot = ModelRobot(real=FLAGS.real, name="robot1")
         task.run_with_setup(model_robot, [organism])
